@@ -1,22 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:sorttasks/main.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  LoginScreenState createState() => LoginScreenState();
+}
+
+class LoginScreenState extends State<LoginScreen> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: SorttasksApp.isDarkTheme ? Colors.black : Colors.white,
       body: Column(
         children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    SorttasksApp.isDarkTheme = !SorttasksApp.isDarkTheme;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: SorttasksApp.isDarkTheme ? Colors.black : Colors.white,
+                ),
+                child: Icon(
+                  SorttasksApp.isDarkTheme ? Icons.light_mode : Icons.dark_mode,
+                  color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                  size: 25,
+                ),
+              ),
+            ),
+          ),
           const SizedBox(height: 50),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 'Sorttasks',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                   fontSize: 24,
                 ),
               ),
@@ -27,27 +54,27 @@ class LoginScreen extends StatelessWidget {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.task,
-                  color: Colors.black,
+                  color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                   size: 40,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 70),
-          const Text(
+          Text(
             'Welcome!',
             style: TextStyle(
-              color: Colors.black,
+              color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
               fontSize: 24,
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
+          Text(
             'Please sign in to continue',
             style: TextStyle(
-              color: Colors.black,
+              color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
               fontSize: 14,
             ),
           ),
@@ -60,9 +87,9 @@ class LoginScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: SorttasksApp.isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(color: Colors.black),
+                    border: Border.all(color: SorttasksApp.isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
                   ),
                   child: Row(
                     children: [
@@ -72,18 +99,18 @@ class LoginScreen extends StatelessWidget {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.person,
-                          color: Colors.black,
+                          color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                           size: 30,
                         ),
                       ),
                       const SizedBox(width: 20),
-                      const Text(
+                      Text(
                         'Email',
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.black,
+                          color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                         ),
                       ),
                     ],
@@ -101,9 +128,9 @@ class LoginScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: SorttasksApp.isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(color: Colors.black),
+                    border: Border.all(color: SorttasksApp.isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
                   ),
                   child: Row(
                     children: [
@@ -113,18 +140,18 @@ class LoginScreen extends StatelessWidget {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.key,
-                          color: Colors.black,
+                          color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                           size: 30,
                         ),
                       ),
                       const SizedBox(width: 20),
-                      const Text(
+                      Text(
                         'Password',
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.black,
+                          color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                         ),
                       ),
                     ],
@@ -142,7 +169,7 @@ class LoginScreen extends StatelessWidget {
                 // Login logic
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(0, 56, 255, 0.5),
+                backgroundColor: SorttasksApp.isDarkTheme ? const Color.fromRGBO(0, 56, 255, 0.6) : const Color.fromRGBO(0, 56, 255, 0.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -150,11 +177,11 @@ class LoginScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'LOGIN',
                     style: TextStyle(
                       fontSize: 22,
-                      color: Colors.black,
+                      color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                     )
                   ),
                   const SizedBox(width: 15),
@@ -164,9 +191,9 @@ class LoginScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.login,
-                      color: Colors.black,
+                      color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                       size: 40,
                     ),
                   ),
@@ -175,11 +202,11 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 50),
-          const Text(
+          Text(
             'Forgot your password?',
             style: TextStyle(
               fontSize: 14,
-              color: Colors.black
+              color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
             )
           ),
           const SizedBox(height: 10),
@@ -191,7 +218,7 @@ class LoginScreen extends StatelessWidget {
                 // Recover password logic
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(255, 198, 198, 1.0),
+                backgroundColor: SorttasksApp.isDarkTheme ? const Color.fromRGBO(255, 80, 80, 0.8) : const Color.fromRGBO(255, 198, 198, 1.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -199,11 +226,11 @@ class LoginScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'Recover it here',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.black,
+                      color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                     )
                   ),
                   const SizedBox(width: 5),
@@ -213,9 +240,9 @@ class LoginScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.help_center,
-                      color: Colors.black,
+                      color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                       size: 40,
                     ),
                   ),
@@ -224,11 +251,11 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 50),
-          const Text(
+          Text(
             'No account? Register here:',
             style: TextStyle(
               fontSize: 14,
-              color: Colors.black
+              color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
             )
           ),
           const SizedBox(height: 10),
@@ -240,7 +267,7 @@ class LoginScreen extends StatelessWidget {
                 // Register logic
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(255, 155, 63, 1.0),
+                backgroundColor: SorttasksApp.isDarkTheme ? const Color.fromRGBO(255, 155, 63, 0.8) : const Color.fromRGBO(255, 155, 63, 1.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -248,11 +275,11 @@ class LoginScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'CREATE ACCOUNT',
                     style: TextStyle(
                       fontSize: 22,
-                      color: Colors.black,
+                      color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                     )
                   ),
                   const SizedBox(width: 10),
@@ -262,9 +289,9 @@ class LoginScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.app_registration,
-                      color: Colors.black,
+                      color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
                       size: 40,
                     ),
                   ),
