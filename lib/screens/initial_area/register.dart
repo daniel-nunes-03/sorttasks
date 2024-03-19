@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sorttasks/main.dart';
+import 'package:provider/provider.dart';
+import 'package:sorttasks/classes/theme_notifier.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -11,8 +12,10 @@ class RegisterScreen extends StatefulWidget {
 class RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    
     return Scaffold(
-      backgroundColor: SorttasksApp.isDarkTheme ? Colors.black : Colors.white,
+      backgroundColor: isDarkTheme ? Colors.black : Colors.white,
       body: Column(
         children: [
           Align(
@@ -22,15 +25,15 @@ class RegisterScreenState extends State<RegisterScreen> {
               child: TextButton(
                 onPressed: () {
                   setState(() {
-                    SorttasksApp.isDarkTheme = !SorttasksApp.isDarkTheme;
+                    Provider.of<ThemeNotifier>(context, listen: false).toggleTheme();
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: SorttasksApp.isDarkTheme ? Colors.black : Colors.white,
+                  backgroundColor: isDarkTheme ? Colors.black : Colors.white,
                 ),
                 child: Icon(
-                  SorttasksApp.isDarkTheme ? Icons.light_mode : Icons.dark_mode,
-                  color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                  isDarkTheme ? Icons.light_mode : Icons.dark_mode,
+                  color: isDarkTheme ? Colors.white : Colors.black,
                   size: 25,
                 ),
               ),
@@ -43,7 +46,7 @@ class RegisterScreenState extends State<RegisterScreen> {
               Text(
                 'Sorttasks',
                 style: TextStyle(
-                  color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                  color: isDarkTheme ? Colors.white : Colors.black,
                   fontSize: 24,
                 ),
               ),
@@ -56,7 +59,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                 ),
                 child: Icon(
                   Icons.task,
-                  color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                  color: isDarkTheme ? Colors.white : Colors.black,
                   size: 40,
                 ),
               ),
@@ -66,7 +69,7 @@ class RegisterScreenState extends State<RegisterScreen> {
           Text(
             'Sign Up',
             style: TextStyle(
-              color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+              color: isDarkTheme ? Colors.white : Colors.black,
               fontSize: 24,
             ),
           ),
@@ -74,7 +77,7 @@ class RegisterScreenState extends State<RegisterScreen> {
           Text(
             'Sort your tasks easily for free with Sorttasks!',
             style: TextStyle(
-              color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+              color: isDarkTheme ? Colors.white : Colors.black,
               fontSize: 14,
             ),
           ),
@@ -87,9 +90,9 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: SorttasksApp.isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
+                    color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(color: SorttasksApp.isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
+                    border: Border.all(color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
                   ),
                   child: Row(
                     children: [
@@ -101,7 +104,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                         ),
                         child: Icon(
                           Icons.person,
-                          color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                          color: isDarkTheme ? Colors.white : Colors.black,
                           size: 30,
                         ),
                       ),
@@ -110,7 +113,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                         'Email',
                         style: TextStyle(
                           fontSize: 18,
-                          color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                          color: isDarkTheme ? Colors.white : Colors.black,
                         ),
                       ),
                     ],
@@ -128,9 +131,9 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: SorttasksApp.isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
+                    color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(color: SorttasksApp.isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
+                    border: Border.all(color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
                   ),
                   child: Row(
                     children: [
@@ -142,7 +145,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                         ),
                         child: Icon(
                           Icons.key,
-                          color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                          color: isDarkTheme ? Colors.white : Colors.black,
                           size: 30,
                         ),
                       ),
@@ -151,7 +154,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                         'Password',
                         style: TextStyle(
                           fontSize: 18,
-                          color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                          color: isDarkTheme ? Colors.white : Colors.black,
                         ),
                       ),
                     ],
@@ -169,9 +172,9 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: SorttasksApp.isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
+                    color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(color: SorttasksApp.isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
+                    border: Border.all(color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
                   ),
                   child: Row(
                     children: [
@@ -183,7 +186,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                         ),
                         child: Icon(
                           Icons.key,
-                          color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                          color: isDarkTheme ? Colors.white : Colors.black,
                           size: 30,
                         ),
                       ),
@@ -192,7 +195,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                         'Repeat Password',
                         style: TextStyle(
                           fontSize: 18,
-                          color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                          color: isDarkTheme ? Colors.white : Colors.black,
                         ),
                       ),
                     ],
@@ -207,10 +210,12 @@ class RegisterScreenState extends State<RegisterScreen> {
             height: 60,
             child: ElevatedButton(
               onPressed: () {
-                // Login logic
+                // Register logic
+                // Temporary:
+                Navigator.pushReplacementNamed(context, '/login');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: SorttasksApp.isDarkTheme ? const Color.fromRGBO(0, 56, 255, 0.6) : const Color.fromRGBO(0, 56, 255, 0.5),
+                backgroundColor: isDarkTheme ? const Color.fromRGBO(0, 56, 255, 0.6) : const Color.fromRGBO(0, 56, 255, 0.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -222,7 +227,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                     'SIGN UP',
                     style: TextStyle(
                       fontSize: 22,
-                      color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                      color: isDarkTheme ? Colors.white : Colors.black,
                     )
                   ),
                   const SizedBox(width: 15),
@@ -234,7 +239,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                     ),
                     child: Icon(
                       Icons.app_registration,
-                      color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                      color: isDarkTheme ? Colors.white : Colors.black,
                       size: 40,
                     ),
                   ),
@@ -247,7 +252,7 @@ class RegisterScreenState extends State<RegisterScreen> {
             'Already have an account?',
             style: TextStyle(
               fontSize: 14,
-              color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+              color: isDarkTheme ? Colors.white : Colors.black,
             )
           ),
           const SizedBox(height: 10),
@@ -256,10 +261,11 @@ class RegisterScreenState extends State<RegisterScreen> {
             height: 60,
             child: ElevatedButton(
               onPressed: () {
-                // Register logic
+                // Go to login screen logic
+                Navigator.pushReplacementNamed(context, '/login');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: SorttasksApp.isDarkTheme ? const Color.fromRGBO(255, 155, 63, 0.8) : const Color.fromRGBO(255, 155, 63, 1.0),
+                backgroundColor: isDarkTheme ? const Color.fromRGBO(255, 155, 63, 0.8) : const Color.fromRGBO(255, 155, 63, 1.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -271,7 +277,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                     'SIGN IN',
                     style: TextStyle(
                       fontSize: 22,
-                      color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                      color: isDarkTheme ? Colors.white : Colors.black,
                     )
                   ),
                   const SizedBox(width: 10),
@@ -283,7 +289,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                     ),
                     child: Icon(
                       Icons.login,
-                      color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                      color: isDarkTheme ? Colors.white : Colors.black,
                       size: 40,
                     ),
                   ),

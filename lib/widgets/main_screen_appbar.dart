@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sorttasks/main.dart';
+import 'package:provider/provider.dart';
+import 'package:sorttasks/classes/theme_notifier.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -14,8 +15,10 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    
     return AppBar(
-      backgroundColor: SorttasksApp.isDarkTheme
+      backgroundColor: isDarkTheme
         ? const Color.fromRGBO(17, 17, 17, 1)
         : const Color.fromRGBO(217, 217, 217, 1),
       leading: Row(
@@ -23,17 +26,17 @@ class CustomAppBarState extends State<CustomAppBar> {
           TextButton(
             onPressed: () {
               setState(() {
-                SorttasksApp.isDarkTheme = !SorttasksApp.isDarkTheme;
+                Provider.of<ThemeNotifier>(context, listen: false).toggleTheme();
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: SorttasksApp.isDarkTheme
+              backgroundColor: isDarkTheme
                 ? const Color.fromRGBO(17, 17, 17, 1)
                 : const Color.fromRGBO(217, 217, 217, 1),
             ),
             child: Icon(
-              SorttasksApp.isDarkTheme ? Icons.light_mode : Icons.dark_mode,
-              color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+              isDarkTheme ? Icons.light_mode : Icons.dark_mode,
+              color: isDarkTheme ? Colors.white : Colors.black,
               size: 25,
             ),
           ),
@@ -45,7 +48,7 @@ class CustomAppBarState extends State<CustomAppBar> {
           Text(
             'Sorttasks',
             style: TextStyle(
-              color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+              color: isDarkTheme ? Colors.white : Colors.black,
               fontSize: 22,
             ),
           ),
@@ -58,7 +61,7 @@ class CustomAppBarState extends State<CustomAppBar> {
             ),
             child: Icon(
               Icons.task,
-              color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+              color: isDarkTheme ? Colors.white : Colors.black,
               size: 40,
             ),
           ),
@@ -70,15 +73,16 @@ class CustomAppBarState extends State<CustomAppBar> {
             TextButton(
               onPressed: () {
                 // Profile Screen transition logic
+                Navigator.pushReplacementNamed(context, '/profile_view');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: SorttasksApp.isDarkTheme
+                backgroundColor: isDarkTheme
                   ? const Color.fromRGBO(17, 17, 17, 1)
                   : const Color.fromRGBO(217, 217, 217, 1),
               ),
               child: Icon(
                 Icons.person,
-                color: SorttasksApp.isDarkTheme ? Colors.white : Colors.black,
+                color: isDarkTheme ? Colors.white : Colors.black,
                 size: 25,
               ),
             ),
