@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "423896652835",
+    "project_id": "sorttasks",
+    "storage_bucket": "sorttasks.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:423896652835:android:5b4a0e8e45ad725eb9a596",
+        "android_client_info": {
+          "package_name": "com.example.sorttasks"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVURrDGRUby6eIhKdH_34OnTCpsuOTK7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

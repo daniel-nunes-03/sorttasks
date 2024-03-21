@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
+import 'package:sorttasks/widgets/login/email_input.dart';
+import 'package:sorttasks/widgets/login/password_input.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -10,6 +12,22 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class RegisterScreenState extends State<RegisterScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? _email = '';
+  String? _password = '';
+
+  void updateEmail(String email) {
+    setState(() {
+      _email = email;
+    });
+  }
+
+  void updatePassword(String password) {
+    setState(() {
+      _password = password;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
@@ -109,12 +127,8 @@ class RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      Text(
-                        'Email',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: isDarkTheme ? Colors.white : Colors.black,
-                        ),
+                      Expanded(
+                        child: EmailInput(onEmailChanged: updateEmail)
                       ),
                     ],
                   ),
@@ -150,12 +164,8 @@ class RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      Text(
-                        'Password',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: isDarkTheme ? Colors.white : Colors.black,
-                        ),
+                      Expanded(
+                        child: PasswordInput(onPasswordChanged: updatePassword)
                       ),
                     ],
                   ),
@@ -191,12 +201,8 @@ class RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      Text(
-                        'Repeat Password',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: isDarkTheme ? Colors.white : Colors.black,
-                        ),
+                      Expanded(
+                        child: PasswordInput(onPasswordChanged: updatePassword)
                       ),
                     ],
                   ),

@@ -16,30 +16,21 @@ class TaskHistoryState extends State<TaskHistoryScreen> {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
 
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            height: 200,
-            color: isDarkTheme
-              ? const Color.fromRGBO(17, 17, 17, 1)
-              : const Color.fromRGBO(217, 217, 217, 1),
-            child: Center(
-              child: Text(
-                'HISTORY -> First Container',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: isDarkTheme ? Colors.white : Colors.black,
-                ),
+      body: Container(
+        color: isDarkTheme
+          ? const Color.fromRGBO(45, 45, 45, 1)
+          : Colors.white,
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 200,
+              child: Center(
+                child: Text('HISTORY -> First Container'),
               ),
             ),
-          ),
-          Expanded(
-            child: Scrollbar(
-              child: SingleChildScrollView(
-                child: Container(
-                  color: isDarkTheme
-                    ? const Color.fromRGBO(17, 17, 17, 1)
-                    : const Color.fromRGBO(217, 217, 217, 1),
+            Expanded(
+              child: Scrollbar(
+                child: SingleChildScrollView(
                   child: Center(
                     child: Text(
                       'HISTORY -> Middle Container - Scrollable',
@@ -50,25 +41,16 @@ class TaskHistoryState extends State<TaskHistoryScreen> {
                     ),
                   ),
                 ),
+              )
+            ),
+            const SizedBox(
+              height: 200,
+              child: Center(
+                child: Text('HISTORY -> Last Container'),
               ),
             ),
-          ),
-          Container(
-            height: 200,
-            color: isDarkTheme
-              ? const Color.fromRGBO(17, 17, 17, 1)
-              : const Color.fromRGBO(217, 217, 217, 1),
-            child: Center(
-              child: Text(
-                'HISTORY -> Last Container',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: isDarkTheme ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
