@@ -12,22 +12,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String? _email = '';
-  String? _password = '';
-
-  void updateEmail(String email) {
-    setState(() {
-      _email = email;
-    });
-  }
-
-  void updatePassword(String password) {
-    setState(() {
-      _password = password;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
@@ -100,120 +84,13 @@ class LoginScreenState extends State<LoginScreen> {
             ),
           ),
           const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 400,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.person,
-                          color: isDarkTheme ? Colors.white : Colors.black,
-                          size: 30,
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: EmailInput(onEmailChanged: updateEmail)
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 400,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.key,
-                          color: isDarkTheme ? Colors.white : Colors.black,
-                          size: 30,
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: PasswordInput(onPasswordChanged: updatePassword)
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 50),
-          SizedBox(
-            width: 180,
-            height: 60,
-            child: ElevatedButton(
-              onPressed: () {
-                // Login logic
-                Navigator.pushReplacementNamed(context, '/main_screen');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isDarkTheme ? const Color.fromRGBO(0, 56, 255, 0.6) : const Color.fromRGBO(0, 56, 255, 0.5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'LOGIN',
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: isDarkTheme ? Colors.white : Colors.black,
-                    )
-                  ),
-                  const SizedBox(width: 15),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.login,
-                      color: isDarkTheme ? Colors.white : Colors.black,
-                      size: 40,
-                    ),
-                  ),
-                ],
-              )                
-            ),
+          LoginForm(
+            onEmailChanged: (email) {
+              // No need to manage email state here
+            },
+            onPasswordChanged: (password) {
+              // No need to manage password state here
+            },
           ),
           const SizedBox(height: 50),
           Text(
@@ -318,4 +195,157 @@ class LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+class LoginForm extends StatefulWidget {
+  final Function(String) onEmailChanged;
+  final Function(String) onPasswordChanged;
+
+  const LoginForm({
+    super.key,
+    required this.onEmailChanged,
+    required this.onPasswordChanged,
+  });
+
+  @override
+  LoginFormState createState() => LoginFormState();
+}
+
+class LoginFormState extends State<LoginForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late String _email;
+  late String _password;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 400,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    border: Border.all(color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.person,
+                          color: isDarkTheme ? Colors.white : Colors.black,
+                          size: 30,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: EmailInput(onEmailChanged: (email) {
+                          setState(() {
+                            _email = email;
+                          });
+                          widget.onEmailChanged(email);
+                        }),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    border: Border.all(color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : Colors.black),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.key,
+                          color: isDarkTheme ? Colors.white : Colors.black,
+                          size: 30,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: PasswordInput(onPasswordChanged: (password) {
+                          setState(() {
+                            _password = password;
+                          });
+                          widget.onPasswordChanged(password);
+                        }),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 50),
+        SizedBox(
+          width: 180,
+          height: 60,
+          child: ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                // Login logic
+                Navigator.pushReplacementNamed(context, '/main_screen');
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isDarkTheme ? const Color.fromRGBO(0, 56, 255, 0.6) : const Color.fromRGBO(0, 56, 255, 0.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'LOGIN',
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: isDarkTheme ? Colors.white : Colors.black,
+                  ),
+                ),
+                const SizedBox(width: 15),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.login,
+                    color: isDarkTheme ? Colors.white : Colors.black,
+                    size: 40,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
 }
