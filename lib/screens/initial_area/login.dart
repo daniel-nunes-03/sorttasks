@@ -42,7 +42,7 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -68,7 +68,7 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 70),
+            const SizedBox(height: 55),
             Text(
               'Welcome!',
               style: TextStyle(
