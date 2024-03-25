@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
-import 'package:sorttasks/widgets/login/email_input.dart';
-import 'package:sorttasks/widgets/login/password_input.dart';
+import 'package:sorttasks/widgets/email_input.dart';
+import 'package:sorttasks/widgets/password_input.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
