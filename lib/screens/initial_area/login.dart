@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
+import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/widgets/email_input.dart';
 import 'package:sorttasks/widgets/password_input.dart';
 
@@ -85,14 +88,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            LoginForm(
-              onEmailChanged: (email) {
-                // No need to manage email state here
-              },
-              onPasswordChanged: (password) {
-                // No need to manage password state here
-              },
-            ),
+            const LoginForm(),
             const SizedBox(height: 50),
             Text(
               'Forgot your password?',
@@ -200,14 +196,7 @@ class LoginScreenState extends State<LoginScreen> {
 }
 
 class LoginForm extends StatefulWidget {
-  final Function(String) onEmailChanged;
-  final Function(String) onPasswordChanged;
-
-  const LoginForm({
-    super.key,
-    required this.onEmailChanged,
-    required this.onPasswordChanged,
-  });
+  const LoginForm({super.key});
 
   @override
   LoginFormState createState() => LoginFormState();
@@ -215,8 +204,20 @@ class LoginForm extends StatefulWidget {
 
 class LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late String _email;
-  late String _password;
+  late String _email = '';
+  late String _password = '';
+
+  void updateEmail(String email) {
+    setState(() {
+      _email = email;
+    });
+  }
+
+  void updatePassword(String password) {
+    setState(() {
+      _password = password;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -254,12 +255,7 @@ class LoginFormState extends State<LoginForm> {
                       ),
                       const SizedBox(width: 20),
                       Expanded(
-                        child: EmailInput(onEmailChanged: (email) {
-                          setState(() {
-                            _email = email;
-                          });
-                          widget.onEmailChanged(email);
-                        }),
+                        child: EmailInput(onEmailChanged: updateEmail),
                       ),
                     ],
                   ),
@@ -288,12 +284,7 @@ class LoginFormState extends State<LoginForm> {
                       ),
                       const SizedBox(width: 20),
                       Expanded(
-                        child: PasswordInput(onPasswordChanged: (password) {
-                          setState(() {
-                            _password = password;
-                          });
-                          widget.onPasswordChanged(password);
-                        }),
+                        child: PasswordInput(onPasswordChanged: updatePassword),
                       ),
                     ],
                   ),
@@ -307,10 +298,35 @@ class LoginFormState extends State<LoginForm> {
           width: 180,
           height: 60,
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                // Login logic
-                Navigator.pushReplacementNamed(context, '/main_screen');
+                _formKey.currentState!.save();
+
+                // Check if the email and password combination exists by awaiting the Future<bool>
+                bool loginSuccessful = await FirestoreUtils.login(_email, _password);
+
+                if (loginSuccessful) {
+                  Navigator.pushReplacementNamed(context, '/main_screen');
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Login Failed'),
+                        content: const Text('The provided email or password is incorrect'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              // Close the dialog
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Proceed'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
               }
             },
             style: ElevatedButton.styleFrom(
