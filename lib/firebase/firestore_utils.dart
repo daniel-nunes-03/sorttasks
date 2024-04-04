@@ -42,7 +42,7 @@ class FirestoreUtils {
           String firstName = userData['firstname'];
           String lastName = userData['lastname'];
 
-          return {'first_name': firstName, 'last_name': lastName};
+          return {'firstName': firstName, 'lastName': lastName};
         }
       }
 
@@ -77,7 +77,7 @@ class FirestoreUtils {
     }
   }
 
-  static Future<void> updateUser(BuildContext context, String newUsername, String newEmail, String newPassword, String currentEmail) async {
+  static Future<void> updateUser(BuildContext context, String newFirstName, String newLastName, String newEmail, String newPassword, String currentEmail) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -85,8 +85,8 @@ class FirestoreUtils {
         // Check if there are changes in email
         bool isEmailChanged = newEmail != currentEmail;
 
-        // Update Firestore document with new username
-        await updateUserDetails(context, newUsername);
+        // Update Firestore document with the new user data
+        await updateUserDetails(context, newFirstName, newLastName);
         // Update authenticated user's password
         await currentUser.updatePassword(newPassword);
 
@@ -121,7 +121,7 @@ class FirestoreUtils {
     }
   }
 
-  static Future<void> updateUserDetails(BuildContext context, String newUsername) async {
+  static Future<void> updateUserDetails(BuildContext context, String newFirstName, String newLastName) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -130,16 +130,17 @@ class FirestoreUtils {
         DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).get();
         Map<String, dynamic> currentUserData = snapshot.data() as Map<String, dynamic>;
 
-        // Check if there are changes in username
-        bool isUsernameChanged = currentUserData['username'] != newUsername;
+        // Check if there are changes in first name or last name
+        bool changed = (currentUserData['firstName'] != newFirstName) || (currentUserData['lastName'] != newLastName);
 
-        // Update Firestore document with new username
+        // Update Firestore document with the new data
         await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).update({
-          'username': newUsername,
+          'firstName': newFirstName,
+          'lastName': newLastName,
         });
 
         // Show a Snackbar if username changed
-        if (isUsernameChanged) {
+        if (changed) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('User details updated successfully. Please re-enter your credentials to login.'),
@@ -163,7 +164,7 @@ class FirestoreUtils {
 
   // USER CREATE AND DELETE
 
-  static Future<void> addUser(String username, String email, String password) async {
+  static Future<void> addUser(String email, String firstName, String lastName, String password) async {
     try {
       // Create a new user in Firebase Authentication
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -176,7 +177,8 @@ class FirestoreUtils {
 
       // Add user details to Firestore
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
-        'username': username,
+        'firstName': firstName,
+        'lastName': lastName,
       });
 
       // Send verification email
@@ -194,8 +196,14 @@ class FirestoreUtils {
       // Delete the user's document from the 'users' collection
       await FirebaseFirestore.instance.collection('users').doc(userId).delete();
 
-      // Delete all events owned by the user from the 'events' collection
-      QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance.collection('events').where('userOwner', isEqualTo: userId).get();
+      // Delete all tasks owned by the user from the 'tasks' collection
+      QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance.collection('tasks').where('userOwner', isEqualTo: userId).get();
+      for (QueryDocumentSnapshot eventSnapshot in eventsSnapshot.docs) {
+        await eventSnapshot.reference.delete();
+      }
+
+      // Delete all archivedTasks owned by the user from the 'archivedTasks' collection
+      eventsSnapshot = await FirebaseFirestore.instance.collection('archivedTasks').where('userOwner', isEqualTo: userId).get();
       for (QueryDocumentSnapshot eventSnapshot in eventsSnapshot.docs) {
         await eventSnapshot.reference.delete();
       }
@@ -288,21 +296,21 @@ class FirestoreUtils {
     }
   }
 
-  static Future<bool> checkEmailAvailable(String email) async {
+  static Future<bool> checkEmailAvailable(String email, String password) async {
     try {
-      // Reference to FirebaseAuth instance
-      FirebaseAuth auth = FirebaseAuth.instance;
+      // Check if the email is already in use by attempting to sign in with it
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      // Fetch sign-in methods for the provided email
-      List<String> signInMethods = await auth.fetchSignInMethodsForEmail(email);
-
-      // Return true if the list is empty (email is available)
-      return signInMethods.isEmpty;
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error checking email availability: $e');
-      }
+      // If sign-in succeeds, it means the email is already in use
+      await FirebaseAuth.instance.signOut();
+      
       return false;
+    } catch (e) {
+      // If sign-in fails, it means the email is available
+      return true;
     }
   }
 

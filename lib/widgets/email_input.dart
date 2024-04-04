@@ -17,6 +17,7 @@ class EmailInputState extends State<EmailInput> {
     r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
   );
 
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
