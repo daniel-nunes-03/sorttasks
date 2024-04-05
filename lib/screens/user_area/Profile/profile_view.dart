@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
+import 'package:sorttasks/firebase/firestore_utils.dart';
+import 'package:sorttasks/main.dart';
 import 'package:sorttasks/widgets/main_screen_appbar.dart';
 
 class ProfileViewScreen extends StatefulWidget {
@@ -11,8 +13,54 @@ class ProfileViewScreen extends StatefulWidget {
 }
 
 class ProfileViewState extends State<ProfileViewScreen> {
+  late String? _firstName;
+  late String? _lastName;
+  bool _dataIsLoading = true;
+  bool _noData = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialization of the temporary values
+    _loadAuthenticatedUserData();
+  }
+
+  Future<void> _loadAuthenticatedUserData() async {
+    try {
+      Map<String, String>? userData = await FirestoreUtils.getUserData();
+
+      if (userData != null) {
+        setState(() {
+          _firstName = userData['firstName'];
+          _lastName = userData['lastName'];
+          _dataIsLoading = false;
+        });
+      } else {
+        setState(() {
+          _noData = true;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _noData = true;
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    if (SorttasksApp.loggedInUser == null) {
+      // Use Future.delayed to schedule the logic after the build phase
+      // This way the page won't crash during a reload (F5 or 'r' in the flutter terminal)
+      Future.delayed(Duration.zero, () {
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      });
+
+      // Return an empty container while the navigation happens
+      return const SizedBox.shrink();
+    }
+
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
     
     return Scaffold(
@@ -38,21 +86,37 @@ class ProfileViewState extends State<ProfileViewScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  Text(
-                    'FIRST NAME',
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: isDarkTheme ? Colors.white : Colors.black
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'LAST NAME',
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: isDarkTheme ? Colors.white : Colors.black
-                    ),
-                  ),
+                  _dataIsLoading // Conditional rendering based on flags
+                    ? _noData
+                      ? const Text(
+                          'Error: An error occurred while retrieving your data.',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.red,
+                          ),
+                        )
+                      : const CircularProgressIndicator()
+                    : Column(
+                        children: [
+                          Text(
+                            _firstName!,
+                            style: TextStyle(
+                                fontSize: 22,
+                                color: isDarkTheme
+                                    ? Colors.white
+                                    : Colors.black),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            _lastName!,
+                            style: TextStyle(
+                                fontSize: 22,
+                                color: isDarkTheme
+                                    ? Colors.white
+                                    : Colors.black),
+                          ),
+                        ],
+                      ),
                   const SizedBox(height: 75),
                   SizedBox(
                     width: 280,
@@ -191,9 +255,8 @@ class ProfileViewState extends State<ProfileViewScreen> {
                           : Colors.red,
                         child: TextButton(
                           onPressed: () {
-                            // Logout logic
-                            // Temporary: back to login routing
-                            Navigator.pushReplacementNamed(context, '/login');
+                            SorttasksApp.loggedInUser = null;
+                            Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                           },
                           // Important to make it zero inside the button so it gets centered
                           // instead of inheriting the padding from the positioning of the avatar

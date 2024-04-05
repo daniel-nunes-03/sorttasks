@@ -67,7 +67,7 @@ class SorttasksApp extends StatelessWidget {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       themeMode: Provider.of<ThemeNotifier>(context).isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-      home: const LoginScreen(),
+      home: const MainScreen(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),

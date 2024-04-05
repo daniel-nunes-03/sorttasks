@@ -39,8 +39,8 @@ class FirestoreUtils {
         if (snapshot.exists) {
           // Access the user data from the snapshot
           Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
-          String firstName = userData['firstname'];
-          String lastName = userData['lastname'];
+          String firstName = userData['firstName'];
+          String lastName = userData['lastName'];
 
           return {'firstName': firstName, 'lastName': lastName};
         }

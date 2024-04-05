@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
+import 'package:sorttasks/main.dart';
 
 
 class TaskHistoryScreen extends StatefulWidget {
@@ -13,6 +14,17 @@ class TaskHistoryScreen extends StatefulWidget {
 class TaskHistoryState extends State<TaskHistoryScreen> {
   @override
   Widget build(BuildContext context) {
+    if (SorttasksApp.loggedInUser == null) {
+      // Use Future.delayed to schedule the logic after the build phase
+      // This way the page won't crash during a reload (F5 or 'r' in the flutter terminal)
+      Future.delayed(Duration.zero, () {
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      });
+
+      // Return an empty container while the navigation happens
+      return const SizedBox.shrink();
+    }
+
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
 
     return Scaffold(
