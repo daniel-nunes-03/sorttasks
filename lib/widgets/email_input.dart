@@ -28,7 +28,7 @@ class EmailInputState extends State<EmailInput> {
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
         if (value!.isEmpty || !_emailRegex.hasMatch(value)) {
-          return 'Please enter a valid email address';
+          return 'Please enter a valid email address.';
         }
         return null;
       },

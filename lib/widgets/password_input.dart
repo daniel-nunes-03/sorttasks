@@ -22,7 +22,7 @@ class PasswordInputState extends State<PasswordInput> {
       obscureText: true,
       validator: (value) {
         if (value!.isEmpty) {
-          return 'Please enter a valid password';
+          return 'Please enter a valid password.';
         }
         return null;
       },

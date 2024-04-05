@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class NameInput extends StatefulWidget {
   final void Function(String) onNameChanged;
+  final String hintName;
 
-  const NameInput({super.key, required this.onNameChanged});
+  const NameInput({
+    super.key,
+    required this.onNameChanged,
+    required this.hintName,
+  });
 
   @override
   NameInputState createState() => NameInputState();
@@ -20,14 +25,14 @@ class NameInputState extends State<NameInput> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      decoration: const InputDecoration(
-        hintText: 'Email',
+      decoration: InputDecoration(
+        hintText: widget.hintName,
         border: InputBorder.none
       ),
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
         if (value!.isEmpty || !_alphabeticalRegex.hasMatch(value)) {
-          return 'Please enter a valid email address';
+          return 'Please enter a valid name.';
         }
         return null;
       },

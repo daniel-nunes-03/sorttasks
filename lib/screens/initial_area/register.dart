@@ -145,7 +145,8 @@ class RegisterScreenState extends State<RegisterScreen> {
                   ],
                 )                
               ),
-            )
+            ),
+            const SizedBox(height: 30),
           ],
         ),
       ),
@@ -334,7 +335,7 @@ class RegisterFormState extends State<RegisterForm> {
                             ),
                             const SizedBox(width: 20),
                             Expanded(
-                              child: NameInput(onNameChanged: updateFirstName)
+                              child: NameInput(onNameChanged: updateFirstName, hintName: 'First Name',)
                             ),
                           ],
                         ),
@@ -371,7 +372,7 @@ class RegisterFormState extends State<RegisterForm> {
                             ),
                             const SizedBox(width: 20),
                             Expanded(
-                              child: NameInput(onNameChanged: updateLastName)
+                              child: NameInput(onNameChanged: updateLastName, hintName: 'Last Name',)
                             ),
                           ],
                         ),

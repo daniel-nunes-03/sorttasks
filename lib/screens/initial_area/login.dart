@@ -362,6 +362,7 @@ class LoginFormState extends State<LoginForm> {
             ),
           ),
         ),
+        const SizedBox(height: 30),
       ],
     );
   }

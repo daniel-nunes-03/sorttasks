@@ -111,11 +111,14 @@ class PasswordValidatorState extends State<PasswordValidator> {
       children: [
         TextFormField(
           controller: _passwordController,
-          decoration: const InputDecoration(labelText: 'Password'),
+          decoration: const InputDecoration(
+            hintText: 'Password',
+            border: InputBorder.none,
+          ),
           obscureText: true,
           validator: (value) {
             if (value!.isEmpty || value.length < 6) {
-              return 'Password must be at least 6 characters long';
+              return 'Password must be at least 6 characters long.';
             }
             return null;
           },

@@ -42,11 +42,14 @@ class RepeatPasswordValidatorState extends State<RepeatPasswordValidator> {
     return TextFormField(
       controller: _repeatPasswordController,
       key: ValueKey(widget.password),
-      decoration: const InputDecoration(labelText: 'Repeat Password'),
+      decoration: const InputDecoration(
+        hintText: 'Repeat Password',
+        border: InputBorder.none,
+      ),
       obscureText: true,
       validator: (value) {
         if (value!.isEmpty || value != widget.password) {
-          return 'Passwords do not match';
+          return 'Passwords do not match.';
         }
         return null;
       },
