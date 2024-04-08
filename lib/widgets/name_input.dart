@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class NameInput extends StatefulWidget {
   final void Function(String) onNameChanged;
   final String hintName;
+  final String? initialValue;
 
   const NameInput({
     super.key,
     required this.onNameChanged,
     required this.hintName,
+    this.initialValue,
   });
 
   @override
@@ -16,6 +18,7 @@ class NameInput extends StatefulWidget {
 
 class NameInputState extends State<NameInput> {
   String? _name;
+  late TextEditingController _nameController;
 
   // Only alphabetical characters
   final RegExp _alphabeticalRegex = RegExp(
@@ -23,8 +26,15 @@ class NameInputState extends State<NameInput> {
   );
 
   @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: _nameController,
       decoration: InputDecoration(
         hintText: widget.hintName,
         border: InputBorder.none

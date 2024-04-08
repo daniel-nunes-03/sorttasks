@@ -9,6 +9,8 @@ import 'package:sorttasks/screens/initial_area/login.dart';
 import 'package:sorttasks/screens/initial_area/register.dart';
 import 'package:sorttasks/screens/user_area/History/task_history.dart';
 import 'package:sorttasks/screens/user_area/List/task_list.dart';
+import 'package:sorttasks/screens/user_area/Profile/profile_account_edit.dart';
+import 'package:sorttasks/screens/user_area/Profile/profile_personal_edit.dart';
 import 'package:sorttasks/screens/user_area/Profile/profile_view.dart';
 import 'package:sorttasks/screens/user_area/main_screen.dart';
 
@@ -75,6 +77,8 @@ class SorttasksApp extends StatelessWidget {
         '/task_list': (context) => const TaskListScreen(),
         '/task_history': (context) => const TaskHistoryScreen(),
         '/profile_view': (context) => const ProfileViewScreen(),
+        '/profile_personal_edit': (context) => const ProfileUserEditScreen(),
+        '/profile_account_edit': (context) => const ProfileAccountEditScreen(),
       },
     );
   }

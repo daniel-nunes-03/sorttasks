@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
@@ -47,6 +49,90 @@ class ProfileViewState extends State<ProfileViewScreen> {
     }
   }
 
+  void _showPasswordConfirmationDialog(BuildContext context, {required bool navigateToCredentialChangeScreen}) async {
+    String enteredPassword = '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Password'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                obscureText: true,
+                onChanged: (value) {
+                  enteredPassword = value;
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Enter your password',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  // Validate the entered password using Firebase authentication
+                  bool isPasswordCorrect = await FirestoreUtils.verifyPassword(enteredPassword);
+
+                  Navigator.pop(context); // Close the password confirmation dialog
+
+                  if (isPasswordCorrect) {
+                    if (navigateToCredentialChangeScreen) {
+                      bool isEmailVerified = await FirestoreUtils.checkEmailVerification();
+                      
+                      if (isEmailVerified) {
+                        Navigator.pushReplacementNamed(context, '/profile_account_edit');
+                      } else {
+                        Navigator.pushReplacementNamed(context, '/profile_view');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Email is not verified. Please verify your email before proceeding.'),
+                            duration: Duration(seconds: 5),
+                          ),
+                        );
+                      }
+                    } else {
+                      Navigator.pushReplacementNamed(context, '/profile_personal_edit');
+                    }
+                  } else {
+                    Navigator.pushReplacementNamed(context, '/profile_view');
+                    // Show a Snackbar when the password is incorrect
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Error verifying password.'),
+                        duration: Duration(seconds: 5),
+                      ),
+                    );
+                  }
+                } catch (error) {
+                  // Close dialog and navigate back
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacementNamed(context, '/profile_view');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Error verifying password. Please try again.'),
+                      duration: Duration(seconds: 5),
+                    ),
+                  );
+                }
+              },
+              child: const Text('Confirm'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the password confirmation dialog
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +209,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
                     height: 60,
                     child: ElevatedButton(
                       onPressed: () {
-                      // Edit personal data logic
+                        _showPasswordConfirmationDialog(context, navigateToCredentialChangeScreen: false);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isDarkTheme ? const Color.fromRGBO(0, 102, 255, 0.4) : const Color.fromRGBO(255, 168, 0, 0.7),
@@ -153,11 +239,11 @@ class ProfileViewState extends State<ProfileViewScreen> {
                   ),
                   const SizedBox(height: 30),
                   SizedBox(
-                    width: 280,
+                    width: 330,
                     height: 60,
                     child: ElevatedButton(
                       onPressed: () {
-                      // Edit personal data logic
+                        _showPasswordConfirmationDialog(context, navigateToCredentialChangeScreen: true);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isDarkTheme ? const Color.fromRGBO(0, 102, 255, 0.4) : const Color.fromRGBO(255, 168, 0, 0.7),
@@ -175,7 +261,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
                           ),
                           const SizedBox(width: 15),
                           Text(
-                            'Edit personal data',
+                            'Edit account credentials',
                             style: TextStyle(
                               fontSize: 22,
                               color: isDarkTheme ? Colors.white : Colors.black,

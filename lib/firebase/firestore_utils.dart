@@ -77,7 +77,7 @@ class FirestoreUtils {
     }
   }
 
-  static Future<void> updateUser(BuildContext context, String newFirstName, String newLastName, String newEmail, String newPassword, String currentEmail) async {
+  static Future<void> updateUser(BuildContext context, String newEmail, String newPassword, String currentEmail) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -85,8 +85,6 @@ class FirestoreUtils {
         // Check if there are changes in email
         bool isEmailChanged = newEmail != currentEmail;
 
-        // Update Firestore document with the new user data
-        await updateUserDetails(context, newFirstName, newLastName);
         // Update authenticated user's password
         await currentUser.updatePassword(newPassword);
 
@@ -97,8 +95,15 @@ class FirestoreUtils {
           await currentUser.sendEmailVerification();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Email updated successfully. Please verify your new email address when possible. While you dont, you will need to use your old email.'),
-              duration: Duration(seconds: 10),
+              content: Text('Email updated successfully. Please verify your new email address when possible. While you dont, you will need to use your old email. You will need to login again.'),
+              duration: Duration(seconds: 15),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Passsword updated successfully. You will need to login again.'),
+              duration: Duration(seconds: 8),
             ),
           );
         }
@@ -106,6 +111,7 @@ class FirestoreUtils {
         // Log out the user after email update to force reauthentication
         await FirebaseAuth.instance.signOut();
         SorttasksApp.setLoggedInUser(null);
+        Navigator.pushReplacementNamed(context, '/login');
       }
     } catch (e) {
       if (kDebugMode) {
@@ -141,10 +147,12 @@ class FirestoreUtils {
 
         // Show a Snackbar if username changed
         if (changed) {
+          Navigator.pushReplacementNamed(context, '/profile_view');
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('User details updated successfully. Please re-enter your credentials to login.'),
-              duration: Duration(seconds: 10),
+              content: Text('User details updated successfully.'),
+              duration: Duration(seconds: 3),
             ),
           );
         }
@@ -196,6 +204,8 @@ class FirestoreUtils {
       // Delete the user's document from the 'users' collection
       await FirebaseFirestore.instance.collection('users').doc(userId).delete();
 
+      /*
+
       // Delete all tasks owned by the user from the 'tasks' collection
       QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance.collection('tasks').where('userOwner', isEqualTo: userId).get();
       for (QueryDocumentSnapshot eventSnapshot in eventsSnapshot.docs) {
@@ -207,6 +217,8 @@ class FirestoreUtils {
       for (QueryDocumentSnapshot eventSnapshot in eventsSnapshot.docs) {
         await eventSnapshot.reference.delete();
       }
+      
+      */
 
       // Delete the user from authentication
       await FirebaseAuth.instance.currentUser?.delete();

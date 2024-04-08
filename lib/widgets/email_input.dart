@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class EmailInput extends StatefulWidget {
   final void Function(String) onEmailChanged;
+  final String? initialValue;
 
-  const EmailInput({super.key, required this.onEmailChanged});
+  const EmailInput({
+    super.key,
+    required this.onEmailChanged,
+    this.initialValue,
+  });
 
   @override
   EmailInputState createState() => EmailInputState();
@@ -11,16 +16,23 @@ class EmailInput extends StatefulWidget {
 
 class EmailInputState extends State<EmailInput> {
   String? _email;
+  late TextEditingController _emailController;
 
   // Characters/underscores/dots + @ + characters/underscores + dot + domain (2 to 4 letters)
   final RegExp _emailRegex = RegExp(
     r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
   );
 
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController(text: widget.initialValue);
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: _emailController,
       decoration: const InputDecoration(
         hintText: 'Email',
         border: InputBorder.none
