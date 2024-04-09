@@ -4,12 +4,18 @@ class NameInput extends StatefulWidget {
   final void Function(String) onNameChanged;
   final String hintName;
   final String? initialValue;
+  final int? maximumLength;
+  final bool multipleLines;
+  final bool noRegex;
 
   const NameInput({
     super.key,
     required this.onNameChanged,
     required this.hintName,
     this.initialValue,
+    this.maximumLength,
+    this.multipleLines = false,
+    this.noRegex = false,
   });
 
   @override
@@ -35,14 +41,21 @@ class NameInputState extends State<NameInput> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: _nameController,
+      maxLength: widget.multipleLines ? 5000 : widget.maximumLength,
+      maxLines: widget.multipleLines ? null : 1,
+      textInputAction: widget.multipleLines ? TextInputAction.newline : TextInputAction.done,
       decoration: InputDecoration(
         hintText: widget.hintName,
         border: InputBorder.none
       ),
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: widget.multipleLines ? TextInputType.multiline : TextInputType.text,
       validator: (value) {
-        if (value!.isEmpty || !_alphabeticalRegex.hasMatch(value)) {
-          return 'Please enter a valid name.';
+        if (value!.isEmpty) {
+          if (!widget.noRegex) {
+            if (!_alphabeticalRegex.hasMatch(value)) {
+              return 'Please enter a valid name.';
+            }
+          }
         }
         return null;
       },

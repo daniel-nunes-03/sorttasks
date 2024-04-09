@@ -17,6 +17,7 @@ class ProfileViewScreen extends StatefulWidget {
 class ProfileViewState extends State<ProfileViewScreen> {
   late String? _firstName;
   late String? _lastName;
+  late String? _creationDate;
   bool _dataIsLoading = true;
   bool _noData = false;
 
@@ -35,6 +36,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
         setState(() {
           _firstName = userData['firstName'];
           _lastName = userData['lastName'];
+          _creationDate = userData['creationDate'];
           _dataIsLoading = false;
         });
       } else {
@@ -270,7 +272,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
                   ),
                   const SizedBox(height: 75),
                   Text(
-                    'Joined X years ago',
+                    'Joined in $_creationDate',
                     style: TextStyle(
                       fontSize: 15,
                       color: isDarkTheme ? Colors.white : Colors.black,

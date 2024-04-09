@@ -10,21 +10,6 @@ class FirestoreUtils {
 
   // 'USERS' COLLECTION IN FIRESTORE
 
-  static Future<bool> findUserDocumentId(String userUid) async {
-    try {
-      // Reference to the 'users' collection
-      CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
-
-      // Check if the userUid matches any document ID
-      DocumentSnapshot documentSnapshot = await usersCollection.doc(userUid).get();
-
-      // Return true if a matching document is found
-      return documentSnapshot.exists;
-    } catch (e) {
-      return false;
-    }
-  }
-
   static Future<Map<String, String>?> getUserData() async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
@@ -41,8 +26,9 @@ class FirestoreUtils {
           Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
           String firstName = userData['firstName'];
           String lastName = userData['lastName'];
+          String creationDate = userData['creationDate'];
 
-          return {'firstName': firstName, 'lastName': lastName};
+          return {'firstName': firstName, 'lastName': lastName, 'creationDate': creationDate};
         }
       }
 
@@ -187,6 +173,7 @@ class FirestoreUtils {
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
         'firstName': firstName,
         'lastName': lastName,
+        'creationDate': "DD/MM/YYYY PLACEHOLDER",
       });
 
       // Send verification email
@@ -204,13 +191,13 @@ class FirestoreUtils {
       // Delete the user's document from the 'users' collection
       await FirebaseFirestore.instance.collection('users').doc(userId).delete();
 
-      /*
-
       // Delete all tasks owned by the user from the 'tasks' collection
       QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance.collection('tasks').where('userOwner', isEqualTo: userId).get();
       for (QueryDocumentSnapshot eventSnapshot in eventsSnapshot.docs) {
         await eventSnapshot.reference.delete();
       }
+
+      /*
 
       // Delete all archivedTasks owned by the user from the 'archivedTasks' collection
       eventsSnapshot = await FirebaseFirestore.instance.collection('archivedTasks').where('userOwner', isEqualTo: userId).get();
@@ -323,6 +310,46 @@ class FirestoreUtils {
     } catch (e) {
       // If sign-in fails, it means the email is available
       return true;
+    }
+  }
+
+  // 'TASKS' COLLECTION IN FIRESTORE
+
+  static Future<void> createTask(
+    BuildContext context,
+    String title,
+    String finishDateHour,
+    String creationDateHour,
+    int taskPriority,
+    bool taskStatus,
+    String description
+  ) async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        // Create a document for the current user with the input data
+        await FirebaseFirestore.instance.collection('tasks').doc().set({
+          'userID': currentUser.uid,
+          'title': title,
+          'finishDateHour': finishDateHour,
+          'creationDateHour': creationDateHour,
+          'taskPriority': taskPriority,
+          'taskStatus': taskStatus,
+          'description': description
+        });
+        
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error creating the task: $e');
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error creating the task. Please try again.'),
+        ),
+      );
+      rethrow;
     }
   }
 
