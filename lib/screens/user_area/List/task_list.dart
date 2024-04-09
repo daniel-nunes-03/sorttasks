@@ -54,10 +54,33 @@ class TaskListState extends State<TaskListScreen> {
                 ),
               )
             ),
-            const SizedBox(
-              height: 200,
-              child: Center(
-                child: Text('LIST -> Last Container'),
+            SizedBox(
+              height: 150,
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 20, right: 50, bottom: 20),
+                  child: CircleAvatar(
+                    backgroundColor: isDarkTheme
+                      ? Colors.black
+                      : const Color.fromRGBO(217, 217, 217, 1),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/task_add');
+                      },
+                      // Important to make it zero inside the button so it gets centered
+                      // instead of inheriting the padding from the positioning of the avatar
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        color: isDarkTheme ? Colors.white : Colors.black,
+                        size: 25,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

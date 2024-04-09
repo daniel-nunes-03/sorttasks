@@ -87,7 +87,6 @@ class ProfileViewState extends State<ProfileViewScreen> {
                       if (isEmailVerified) {
                         Navigator.pushReplacementNamed(context, '/profile_account_edit');
                       } else {
-                        Navigator.pushReplacementNamed(context, '/profile_view');
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Email is not verified. Please verify your email before proceeding.'),
@@ -99,11 +98,9 @@ class ProfileViewState extends State<ProfileViewScreen> {
                       Navigator.pushReplacementNamed(context, '/profile_personal_edit');
                     }
                   } else {
-                    Navigator.pushReplacementNamed(context, '/profile_view');
-                    // Show a Snackbar when the password is incorrect
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Error verifying password.'),
+                        content: Text('The inserted password is not valid.'),
                         duration: Duration(seconds: 5),
                       ),
                     );
@@ -282,7 +279,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    'Total tasks created: X',
+                    'Tasks created: X',
                     style: TextStyle(
                       fontSize: 16,
                       color: isDarkTheme ? Colors.white : Colors.black,
@@ -291,7 +288,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Total tasks completed: X',
+                    'Tasks completed: X',
                     style: TextStyle(
                       fontSize: 16,
                       color: isDarkTheme ? Colors.white : Colors.black,
