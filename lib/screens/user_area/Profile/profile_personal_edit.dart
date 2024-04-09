@@ -35,20 +35,20 @@ class ProfileUserEditState extends State<ProfileUserEditScreen> {
         color: isDarkTheme
           ? const Color.fromRGBO(45, 45, 45, 1)
           : Colors.white,
-        child: const PersonalEditForm(),
+        child: const _PersonalEditForm(),
       ),
     );
   }
 }
 
-class PersonalEditForm extends StatefulWidget {
-  const PersonalEditForm({super.key});
+class _PersonalEditForm extends StatefulWidget {
+  const _PersonalEditForm();
 
   @override
-  PersonalEditFormState createState() => PersonalEditFormState();
+  _PersonalEditFormState createState() => _PersonalEditFormState();
 }
 
-class PersonalEditFormState extends State<PersonalEditForm> {
+class _PersonalEditFormState extends State<_PersonalEditForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String? _firstName;
   late String? _lastName;

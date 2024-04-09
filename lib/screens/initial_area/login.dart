@@ -88,7 +88,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            const LoginForm(),
+            const _LoginForm(),
             const SizedBox(height: 50),
             Text(
               'Forgot your password?',
@@ -195,14 +195,14 @@ class LoginScreenState extends State<LoginScreen> {
   }
 }
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class _LoginForm extends StatefulWidget {
+  const _LoginForm();
 
   @override
-  LoginFormState createState() => LoginFormState();
+  _LoginFormState createState() => _LoginFormState();
 }
 
-class LoginFormState extends State<LoginForm> {
+class _LoginFormState extends State<_LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String _email = '';
   late String _password = '';

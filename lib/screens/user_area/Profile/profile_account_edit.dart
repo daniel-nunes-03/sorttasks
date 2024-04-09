@@ -38,20 +38,20 @@ class ProfileAccountEditState extends State<ProfileAccountEditScreen> {
         color: isDarkTheme
           ? const Color.fromRGBO(45, 45, 45, 1)
           : Colors.white,
-        child: const AccountEditForm(),
+        child: const _AccountEditForm(),
       ),
     );
   }
 }
 
-class AccountEditForm extends StatefulWidget {
-  const AccountEditForm({super.key});
+class _AccountEditForm extends StatefulWidget {
+  const _AccountEditForm();
 
   @override
-  AccountEditFormState createState() => AccountEditFormState();
+  _AccountEditFormState createState() => _AccountEditFormState();
 }
 
-class AccountEditFormState extends State<AccountEditForm> {
+class _AccountEditFormState extends State<_AccountEditForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String _initialEmail = SorttasksApp.loggedInUser!.email!;
   String _email = SorttasksApp.loggedInUser!.email!;

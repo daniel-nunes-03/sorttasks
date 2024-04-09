@@ -91,7 +91,7 @@ class RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            RegisterForm(
+            _RegisterForm(
               onRegister: (email, firstName, lastName, password, context) {
                 addUser(email, firstName, lastName, password, context);
               }
@@ -203,19 +203,18 @@ class RegisterScreenState extends State<RegisterScreen> {
 }
 
 
-class RegisterForm extends StatefulWidget {
+class _RegisterForm extends StatefulWidget {
   final Function(String, String, String, String, BuildContext) onRegister;
 
-  const RegisterForm({
-    super.key,
+  const _RegisterForm({
     required this.onRegister,
   });
 
   @override
-  RegisterFormState createState() => RegisterFormState();
+  _RegisterFormState createState() => _RegisterFormState();
 }
 
-class RegisterFormState extends State<RegisterForm> {
+class _RegisterFormState extends State<_RegisterForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<RepeatPasswordValidatorState> repeatPasswordKey =
       GlobalKey<RepeatPasswordValidatorState>();

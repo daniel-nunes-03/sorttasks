@@ -38,20 +38,20 @@ class TaskAddState extends State<TaskAddScreen> {
         color: isDarkTheme
           ? const Color.fromRGBO(45, 45, 45, 1)
           : Colors.white,
-        child: const TaskAddForm(),
+        child: const _TaskAddForm(),
       ),
     );
   }
 }
 
-class TaskAddForm extends StatefulWidget {
-  const TaskAddForm({super.key});
+class _TaskAddForm extends StatefulWidget {
+  const _TaskAddForm();
 
   @override
-  TaskAddFormState createState() => TaskAddFormState();
+  _TaskAddFormState createState() => _TaskAddFormState();
 }
 
-class TaskAddFormState extends State<TaskAddForm> {
+class _TaskAddFormState extends State<_TaskAddForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
  
   String? _title;
