@@ -8,6 +8,7 @@ import 'package:sorttasks/main.dart';
 import 'package:sorttasks/widgets/email_input.dart';
 import 'package:sorttasks/widgets/main_screen_appbar.dart';
 import 'package:sorttasks/widgets/password_validator.dart';
+import 'package:sorttasks/widgets/repeated_password_validator.dart';
 
 class ProfileAccountEditScreen extends StatefulWidget {
   const ProfileAccountEditScreen({super.key});
@@ -53,10 +54,13 @@ class _AccountEditForm extends StatefulWidget {
 
 class _AccountEditFormState extends State<_AccountEditForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<RepeatPasswordValidatorState> repeatPasswordKey =
+      GlobalKey<RepeatPasswordValidatorState>();
   final String _initialEmail = SorttasksApp.loggedInUser!.email!;
   String _email = SorttasksApp.loggedInUser!.email!;
-  // ignore: unused_field
   String _password = '';
+  // ignore: unused_field
+  String _repeatedPassword = '';
 
   void updateEmail(String email) {
     setState(() {
@@ -67,6 +71,13 @@ class _AccountEditFormState extends State<_AccountEditForm> {
   void updatePassword(String password) {
     setState(() {
       _password = password;
+      repeatPasswordKey.currentState?.updatePassword(password);
+    });
+  }
+
+  void updateRepeatedPassword(String repeatedPassword) {
+    setState(() {
+      _repeatedPassword = repeatedPassword;
     });
   }
 
@@ -190,6 +201,38 @@ class _AccountEditFormState extends State<_AccountEditForm> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 30),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.password,
+                              color: isDarkTheme ? Colors.white : Colors.black,
+                              size: 30,
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: RepeatPasswordValidator(
+                              key: repeatPasswordKey,
+                              onRepeatPasswordChanged: updateRepeatedPassword,
+                              password: _password,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ]
                 ),
               ],
@@ -262,7 +305,8 @@ class _AccountEditFormState extends State<_AccountEditForm> {
                       : const Color.fromRGBO(0, 255, 0, 0.5),
                     child: TextButton(
                       onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
+                        if (_formKey.currentState!.validate() && repeatPasswordKey.currentState!.isPasswordMatch()) {
+                          // If the form is valid, proceed with update user logic
                           _formKey.currentState!.save();
                           FirestoreUtils.updateUser(context, _email, _password, _initialEmail);
                         } else {
