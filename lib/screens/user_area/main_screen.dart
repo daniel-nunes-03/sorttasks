@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
-import 'package:sorttasks/widgets/main_screen_appbar.dart';
+import 'package:sorttasks/widgets/custom_appbar.dart';
 import 'package:sorttasks/screens/user_area/History/task_history.dart';
 import 'package:sorttasks/screens/user_area/List/task_list.dart';
 

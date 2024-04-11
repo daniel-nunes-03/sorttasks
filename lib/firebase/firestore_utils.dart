@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sorttasks/classes/task.dart';
 import 'package:sorttasks/main.dart';
 
 class FirestoreUtils {
@@ -239,18 +240,6 @@ class FirestoreUtils {
     }
   }
 
-  static Future<String?> getLoggedInUserId() async {
-    try {
-      User? currentUser = FirebaseAuth.instance.currentUser;
-      return currentUser?.uid;
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error getting logged-in user ID: $e');
-      }
-      return null;
-    }
-  }
-
   static Future<bool> verifyPassword(String password) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
@@ -297,18 +286,22 @@ class FirestoreUtils {
 
   static Future<bool> checkEmailAvailable(String email, String password) async {
     try {
-      // Check if the email is already in use by attempting to sign in with it
+      // Attempt to sign in with the provided email and password
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // If sign-in succeeds, it means the email is already in use
+      // If sign-in succeeds, the email is already in use
       await FirebaseAuth.instance.signOut();
-      
       return false;
     } catch (e) {
-      // If sign-in fails, it means the email is available
+      // Check if the error is due to the email already being registered
+      if (e is FirebaseAuthException && e.code == 'wrong-password') {
+        // Email exists but password is incorrect
+        return false;
+      }
+      // For all other errors, including email not being registered
       return true;
     }
   }
@@ -349,6 +342,62 @@ class FirestoreUtils {
           content: Text('Error creating the task. Please try again.'),
         ),
       );
+      rethrow;
+    }
+  }
+
+  static Future<List<Task>> getOwnedTasks(String? userID) async {
+    try {
+      if (userID != null) {
+        // Reference to the 'tasks' collection
+        CollectionReference tasksCollection = FirebaseFirestore.instance.collection('tasks');
+
+        // Query to get tasks where userID is equal to the input parameter,
+        // sorted by taskPriority in descending order, then by finishDateHour in ascending order
+        QuerySnapshot querySnapshot = await tasksCollection
+          .where('userID', isEqualTo: userID)
+          .orderBy('taskPriority', descending: true)
+          .orderBy('finishDateHour', descending: false)
+          .get();
+
+        // Map query results to Task objects
+        List<Task> userTasks = querySnapshot.docs.map((doc) {
+          return Task.fromMap(doc.id, doc.data() as Map<String, dynamic>);
+        }).toList();
+
+        return userTasks;
+      }
+      if (kDebugMode) {
+        print('Error: User ID is null.');
+      }
+      return [];
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error getting owned tasks: $e');
+      }
+      return [];
+    }
+  }
+
+  static Future<Task> getTaskDetails(String taskID) async {
+    try {
+      // Reference to the 'tasks' collection and the specific document
+      DocumentReference taskReference = FirebaseFirestore.instance.collection('tasks').doc(taskID);
+
+      // Fetch the document snapshot
+      DocumentSnapshot snapshot = await taskReference.get();
+
+      if (snapshot.exists) {
+        // Convert the document data to an Event object
+        return Task.fromMap(snapshot.id, snapshot.data() as Map<String, dynamic>);
+      } else {
+        // Handle the case where the event with the given ID does not exist
+        throw Exception("Task not found");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error getting task by ID: $e');
+      }
       rethrow;
     }
   }

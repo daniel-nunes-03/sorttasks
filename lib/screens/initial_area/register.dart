@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
-import 'package:sorttasks/widgets/email_input.dart';
-import 'package:sorttasks/widgets/name_input.dart';
-import 'package:sorttasks/widgets/password_validator.dart';
-import 'package:sorttasks/widgets/repeated_password_validator.dart';
+import 'package:sorttasks/widgets/inputs/email_input.dart';
+import 'package:sorttasks/widgets/inputs/string_input.dart';
+import 'package:sorttasks/widgets/validators/password_validator.dart';
+import 'package:sorttasks/widgets/validators/repeated_password_validator.dart';
 
 
 class RegisterScreen extends StatefulWidget {
@@ -192,12 +192,21 @@ class RegisterScreenState extends State<RegisterScreen> {
         },
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error registering user. Try again or contact the support.'),
-          duration: Duration(seconds: 5),
-        ),
-      );
+      if (e.toString() == "[firebase_auth/email-already-in-use] The email address is already in use by another account.") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Email is already in use. Please choose a different one.'),
+            duration: Duration(seconds: 5),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error registering user. Try again or contact the support.'),
+            duration: Duration(seconds: 5),
+          ),
+        );
+      }
     }
   }
 }
@@ -334,7 +343,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                             ),
                             const SizedBox(width: 20),
                             Expanded(
-                              child: NameInput(onNameChanged: updateFirstName, hintName: 'First Name',)
+                              child: StringInput(onNameChanged: updateFirstName, hintName: 'First Name',)
                             ),
                           ],
                         ),
@@ -371,7 +380,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                             ),
                             const SizedBox(width: 20),
                             Expanded(
-                              child: NameInput(onNameChanged: updateLastName, hintName: 'Last Name',)
+                              child: StringInput(onNameChanged: updateLastName, hintName: 'Last Name',)
                             ),
                           ],
                         ),

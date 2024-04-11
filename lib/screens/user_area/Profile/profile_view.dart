@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
-import 'package:sorttasks/widgets/main_screen_appbar.dart';
+import 'package:sorttasks/widgets/custom_appbar.dart';
 
 class ProfileViewScreen extends StatefulWidget {
   const ProfileViewScreen({super.key});

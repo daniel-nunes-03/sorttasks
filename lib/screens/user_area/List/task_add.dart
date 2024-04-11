@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
-import 'package:sorttasks/widgets/main_screen_appbar.dart';
-import 'package:sorttasks/widgets/name_input.dart';
-import 'package:sorttasks/widgets/number_input.dart';
+import 'package:sorttasks/widgets/custom_appbar.dart';
+import 'package:sorttasks/widgets/inputs/string_input.dart';
+import 'package:sorttasks/widgets/inputs/number_input.dart';
 
 class TaskAddScreen extends StatefulWidget {
   const TaskAddScreen({super.key});
@@ -125,7 +125,7 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: NameInput(onNameChanged: updateTitle, hintName: "Title", maximumLength: 30, noRegex: true),
+                                child: StringInput(onNameChanged: updateTitle, hintName: "Title", maximumLength: 30, noRegex: true),
                               ),
                             ],
                           ),
@@ -153,7 +153,7 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: NameInput(onNameChanged: updateFinishDateHour, hintName: "Finish Date&Hour", noRegex: true),
+                                child: StringInput(onNameChanged: updateFinishDateHour, hintName: "Finish Date&Hour", noRegex: true),
                               ),
                             ],
                           ),
@@ -209,7 +209,7 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: NameInput(onNameChanged: updateDescription, hintName: "Description (PRECISA DE SCROLLBAR)", multipleLines: true, noRegex: true),
+                                child: StringInput(onNameChanged: updateDescription, hintName: "Description (PRECISA DE SCROLLBAR)", multipleLines: true, noRegex: true),
                               ),
                             ],
                           ),

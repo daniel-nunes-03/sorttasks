@@ -13,7 +13,7 @@ import 'package:sorttasks/screens/user_area/Profile/profile_account_edit.dart';
 import 'package:sorttasks/screens/user_area/Profile/profile_personal_edit.dart';
 import 'package:sorttasks/screens/user_area/Profile/profile_view.dart';
 import 'package:sorttasks/screens/user_area/main_screen.dart';
-import 'package:sorttasks/screens/user_area/task_add.dart';
+import 'package:sorttasks/screens/user_area/List/task_add.dart';
 
 void main() async {
   // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -77,10 +77,10 @@ class SorttasksApp extends StatelessWidget {
         '/main_screen': (context) => const MainScreen(),
         '/task_list': (context) => const TaskListScreen(),
         '/task_history': (context) => const TaskHistoryScreen(),
+        '/task_add':(context) => const TaskAddScreen(),
         '/profile_view': (context) => const ProfileViewScreen(),
         '/profile_personal_edit': (context) => const ProfileUserEditScreen(),
         '/profile_account_edit': (context) => const ProfileAccountEditScreen(),
-        '/task_add':(context) => const TaskAddScreen(),
       },
     );
   }

@@ -1,7 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sorttasks/classes/task.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
+import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
+import 'package:sorttasks/screens/user_area/List/task_list_details.dart';
 
 class TaskListScreen extends StatefulWidget {
   const TaskListScreen({super.key});
@@ -11,6 +16,25 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class TaskListState extends State<TaskListScreen> {
+  final ScrollController _scrollController = ScrollController();
+  late Future<List<Task>> _fetchDataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDataFuture = fetchData();
+  }
+
+  Future<List<Task>> fetchData() async {
+    // Step 1: Retrieve the ID of the logged-in user
+    String? loggedInUserId = SorttasksApp.loggedInUser?.uid;
+
+    // Step 2: Get the tasks owned by the logged-in user
+    List<Task> tasks = await FirestoreUtils.getOwnedTasks(loggedInUserId);
+
+    return tasks;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (SorttasksApp.loggedInUser == null) {
@@ -39,20 +63,64 @@ class TaskListState extends State<TaskListScreen> {
                 child: Text('LIST -> First Container'),
               ),
             ),
+            // List of tasks or loading indicator/message
             Expanded(
-              child: Scrollbar(
-                child: SingleChildScrollView(
-                  child: Center(
-                    child: Text(
-                      'LIST -> Middle Container - Scrollable',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: isDarkTheme ? Colors.white : Colors.black,
+              child: FutureBuilder<List<Task>>(
+                future: _fetchDataFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else {
+                    List<Task> userTasks = snapshot.data ?? [];
+
+                    return Scrollbar(
+                      controller: _scrollController,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isDarkTheme ? const Color.fromRGBO(45, 45, 45, 1) : Colors.white,
+                          borderRadius: BorderRadius.circular(45.0),
+                        ),
+                        child: Container (
+                          padding: const EdgeInsets.all(40),
+                          child: userTasks.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                    'No events owned.',
+                                    style: TextStyle(
+                                      color: Colors.yellow,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                )
+                              : ListView.builder(
+                                  controller: _scrollController,
+                                  shrinkWrap: true,
+                                  itemCount: userTasks.length,
+                                  itemBuilder: (context, index) {
+                                    Task task = userTasks[index];
+                                    return _TaskListItem(
+                                      task: task,
+                                      onTaskUpdated: () {
+                                        // Trigger a refresh when a task is updated
+                                        setState(() {
+                                          _fetchDataFuture = fetchData();
+                                        });
+                                      },
+                                    );
+                                  },
+                                ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              )
+                    );
+                  }
+                },
+              ),
             ),
             SizedBox(
               height: 150,
@@ -88,4 +156,97 @@ class TaskListState extends State<TaskListScreen> {
       ),
     );
   }
+}
+
+class _TaskListItem extends StatefulWidget {
+  final Task task;
+  final VoidCallback? onTaskUpdated; // Callback function to trigger a refresh
+
+  const _TaskListItem({required this.task, this.onTaskUpdated});
+
+  @override
+  _TaskListItemState createState() => _TaskListItemState();
+}
+
+class _TaskListItemState extends State<_TaskListItem> {
+  @override
+  Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      margin: const EdgeInsets.symmetric(vertical: 20),
+      child: Container(
+        padding: const EdgeInsets.all(30.0),
+        decoration: BoxDecoration(
+          color: 
+            widget.task.taskPriority == 1 
+              ? const Color.fromRGBO(0, 163, 255, 1) 
+              : widget.task.taskPriority == 2
+                ? const Color.fromRGBO(51, 255, 0, 0.65) 
+                : widget.task.taskPriority == 3
+                  ? const Color.fromRGBO(255, 245, 0, 0.75) 
+                  : widget.task.taskPriority == 4
+                    ? const Color.fromRGBO(255, 122, 0, 1) 
+                    : const Color.fromRGBO(255, 0, 0, 1),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  widget.task.title,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  widget.task.finishDateHour,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            TextButton(
+              onPressed: () {
+                navigateToDetailsScreen(context, widget.task);
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: 
+                  widget.task.taskPriority == 1 
+                    ? const Color.fromRGBO(0, 163, 255, 1) 
+                    : widget.task.taskPriority == 2
+                      ? const Color.fromRGBO(51, 255, 0, 0.65) 
+                      : widget.task.taskPriority == 3
+                        ? const Color.fromRGBO(255, 245, 0, 0.75) 
+                        : widget.task.taskPriority == 4
+                          ? const Color.fromRGBO(255, 122, 0, 1) 
+                          : const Color.fromRGBO(255, 0, 0, 1),
+              ),
+              child: Icon(
+                Icons.arrow_forward,
+                color: isDarkTheme ? Colors.white : Colors.black,
+                size: 25,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+void navigateToDetailsScreen(BuildContext context, Task task) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => TaskDetailsScreen(task: task),
+    ),
+  );
 }

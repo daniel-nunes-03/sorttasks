@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class NameInput extends StatefulWidget {
+class StringInput extends StatefulWidget {
   final void Function(String) onNameChanged;
   final String hintName;
   final String? initialValue;
@@ -8,7 +8,7 @@ class NameInput extends StatefulWidget {
   final bool multipleLines;
   final bool noRegex;
 
-  const NameInput({
+  const StringInput({
     super.key,
     required this.onNameChanged,
     required this.hintName,
@@ -22,7 +22,7 @@ class NameInput extends StatefulWidget {
   NameInputState createState() => NameInputState();
 }
 
-class NameInputState extends State<NameInput> {
+class NameInputState extends State<StringInput> {
   String? _name;
   late TextEditingController _nameController;
 

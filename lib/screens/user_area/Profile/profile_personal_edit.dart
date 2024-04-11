@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
-import 'package:sorttasks/widgets/main_screen_appbar.dart';
-import 'package:sorttasks/widgets/name_input.dart';
+import 'package:sorttasks/widgets/custom_appbar.dart';
+import 'package:sorttasks/widgets/inputs/string_input.dart';
 
 class ProfileUserEditScreen extends StatefulWidget {
   const ProfileUserEditScreen({super.key});
@@ -155,7 +155,7 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: NameInput(onNameChanged: updateFirstName, hintName: "First Name", initialValue: _firstName),
+                                child: StringInput(onNameChanged: updateFirstName, hintName: "First Name", initialValue: _firstName),
                               ),
                             ],
                           ),
@@ -183,7 +183,7 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: NameInput(onNameChanged: updateLastName, hintName: "Last Name", initialValue: _lastName),
+                                child: StringInput(onNameChanged: updateLastName, hintName: "Last Name", initialValue: _lastName),
                               ),
                             ],
                           ),

@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
-import 'package:sorttasks/widgets/email_input.dart';
-import 'package:sorttasks/widgets/main_screen_appbar.dart';
-import 'package:sorttasks/widgets/password_validator.dart';
-import 'package:sorttasks/widgets/repeated_password_validator.dart';
+import 'package:sorttasks/widgets/inputs/email_input.dart';
+import 'package:sorttasks/widgets/custom_appbar.dart';
+import 'package:sorttasks/widgets/validators/password_validator.dart';
+import 'package:sorttasks/widgets/validators/repeated_password_validator.dart';
 
 class ProfileAccountEditScreen extends StatefulWidget {
   const ProfileAccountEditScreen({super.key});
