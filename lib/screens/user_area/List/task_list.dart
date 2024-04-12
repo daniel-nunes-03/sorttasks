@@ -58,7 +58,7 @@ class TaskListState extends State<TaskListScreen> {
         child: Column(
           children: [
             const SizedBox(
-              height: 200,
+              height: 150,
               child: Center(
                 child: Text('LIST -> First Container'),
               ),
@@ -79,43 +79,40 @@ class TaskListState extends State<TaskListScreen> {
                   } else {
                     List<Task> userTasks = snapshot.data ?? [];
 
-                    return Scrollbar(
-                      controller: _scrollController,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isDarkTheme ? const Color.fromRGBO(45, 45, 45, 1) : Colors.white,
-                          borderRadius: BorderRadius.circular(45.0),
-                        ),
-                        child: Container (
-                          padding: const EdgeInsets.all(40),
-                          child: userTasks.isEmpty
-                              ? const Center(
-                                  child: Text(
-                                    'No events owned.',
-                                    style: TextStyle(
-                                      color: Colors.yellow,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                )
-                              : ListView.builder(
-                                  controller: _scrollController,
-                                  shrinkWrap: true,
-                                  itemCount: userTasks.length,
-                                  itemBuilder: (context, index) {
-                                    Task task = userTasks[index];
-                                    return _TaskListItem(
-                                      task: task,
-                                      onTaskUpdated: () {
-                                        // Trigger a refresh when a task is updated
-                                        setState(() {
-                                          _fetchDataFuture = fetchData();
-                                        });
-                                      },
-                                    );
-                                  },
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: isDarkTheme ? const Color.fromRGBO(45, 45, 45, 1) : Colors.white,
+                        borderRadius: BorderRadius.circular(45.0),
+                      ),
+                      child: Container (
+                        padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
+                        child: userTasks.isEmpty
+                          ? const Center(
+                              child: Text(
+                                'No events owned.',
+                                style: TextStyle(
+                                  color: Colors.yellow,
+                                  fontSize: 20,
                                 ),
-                        ),
+                              ),
+                            )
+                          : ListView.builder(
+                              controller: _scrollController,
+                              shrinkWrap: true,
+                              itemCount: userTasks.length,
+                              itemBuilder: (context, index) {
+                                Task task = userTasks[index];
+                                return _TaskListItem(
+                                  task: task,
+                                  onTaskUpdated: () {
+                                    // Trigger a refresh when a task is updated
+                                    setState(() {
+                                      _fetchDataFuture = fetchData();
+                                    });
+                                  },
+                                );
+                              },
+                            ),
                       ),
                     );
                   }
@@ -123,11 +120,11 @@ class TaskListState extends State<TaskListScreen> {
               ),
             ),
             SizedBox(
-              height: 150,
+              height: 75,
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20, top: 20, right: 50, bottom: 20),
+                  padding: const EdgeInsets.only(left: 10, top: 10, right: 30, bottom: 20),
                   child: CircleAvatar(
                     backgroundColor: isDarkTheme
                       ? Colors.black
@@ -144,7 +141,7 @@ class TaskListState extends State<TaskListScreen> {
                       child: Icon(
                         Icons.add,
                         color: isDarkTheme ? Colors.white : Colors.black,
-                        size: 25,
+                        size: 30,
                       ),
                     ),
                   ),
@@ -174,18 +171,18 @@ class _TaskListItemState extends State<_TaskListItem> {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
 
     return Card(
-      clipBehavior: Clip.hardEdge,
-      margin: const EdgeInsets.symmetric(vertical: 20),
+      clipBehavior: Clip.antiAlias,
+      margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
       child: Container(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.only(left: 30, top: 30, right: 30, bottom: 30),
         decoration: BoxDecoration(
           color: 
             widget.task.taskPriority == 1 
               ? const Color.fromRGBO(0, 163, 255, 1) 
               : widget.task.taskPriority == 2
-                ? const Color.fromRGBO(51, 255, 0, 0.65) 
+                ? const Color.fromRGBO(51, 205, 0, 1) 
                 : widget.task.taskPriority == 3
-                  ? const Color.fromRGBO(255, 245, 0, 0.75) 
+                  ? const Color.fromRGBO(255, 225, 0, 1) 
                   : widget.task.taskPriority == 4
                     ? const Color.fromRGBO(255, 122, 0, 1) 
                     : const Color.fromRGBO(255, 0, 0, 1),
@@ -194,7 +191,7 @@ class _TaskListItemState extends State<_TaskListItem> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   widget.task.title,
@@ -222,9 +219,9 @@ class _TaskListItemState extends State<_TaskListItem> {
                   widget.task.taskPriority == 1 
                     ? const Color.fromRGBO(0, 163, 255, 1) 
                     : widget.task.taskPriority == 2
-                      ? const Color.fromRGBO(51, 255, 0, 0.65) 
+                      ? const Color.fromRGBO(51, 205, 0, 1) 
                       : widget.task.taskPriority == 3
-                        ? const Color.fromRGBO(255, 245, 0, 0.75) 
+                        ? const Color.fromRGBO(255, 225, 0, 1) 
                         : widget.task.taskPriority == 4
                           ? const Color.fromRGBO(255, 122, 0, 1) 
                           : const Color.fromRGBO(255, 0, 0, 1),
