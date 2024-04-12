@@ -11,6 +11,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       builder: (context, themeNotifier, child) {
         final isDarkTheme = themeNotifier.isDarkTheme;
         return AppBar(
+          // This makes the background color of the appbar to stay consistent
+          // in any screens with scrollbars that have been scrolled down
+          scrolledUnderElevation: 0.0,
           backgroundColor: isDarkTheme
             ? const Color.fromARGB(255, 17, 17, 17)
             : const Color.fromARGB(255, 217, 217, 217),
