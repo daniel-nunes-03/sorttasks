@@ -67,9 +67,6 @@ class SorttasksApp extends StatelessWidget {
     
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: Provider.of<ThemeNotifier>(context).isDarkTheme ? ThemeMode.dark : ThemeMode.light,
       home: const MainScreen(),
       routes: {
         '/login': (context) => const LoginScreen(),

@@ -82,7 +82,7 @@ class TaskListState extends State<TaskListScreen> {
                     return Container(
                       decoration: BoxDecoration(
                         color: isDarkTheme ? const Color.fromRGBO(45, 45, 45, 1) : Colors.white,
-                        borderRadius: BorderRadius.circular(45.0),
+                        borderRadius: BorderRadius.circular(90.0),
                       ),
                       child: Container (
                         padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
