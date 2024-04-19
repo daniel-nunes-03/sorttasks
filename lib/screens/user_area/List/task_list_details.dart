@@ -1,11 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/task.dart';
+import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
 import 'package:sorttasks/widgets/custom_appbar.dart';
-import 'package:sorttasks/widgets/task_widgets/custom_task_widgets.dart';
 
 class TaskDetailsScreen extends StatefulWidget {
   final Task task;
@@ -18,12 +19,25 @@ class TaskDetailsScreen extends StatefulWidget {
 
 class TaskDetailsState extends State<TaskDetailsScreen> {
   late Task currentTask;
+  bool _dataIsLoading = true;
+  bool _noData = false;
+  late ScrollController _scrollController;
+  late ScrollController _scrollController2;
 
   @override
   void initState() {
     super.initState();
     currentTask = widget.task;
+    _scrollController = ScrollController();
+    _scrollController2 = ScrollController();
     fetchData();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _scrollController2.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,6 +53,7 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
 
       setState(() {
         currentTask = latestTaskData;
+        _dataIsLoading = false;
       });
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -47,6 +62,9 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
           duration: Duration(seconds: 5),
         ),
       );
+      setState(() {
+        _noData = true;
+      });
     }
   }
 
@@ -63,23 +81,277 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
       return const SizedBox.shrink();
     }
 
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+
     return Scaffold(
       appBar: const CustomAppBar(),
-      backgroundColor: const Color.fromARGB(255, 130, 130, 130),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 20),
-              TaskDetailItem(label: 'Task Title', value: currentTask.title),
-              const SizedBox(height: 16),
-              TaskDetailItem(label: 'Task Description', value: currentTask.description),
-              const SizedBox(height: 20),
-            ],
+      backgroundColor: isDarkTheme
+        ? const Color.fromRGBO(45, 45, 45, 1)
+        : Colors.white,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: 
+                _dataIsLoading // Conditional rendering based on flags
+                  ? _noData
+                    ? const Text(
+                        'Error: An error occurred while retrieving your data.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.red,
+                        ),
+                      )
+                    : const CircularProgressIndicator()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: isDarkTheme
+                                      ? const Color.fromARGB(255, 0, 80, 200)
+                                      : const Color.fromARGB(255, 255, 123, 0),
+                                  borderRadius: BorderRadius.circular(90),
+                                ),
+                                width: 310,
+                                height: 80,
+                                child: Center(
+                                  child: Text(
+                                    currentTask.title,
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      color: isDarkTheme? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              CircleAvatar(
+                                backgroundColor: isDarkTheme
+                                  ? const Color.fromARGB(255, 230, 170, 0)
+                                  : const Color.fromARGB(255, 255, 210, 0),
+                                child: TextButton(
+                                  onPressed: () {
+                                    // Logic to go to edit screen
+                                    print("EDIT SCREEN");
+                                  },
+                                  // Important to make it zero inside the button so it gets centered
+                                  // instead of inheriting the padding from the positioning of the avatar
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                  child: Icon(
+                                    Icons.edit,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                    size: 30,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_month,
+                                color: isDarkTheme ? Colors.white : Colors.black,
+                                size: 30,
+                              ),
+                              const SizedBox(width: 20),
+                              Text(
+                                currentTask.finishDateHour,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: isDarkTheme? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ],
+                          )
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_month,
+                                color: isDarkTheme ? Colors.white : Colors.black,
+                                size: 30,
+                              ),
+                              const SizedBox(width: 20),
+                              Text(
+                                currentTask.creationDateHour,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: isDarkTheme? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ],
+                          )
+                        ),
+                        const SizedBox(height: 25),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Task Priority:',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: isDarkTheme? Colors.white : Colors.black,
+                                ),
+                              ),
+                              const SizedBox(width: 20),
+                              Text(
+                                '${currentTask.taskPriority} / 5',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: isDarkTheme? Colors.white : Colors.black,
+                                ),
+                              ),
+                              const SizedBox(width: 20),
+                              CircleAvatar(
+                                backgroundColor: currentTask.taskPriority == 1 
+                                  ? const Color.fromRGBO(0, 163, 255, 1) 
+                                  : currentTask.taskPriority == 2
+                                    ? const Color.fromRGBO(51, 205, 0, 1) 
+                                    : currentTask.taskPriority == 3
+                                      ? const Color.fromRGBO(255, 225, 0, 1) 
+                                      : currentTask.taskPriority == 4
+                                        ? const Color.fromRGBO(255, 122, 0, 1) 
+                                        : const Color.fromRGBO(255, 0, 0, 1),
+                              )
+                            ],
+                          )
+                        ),
+                        const SizedBox(height: 25),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Task Status:',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: isDarkTheme? Colors.white : Colors.black,
+                                ),
+                              ),
+                              const SizedBox(width: 25),
+                              currentTask.taskStatus
+                                ? Text(
+                                    'Completed',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: isDarkTheme? const Color.fromARGB(255, 0, 202, 8) : const Color.fromARGB(255, 0, 154, 6),
+                                    ),
+                                  )
+                                : const Text(
+                                    'Not completed',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                            ],
+                          )
+                        ),
+                        const SizedBox(height: 40),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: isDarkTheme
+                              ? const Color.fromARGB(255, 0, 80, 200)
+                              : const Color.fromARGB(255, 255, 175, 100),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          width: double.infinity,
+                          height: 400,
+                          child: Scrollbar(
+                            controller: _scrollController2,
+                            child: SingleChildScrollView(
+                              controller: _scrollController2,
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    currentTask.description,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: isDarkTheme ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+              ),
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CircleAvatar(
+                  backgroundColor: isDarkTheme
+                    ? Colors.black
+                    : const Color.fromRGBO(217, 217, 217, 1),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/task_list');
+                    },
+                    // Important to make it zero inside the button so it gets centered
+                    // instead of inheriting the padding from the positioning of the avatar
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: isDarkTheme ? Colors.white : Colors.black,
+                      size: 25,
+                    ),
+                  ),
+                ),
+                CircleAvatar(
+                  backgroundColor: isDarkTheme
+                    ? const Color.fromRGBO(255, 0, 0, 0.7)
+                    : Colors.red,
+                  child: TextButton(
+                    onPressed: () {
+                      // DELETE LOGIC
+                      print('delete event');
+                    },
+                    // Important to make it zero inside the button so it gets centered
+                    // instead of inheriting the padding from the positioning of the avatar
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: Icon(
+                      Icons.delete,
+                      color: isDarkTheme ? Colors.white : Colors.black,
+                      size: 25,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
