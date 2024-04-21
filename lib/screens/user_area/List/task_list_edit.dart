@@ -22,23 +22,12 @@ class TaskEditState extends State<TaskEditScreen> {
   late Task currentTask;
   bool _dataIsLoading = true;
   bool _noData = false;
-  late ScrollController _scrollController;
-  late ScrollController _scrollController2;
 
   @override
   void initState() {
     super.initState();
     currentTask = widget.task;
-    _scrollController = ScrollController();
-    _scrollController2 = ScrollController();
     fetchData();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    _scrollController2.dispose();
-    super.dispose();
   }
 
   @override
