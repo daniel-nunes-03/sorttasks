@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class NumberInput extends StatefulWidget {
   final void Function(int) onNumberChanged;
   final String? hintName;
+  final int? initialValue;
 
   const NumberInput({
     super.key,
     required this.onNumberChanged,
     this.hintName,
+    this.initialValue,
   });
 
   @override
@@ -25,6 +27,7 @@ class NumberInputState extends State<NumberInput> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      initialValue: '${widget.initialValue}',
       maxLength: 1,
       decoration: InputDecoration(
         hintText: widget.hintName,
