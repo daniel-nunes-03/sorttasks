@@ -51,11 +51,9 @@ class NameInputState extends State<StringInput> {
       keyboardType: widget.multipleLines ? TextInputType.multiline : TextInputType.text,
       validator: (value) {
         if (value!.isEmpty) {
-          if (!widget.noRegex) {
-            if (!_alphabeticalRegex.hasMatch(value)) {
-              return 'Please enter a valid name.';
-            }
-          }
+          return 'This field cannot be empty.';
+        } else if (!widget.noRegex && !_alphabeticalRegex.hasMatch(value)) {
+          return 'Only alphabetical characters are allowed.';
         }
         return null;
       },

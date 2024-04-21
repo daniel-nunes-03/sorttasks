@@ -27,7 +27,7 @@ class NumberInputState extends State<NumberInput> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: '${widget.initialValue}',
+      initialValue: widget.initialValue == null ? '' : '${widget.initialValue}',
       maxLength: 1,
       decoration: InputDecoration(
         hintText: widget.hintName,
@@ -36,7 +36,7 @@ class NumberInputState extends State<NumberInput> {
       keyboardType: TextInputType.number,
       validator: (value) {
         if (value!.isEmpty || !_numericRegex.hasMatch(value)) {
-          return 'Please enter a valid number from 1 to 5.';
+          return 'Please enter a number from 1 to 5.';
         }
         return null;
       },

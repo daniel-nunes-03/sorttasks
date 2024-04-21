@@ -130,7 +130,7 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                                   child: Text(
                                     currentTask.title,
                                     style: TextStyle(
-                                      fontSize: 28,
+                                      fontSize: 23,
                                       color: isDarkTheme? Colors.white : Colors.black,
                                     ),
                                   ),
@@ -142,7 +142,6 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                                   : const Color.fromARGB(255, 255, 210, 0),
                                 child: TextButton(
                                   onPressed: () {
-                                    // Logic to go to edit screen
                                     navigateToEditScreen(context, widget.task);
                                   },
                                   // Important to make it zero inside the button so it gets centered
@@ -268,7 +267,7 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                             ],
                           )
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 28),
                         Container(
                           decoration: BoxDecoration(
                             color: isDarkTheme
@@ -278,16 +277,17 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                           ),
                           width: double.infinity,
                           height: 400,
-                          child: Scrollbar(
-                            controller: _scrollController2,
-                            child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Scrollbar(
                               controller: _scrollController2,
-                              child: Center(
+                              thumbVisibility: true,
+                              child: SingleChildScrollView(
+                                controller: _scrollController2,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(10),
                                   child: Text(
                                     currentTask.description,
-                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 18,
                                       color: isDarkTheme ? Colors.white : Colors.black,
@@ -358,11 +358,73 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
   }
 }
 
-void navigateToEditScreen(BuildContext context, Task task) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => TaskEditScreen(task: task),
-    ),
+void navigateToEditScreen(BuildContext context, Task task) async {
+  String enteredPassword = '';
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Confirm Password'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              obscureText: true,
+              onChanged: (value) {
+                enteredPassword = value;
+              },
+              decoration: const InputDecoration(
+                labelText: 'Enter your password',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                // Validate the entered password using Firebase authentication
+                bool isPasswordCorrect = await FirestoreUtils.verifyPassword(enteredPassword);
+
+                Navigator.pop(context); // Close the password confirmation dialog
+
+                if (isPasswordCorrect) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TaskEditScreen(task: task),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('The inserted password is not valid.'),
+                      duration: Duration(seconds: 5),
+                    ),
+                  );
+                }
+              } catch (error) {
+                // Close dialog and navigate back
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Error verifying password. Please try again.'),
+                    duration: Duration(seconds: 5),
+                  ),
+                );
+              }
+            },
+            child: const Text('Confirm'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the password confirmation dialog
+            },
+            child: const Text('Cancel'),
+          ),
+        ],
+      );
+    },
   );
 }

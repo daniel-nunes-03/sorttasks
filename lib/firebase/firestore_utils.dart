@@ -346,6 +346,41 @@ class FirestoreUtils {
     }
   }
 
+  static Future<void> editTask(
+    BuildContext context,
+    String taskID,
+    String title,
+    String finishDateHour,
+    int taskPriority,
+    String description
+  ) async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        DocumentReference taskReference = FirebaseFirestore.instance.collection('tasks').doc(taskID);
+
+        await taskReference.update({
+          'title': title,
+          'finishDateHour': finishDateHour,
+          'taskPriority': taskPriority,
+          'description': description
+        });
+                
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error editing the task: $e');
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error editing the task. Please try again.'),
+        ),
+      );
+      rethrow;
+    }
+  }
+
   static Future<List<Task>> getOwnedTasks(String? userID) async {
     try {
       if (userID != null) {

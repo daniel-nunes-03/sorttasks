@@ -196,7 +196,7 @@ class _TaskListItemState extends State<_TaskListItem> {
                 Text(
                   widget.task.title,
                   style: const TextStyle(
-                    fontSize: 24,
+                    fontSize: 20,
                     color: Colors.black,
                   ),
                 ),
@@ -204,7 +204,7 @@ class _TaskListItemState extends State<_TaskListItem> {
                 Text(
                   widget.task.finishDateHour,
                   style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     color: Colors.black,
                   ),
                 ),
@@ -240,7 +240,7 @@ class _TaskListItemState extends State<_TaskListItem> {
 }
 
 void navigateToDetailsScreen(BuildContext context, Task task) {
-  Navigator.push(
+  Navigator.pushReplacement(
     context,
     MaterialPageRoute(
       builder: (context) => TaskDetailsScreen(task: task),

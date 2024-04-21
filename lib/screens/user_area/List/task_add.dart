@@ -125,7 +125,12 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: StringInput(onNameChanged: updateTitle, hintName: "Title", maximumLength: 30, noRegex: true),
+                                child: StringInput(
+                                  onNameChanged: updateTitle,
+                                  hintName: "Title",
+                                  maximumLength: 14,
+                                  noRegex: true
+                                ),
                               ),
                             ],
                           ),
@@ -153,7 +158,11 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: StringInput(onNameChanged: updateFinishDateHour, hintName: "Finish Date&Hour", noRegex: true),
+                                child: StringInput(
+                                  onNameChanged: updateFinishDateHour,
+                                  hintName: "Finish Date&Hour",
+                                  noRegex: true
+                                ),
                               ),
                             ],
                           ),
@@ -181,7 +190,10 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: NumberInput(onNumberChanged: updateTaskPriority, hintName: "Task Priority"),
+                                child: NumberInput(
+                                  onNumberChanged: updateTaskPriority,
+                                  hintName: "Task Priority"
+                                ),
                               ),
                             ],
                           ),
@@ -209,7 +221,12 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: StringInput(onNameChanged: updateDescription, hintName: "Description", multipleLines: true, noRegex: true),
+                                child: StringInput(
+                                  onNameChanged: updateDescription,
+                                  hintName: "Description",
+                                  multipleLines: true,
+                                  noRegex: true
+                                ),
                               ),
                             ],
                           ),
@@ -255,7 +272,15 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      await FirestoreUtils.createTask(context, _title!, _finishDateHour!, _creationDateHour, _taskPriority!, _taskStatus, _description!);
+                      await FirestoreUtils.createTask(
+                        context,
+                        _title!,
+                        _finishDateHour!,
+                        _creationDateHour,
+                        _taskPriority!,
+                        _taskStatus,
+                        _description!
+                      );
                       Navigator.pushReplacementNamed(context, '/main_screen');
                     } else {
                       showDialog(

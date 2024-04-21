@@ -109,7 +109,6 @@ class _TaskEditFormState extends State<_TaskEditForm> {
   late String _title = widget.currentTask.title;
   late String _finishDateHour = widget.currentTask.finishDateHour;
   late int _priority = widget.currentTask.taskPriority;
-  late bool _status = widget.currentTask.taskStatus;
   late String _description = widget.currentTask.description;
 
   void updateTitle(String title) {
@@ -127,12 +126,6 @@ class _TaskEditFormState extends State<_TaskEditForm> {
   void updatePriority(int priority) {
     setState(() {
       _priority = priority;
-    });
-  }
-
-  void updateStatus(bool status) {
-    setState(() {
-      _status = status;
     });
   }
 
@@ -164,48 +157,25 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                     const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: isDarkTheme
-                                  ? const Color.fromARGB(255, 0, 80, 200)
-                                  : const Color.fromARGB(255, 255, 123, 0),
-                              borderRadius: BorderRadius.circular(90),
-                            ),
-                            width: 310,
-                            height: 80,
-                            child: Center(
-                              child: StringInput(
-                                initialValue: _title,
-                                onNameChanged: updateTitle,
-                                hintName: "Title",
-                              ),
-                            ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isDarkTheme
+                              ? const Color.fromARGB(255, 0, 80, 200)
+                              : const Color.fromARGB(255, 255, 123, 0),
+                          borderRadius: BorderRadius.circular(90),
+                        ),
+                        width: double.infinity,
+                        height: 130,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 30, top: 25, right: 30, bottom: 25),
+                          child: StringInput(
+                            initialValue: _title,
+                            onNameChanged: updateTitle,
+                            hintName: "Title",
+                            maximumLength: 14,
+                            noRegex: true,
                           ),
-                          CircleAvatar(
-                            backgroundColor: isDarkTheme
-                              ? const Color.fromARGB(255, 230, 170, 0)
-                              : const Color.fromARGB(255, 255, 210, 0),
-                            child: TextButton(
-                              onPressed: () {
-                                // Logic to go to edit screen
-                                print("EDIT SCREEN");
-                              },
-                              // Important to make it zero inside the button so it gets centered
-                              // instead of inheriting the padding from the positioning of the avatar
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                              ),
-                              child: Icon(
-                                Icons.edit,
-                                color: isDarkTheme ? Colors.white : Colors.black,
-                                size: 30,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       )
                     ),
                     const SizedBox(height: 20),
@@ -219,10 +189,15 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                             size: 30,
                           ),
                           const SizedBox(width: 20),
-                          StringInput(
-                            initialValue: _finishDateHour,
-                            onNameChanged: updateFinishDateHour,
-                            hintName: "Finish Date&Hour",
+                          SizedBox(
+                            width: 300,
+                            child: StringInput(
+                              initialValue: _finishDateHour,
+                              onNameChanged: updateFinishDateHour,
+                              hintName: "Finish Date&Hour",
+                              maximumLength: 20,
+                              noRegex: true,
+                            ),
                           ),
                         ],
                       )
@@ -241,7 +216,7 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                           Text(
                             widget.currentTask.creationDateHour,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               color: isDarkTheme? Colors.white : Colors.black,
                             ),
                           ),
@@ -253,31 +228,25 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                       padding: const EdgeInsets.only(left: 20),
                       child: Row(
                         children: [
-                          NumberInput(
-                            initialValue: _priority,
-                            onNumberChanged: updatePriority,
-                            hintName: "Task Priority",
-                          ),
-                          const SizedBox(width: 20),
                           Text(
-                            '${widget.currentTask.taskPriority} / 5',
+                            'Task Priority:',
                             style: TextStyle(
                               fontSize: 18,
                               color: isDarkTheme? Colors.white : Colors.black,
                             ),
                           ),
-                          const SizedBox(width: 20),
-                          CircleAvatar(
-                            backgroundColor: widget.currentTask.taskPriority == 1 
-                              ? const Color.fromRGBO(0, 163, 255, 1) 
-                              : widget.currentTask.taskPriority == 2
-                                ? const Color.fromRGBO(51, 205, 0, 1) 
-                                : widget.currentTask.taskPriority == 3
-                                  ? const Color.fromRGBO(255, 225, 0, 1) 
-                                  : widget.currentTask.taskPriority == 4
-                                    ? const Color.fromRGBO(255, 122, 0, 1) 
-                                    : const Color.fromRGBO(255, 0, 0, 1),
-                          )
+                          const SizedBox(width: 25),
+                          SizedBox(
+                            width: 240,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 18),
+                              child: NumberInput(
+                                initialValue: _priority,
+                                onNumberChanged: updatePriority,
+                                hintName: "1 to 5 (1, 2, 3, 4 or 5)",
+                              )
+                            ),
+                          ),
                         ],
                       )
                     ),
@@ -321,20 +290,23 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                       width: double.infinity,
-                      height: 400,
-                      child: Scrollbar(
-                        controller: scrollController2,
-                        child: SingleChildScrollView(
+                      height: 275,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Scrollbar(
                           controller: scrollController2,
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                widget.currentTask.description,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: isDarkTheme ? Colors.white : Colors.black,
+                          thumbVisibility: true,
+                          child: SingleChildScrollView(
+                            controller: scrollController2,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10, top: 0, right: 12, bottom: 10),
+                                child: StringInput(
+                                  initialValue: _description,
+                                  onNameChanged: updateDescription,
+                                  hintName: "Description",
+                                  multipleLines: true,
+                                  noRegex: true
                                 ),
                               ),
                             ),
@@ -379,12 +351,12 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                 ),
                 CircleAvatar(
                   backgroundColor: isDarkTheme
-                    ? const Color.fromRGBO(255, 0, 0, 0.7)
-                    : Colors.red,
+                    ? const Color.fromARGB(255, 230, 170, 0)
+                                  : const Color.fromARGB(255, 255, 210, 0),
                   child: TextButton(
                     onPressed: () {
                       // DELETE LOGIC
-                      print('delete event');
+                      print('archive event');
                     },
                     // Important to make it zero inside the button so it gets centered
                     // instead of inheriting the padding from the positioning of the avatar
@@ -392,7 +364,62 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                       padding: EdgeInsets.zero,
                     ),
                     child: Icon(
-                      Icons.delete,
+                      Icons.inventory_rounded,
+                      color: isDarkTheme ? Colors.white : Colors.black,
+                      size: 25,
+                    ),
+                  ),
+                ),
+                CircleAvatar(
+                  backgroundColor: isDarkTheme
+                    ? const Color.fromRGBO(0, 255, 0, 0.7)
+                    : const Color.fromRGBO(0, 255, 0, 0.5),
+                  child: TextButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
+                        await FirestoreUtils.editTask(
+                          context,
+                          widget.currentTask.id,
+                          _title,
+                          _finishDateHour,
+                          _priority,
+                          _description
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TaskDetailsScreen(task: widget.currentTask),
+                          ),
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Task edition has failed'),
+                              content: const Text('The fields have been incorrectly filled or there has been an error. Please try again.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    // Close the dialog
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Proceed'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    // Important to make it zero inside the button so it gets centered
+                    // instead of inheriting the padding from the positioning of the avatar
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: Icon(
+                      Icons.check,
                       color: isDarkTheme ? Colors.white : Colors.black,
                       size: 25,
                     ),
