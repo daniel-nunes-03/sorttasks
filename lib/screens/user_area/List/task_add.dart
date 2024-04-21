@@ -209,7 +209,7 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: StringInput(onNameChanged: updateDescription, hintName: "Description (PRECISA DE SCROLLBAR)", multipleLines: true, noRegex: true),
+                                child: StringInput(onNameChanged: updateDescription, hintName: "Description", multipleLines: true, noRegex: true),
                               ),
                             ],
                           ),

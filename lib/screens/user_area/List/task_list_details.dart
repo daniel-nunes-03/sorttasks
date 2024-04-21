@@ -6,6 +6,7 @@ import 'package:sorttasks/classes/task.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
+import 'package:sorttasks/screens/user_area/List/task_list_edit.dart';
 import 'package:sorttasks/widgets/custom_appbar.dart';
 
 class TaskDetailsScreen extends StatefulWidget {
@@ -142,10 +143,10 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                                 child: TextButton(
                                   onPressed: () {
                                     // Logic to go to edit screen
-                                    print("EDIT SCREEN");
+                                    navigateToEditScreen(context, widget.task);
                                   },
                                   // Important to make it zero inside the button so it gets centered
-                                  // instead of inheriting the padding from the positioning of the avatar
+                                  // instead of inheriting other paddings
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
                                   ),
@@ -313,7 +314,7 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                     : const Color.fromRGBO(217, 217, 217, 1),
                   child: TextButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/task_list');
+                      Navigator.pushReplacementNamed(context, '/main_screen');
                     },
                     // Important to make it zero inside the button so it gets centered
                     // instead of inheriting the padding from the positioning of the avatar
@@ -355,4 +356,13 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
       ),
     );
   }
+}
+
+void navigateToEditScreen(BuildContext context, Task task) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => TaskEditScreen(task: task),
+    ),
+  );
 }
