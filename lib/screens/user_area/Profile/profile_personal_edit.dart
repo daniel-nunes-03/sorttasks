@@ -64,7 +64,7 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
 
   Future<void> _loadAuthenticatedUserData() async {
     try {
-      Map<String, String>? userData = await FirestoreUtils.getUserData();
+      Map<String, dynamic>? userData = await FirestoreUtils.getUserData();
 
       if (userData != null) {
         setState(() {

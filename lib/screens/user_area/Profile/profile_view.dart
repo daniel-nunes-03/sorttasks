@@ -18,6 +18,8 @@ class ProfileViewState extends State<ProfileViewScreen> {
   late String? _firstName;
   late String? _lastName;
   late String? _creationDate;
+  late int? _createdTasks;
+  late int? _completedTasks;
   bool _dataIsLoading = true;
   bool _noData = false;
 
@@ -30,13 +32,15 @@ class ProfileViewState extends State<ProfileViewScreen> {
 
   Future<void> _loadAuthenticatedUserData() async {
     try {
-      Map<String, String>? userData = await FirestoreUtils.getUserData();
+      Map<String, dynamic>? userData = await FirestoreUtils.getUserData();
 
       if (userData != null) {
         setState(() {
           _firstName = userData['firstName'];
           _lastName = userData['lastName'];
           _creationDate = userData['creationDate'];
+          _createdTasks = userData['createdTasks'];
+          _completedTasks = userData['completedTasks'];
           _dataIsLoading = false;
         });
       } else {
@@ -149,11 +153,11 @@ class ProfileViewState extends State<ProfileViewScreen> {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
     
     return Scaffold(
+      backgroundColor: isDarkTheme
+        ? const Color.fromRGBO(45, 45, 45, 1)
+        : Colors.white,
       appBar: const CustomAppBar(),
-      body: Container(
-        color: isDarkTheme
-          ? const Color.fromRGBO(45, 45, 45, 1)
-          : Colors.white,
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Center(
@@ -290,89 +294,106 @@ class ProfileViewState extends State<ProfileViewScreen> {
                         ),
                       ),
                   const SizedBox(height: 30),
-                  Text(
-                    'Tasks created: X',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: isDarkTheme ? Colors.white : Colors.black,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
+                  _dataIsLoading // Conditional rendering based on flags
+                    ? _noData
+                      ? const Text(
+                          'Error: An error occurred while retrieving your data.',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.red,
+                          ),
+                        )
+                      : const CircularProgressIndicator()
+                    : Text(
+                        'Tasks created: $_createdTasks',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isDarkTheme ? Colors.white : Colors.black,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
                   const SizedBox(height: 20),
-                  Text(
-                    'Tasks completed: X',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: isDarkTheme ? Colors.white : Colors.black,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: CircleAvatar(
-                        backgroundColor: isDarkTheme
-                          ? Colors.black
-                          : const Color.fromRGBO(217, 217, 217, 1),
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/main_screen');
-                          },
-                          // Important to make it zero inside the button so it gets centered
-                          // instead of inheriting the padding from the positioning of the avatar
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
+                  _dataIsLoading // Conditional rendering based on flags
+                    ? _noData
+                      ? const Text(
+                          'Error: An error occurred while retrieving your data.',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.red,
                           ),
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: isDarkTheme ? Colors.white : Colors.black,
-                            size: 25,
-                          ),
+                        )
+                      : const CircularProgressIndicator()
+                    : Text(
+                        'Tasks completed: $_completedTasks',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isDarkTheme ? Colors.white : Colors.black,
+                          fontStyle: FontStyle.italic,
                         ),
                       ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: CircleAvatar(
-                        backgroundColor: isDarkTheme
-                          ? const Color.fromRGBO(255, 0, 0, 0.7)
-                          : Colors.red,
-                        child: TextButton(
-                          onPressed: () {
-                            SorttasksApp.loggedInUser = null;
-                            Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-                          },
-                          // Important to make it zero inside the button so it gets centered
-                          // instead of inheriting the padding from the positioning of the avatar
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                          ),
-                          child: Icon(
-                            Icons.logout,
-                            color: isDarkTheme ? Colors.white : Colors.black,
-                            size: 25,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  const SizedBox(height: 50),
                 ],
               ),
             ),
           ],
-        )
-      )
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: isDarkTheme
+          ? const Color.fromRGBO(45, 45, 45, 1)
+          : Colors.white,
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(2),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CircleAvatar(
+                backgroundColor: isDarkTheme
+                  ? Colors.black
+                  : const Color.fromRGBO(217, 217, 217, 1),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/main_screen');
+                  },
+                  // Important to make it zero inside the button so it gets centered
+                  // instead of inheriting the padding from the positioning of the avatar
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: Icon(
+                    Icons.home_rounded,
+                    color: isDarkTheme ? Colors.white : Colors.black,
+                    size: 25,
+                  ),
+                ),
+              ),
+              CircleAvatar(
+                backgroundColor: isDarkTheme
+                  ? const Color.fromRGBO(255, 0, 0, 0.7)
+                  : Colors.red,
+                child: TextButton(
+                  onPressed: () {
+                    SorttasksApp.loggedInUser = null;
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/login', (route) => false);
+                  },
+                  // Important to make it zero inside the button so it gets centered
+                  // instead of inheriting the padding from the positioning of the avatar
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: Icon(
+                    Icons.logout,
+                    color: isDarkTheme ? Colors.white : Colors.black,
+                    size: 25,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -11,7 +11,7 @@ class FirestoreUtils {
 
   // 'USERS' COLLECTION IN FIRESTORE
 
-  static Future<Map<String, String>?> getUserData() async {
+  static Future<Map<String, dynamic>?> getUserData() async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -28,8 +28,16 @@ class FirestoreUtils {
           String firstName = userData['firstName'];
           String lastName = userData['lastName'];
           String creationDate = userData['creationDate'];
+          int createdTasks = userData['createdTasks'];
+          int completedTasks = userData['completedTasks'];
 
-          return {'firstName': firstName, 'lastName': lastName, 'creationDate': creationDate};
+          return {
+            'firstName': firstName,
+            'lastName': lastName,
+            'creationDate': creationDate,
+            'createdTasks': createdTasks,
+            'completedTasks': completedTasks
+          };
         }
       }
 
@@ -175,6 +183,8 @@ class FirestoreUtils {
         'firstName': firstName,
         'lastName': lastName,
         'creationDate': "DD/MM/YYYY PLACEHOLDER",
+        'created_tasks': 0,
+        'completed_tasks': 0
       });
 
       // Send verification email
@@ -331,6 +341,11 @@ class FirestoreUtils {
           'taskStatus': taskStatus,
           'description': description
         });
+
+        // Update the 'createdTasks' field in the user's document
+        await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).update({
+          'createdTasks': FieldValue.increment(1),
+        });
         
       }
     } catch (e) {
@@ -381,6 +396,32 @@ class FirestoreUtils {
     }
   }
 
+  static Future<void> deleteTask(BuildContext context, String taskId) async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        // Delete Task
+        await FirebaseFirestore.instance.collection('tasks').doc(taskId).delete();
+
+        // Decrement 'createdTasks' field by 1
+        await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).update({
+          'createdTasks': FieldValue.increment(-1),
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error deleting the task: $e');
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error deleting the task. Please try again.'),
+        ),
+      );
+      rethrow;
+    }
+  }
+
   static Future<List<Task>> getOwnedTasks(String? userID) async {
     try {
       if (userID != null) {
@@ -401,11 +442,12 @@ class FirestoreUtils {
         }).toList();
 
         return userTasks;
+      } else {
+        if (kDebugMode) {
+          print('Error: User ID is null.');
+        }
+        return [];
       }
-      if (kDebugMode) {
-        print('Error: User ID is null.');
-      }
-      return [];
     } catch (e) {
       if (kDebugMode) {
         print('Error getting owned tasks: $e');
@@ -427,6 +469,9 @@ class FirestoreUtils {
         return Task.fromMap(snapshot.id, snapshot.data() as Map<String, dynamic>);
       } else {
         // Handle the case where the event with the given ID does not exist
+        if (kDebugMode) {
+          print('Task not found');
+        }
         throw Exception("Task not found");
       }
     } catch (e) {

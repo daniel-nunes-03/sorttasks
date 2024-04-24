@@ -142,7 +142,7 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                                   : const Color.fromARGB(255, 255, 210, 0),
                                 child: TextButton(
                                   onPressed: () {
-                                    navigateToEditScreen(context, widget.task);
+                                    _passwordConfirmationPopup(context, widget.task, isActionDelete: false);
                                   },
                                   // Important to make it zero inside the button so it gets centered
                                   // instead of inheriting other paddings
@@ -334,8 +334,7 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                     : Colors.red,
                   child: TextButton(
                     onPressed: () {
-                      // DELETE LOGIC
-                      print('delete event');
+                      _passwordConfirmationPopup(context, widget.task, isActionDelete: true);
                     },
                     // Important to make it zero inside the button so it gets centered
                     // instead of inheriting the padding from the positioning of the avatar
@@ -358,7 +357,7 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
   }
 }
 
-void navigateToEditScreen(BuildContext context, Task task) async {
+void _passwordConfirmationPopup(BuildContext context, Task task, {required bool isActionDelete}) async {
   String enteredPassword = '';
 
   showDialog(
@@ -390,12 +389,16 @@ void navigateToEditScreen(BuildContext context, Task task) async {
                 Navigator.pop(context); // Close the password confirmation dialog
 
                 if (isPasswordCorrect) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TaskEditScreen(task: task),
-                    ),
-                  );
+                  if (isActionDelete) {
+                    _showDeleteConfirmationDialog(context, task);
+                  } else {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TaskEditScreen(task: task),
+                      ),
+                    );
+                  }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -420,6 +423,69 @@ void navigateToEditScreen(BuildContext context, Task task) async {
           TextButton(
             onPressed: () {
               Navigator.pop(context); // Close the password confirmation dialog
+            },
+            child: const Text('Cancel'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _showDeleteConfirmationDialog(BuildContext context, Task task) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Confirm Delete'),
+        content: const Text('Are you sure you want to delete this task?'),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              try {                 
+                await FirestoreUtils.deleteTask(context, task.id);
+
+                // Navigate back to the main screen
+                Navigator.pushNamedAndRemoveUntil(context, '/main_screen', (route) => false);
+
+                showDialog(
+                  context: context,
+                  barrierDismissible: false, // Disables dismiss by tapping outside
+                  builder: (BuildContext context) {
+                    return PopScope(
+                      canPop: false,
+                      child: AlertDialog(
+                        title: const Text('Task Deleted'),
+                        content: const Text('Your task has been deleted successfully.'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Proceed'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('There was an error deleting the task. Please try again or contact support.'),
+                    duration: Duration(seconds: 5),
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            child: const Text('Yes, Delete'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the delete confirmation dialog
             },
             child: const Text('Cancel'),
           ),
