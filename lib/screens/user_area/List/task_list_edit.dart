@@ -355,8 +355,7 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                                   : const Color.fromARGB(255, 255, 210, 0),
                   child: TextButton(
                     onPressed: () {
-                      // DELETE LOGIC
-                      print('archive event');
+                      _showArchiveConfirmationDialog(context, widget.currentTask);
                     },
                     // Important to make it zero inside the button so it gets centered
                     // instead of inheriting the padding from the positioning of the avatar
@@ -432,4 +431,67 @@ class _TaskEditFormState extends State<_TaskEditForm> {
       ),
     );
   }
+}
+
+void _showArchiveConfirmationDialog(BuildContext context, Task task) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Confirm Archive'),
+        content: const Text('Are you sure you want to archive this task? This action is irreversible.'),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              try {                 
+                await FirestoreUtils.archiveTask(task.id);
+
+                // Navigate back to the main screen
+                Navigator.pushNamedAndRemoveUntil(context, '/main_screen', (route) => false);
+
+                showDialog(
+                  context: context,
+                  barrierDismissible: false, // Disables dismiss by tapping outside
+                  builder: (BuildContext context) {
+                    return PopScope(
+                      canPop: false,
+                      child: AlertDialog(
+                        title: const Text('Task Archived'),
+                        content: const Text('Your task has been archived successfully.'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Proceed'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('There was an error archiving the task. Please try again or contact support.'),
+                    duration: Duration(seconds: 5),
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 212, 190, 0),
+            ),
+            child: const Text('Yes, Archive'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the archive confirmation dialog
+            },
+            child: const Text('Cancel'),
+          ),
+        ],
+      );
+    },
+  );
 }

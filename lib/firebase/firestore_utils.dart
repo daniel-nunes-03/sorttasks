@@ -482,4 +482,36 @@ class FirestoreUtils {
     }
   }
 
+  static Future<void> archiveTask(String taskID) async {
+    try {
+      // Reference to the 'tasks' collection and the specific document
+      DocumentReference taskReference = FirebaseFirestore.instance.collection('tasks').doc(taskID);
+
+      // Fetch the document snapshot
+      DocumentSnapshot snapshot = await taskReference.get();
+
+      if (snapshot.exists) {
+        // Get data from the snapshot
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        // Create a new document in the 'archivedTasks' collection with the same data
+        await FirebaseFirestore.instance.collection('archivedTasks').doc(taskID).set(data);
+
+        // Delete the original task document from the 'tasks' collection
+        await taskReference.delete();
+      } else {
+        // Handle the case where the event with the given ID does not exist
+        if (kDebugMode) {
+          print('Task not found');
+        }
+        throw Exception("Task not found");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error archiving the task: $e');
+      }
+      rethrow;
+    }
+  }
+
 }
