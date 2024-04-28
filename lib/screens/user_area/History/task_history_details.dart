@@ -150,6 +150,27 @@ class TaskDetailsState extends State<TaskHistoryDetailsScreen> {
                               ),
                               const SizedBox(width: 20),
                               Text(
+                                currentTask.archivedDateHour,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: isDarkTheme? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ],
+                          )
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_month,
+                                color: isDarkTheme ? Colors.white : Colors.black,
+                                size: 30,
+                              ),
+                              const SizedBox(width: 20),
+                              Text(
                                 currentTask.finishDateHour,
                                 style: TextStyle(
                                   fontSize: 18,
