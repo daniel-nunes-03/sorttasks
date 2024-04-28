@@ -285,53 +285,37 @@ class ProfileViewState extends State<ProfileViewScreen> {
                           ),
                         )
                       : const CircularProgressIndicator()
-                    : Text(
-                        'Joined in $_creationDate',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: isDarkTheme ? Colors.white : Colors.black,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                  const SizedBox(height: 30),
-                  _dataIsLoading // Conditional rendering based on flags
-                    ? _noData
-                      ? const Text(
-                          'Error: An error occurred while retrieving your data.',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.red,
+                    : Column(
+                        children: [
+                          Text(
+                            'Joined in $_creationDate',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: isDarkTheme ? Colors.white : Colors.black,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
-                        )
-                      : const CircularProgressIndicator()
-                    : Text(
-                        'Tasks created: $_createdTasks',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: isDarkTheme ? Colors.white : Colors.black,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                  const SizedBox(height: 20),
-                  _dataIsLoading // Conditional rendering based on flags
-                    ? _noData
-                      ? const Text(
-                          'Error: An error occurred while retrieving your data.',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.red,
+                          const SizedBox(height: 30),
+                          Text(
+                            'Tasks created: $_createdTasks',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: isDarkTheme ? Colors.white : Colors.black,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
-                        )
-                      : const CircularProgressIndicator()
-                    : Text(
-                        'Tasks completed: $_completedTasks',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: isDarkTheme ? Colors.white : Colors.black,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                  const SizedBox(height: 50),
+                          const SizedBox(height: 30),
+                          Text(
+                            'Tasks completed: $_completedTasks',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: isDarkTheme ? Colors.white : Colors.black,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                          const SizedBox(height: 50),
+                        ],
+                      )
                 ],
               ),
             ),

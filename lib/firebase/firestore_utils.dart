@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sorttasks/classes/archived_task.dart';
 import 'package:sorttasks/classes/task.dart';
 import 'package:sorttasks/main.dart';
 
@@ -482,6 +483,8 @@ class FirestoreUtils {
     }
   }
 
+  // 'ARCHIVEDTASKS' COLLECTION IN FIREBASE
+
   static Future<void> archiveTask(String taskID) async {
     try {
       // Reference to the 'tasks' collection and the specific document
@@ -493,6 +496,7 @@ class FirestoreUtils {
       if (snapshot.exists) {
         // Get data from the snapshot
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        data['archivedDateHour'] = "";
 
         // Create a new document in the 'archivedTasks' collection with the same data
         await FirebaseFirestore.instance.collection('archivedTasks').doc(taskID).set(data);
@@ -509,6 +513,92 @@ class FirestoreUtils {
     } catch (e) {
       if (kDebugMode) {
         print('Error archiving the task: $e');
+      }
+      rethrow;
+    }
+  }
+
+  static Future<void> deleteArchivedTask(BuildContext context, String taskId) async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        // Delete Archived Task
+        await FirebaseFirestore.instance.collection('archivedTasks').doc(taskId).delete();
+
+        // Decrement 'createdTasks' field by 1
+        await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).update({
+          'createdTasks': FieldValue.increment(-1),
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error deleting the task: $e');
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error deleting the task. Please try again.'),
+        ),
+      );
+      rethrow;
+    }
+  }
+
+  static Future<List<ArchivedTask>> getOwnedHistory(String? userID) async {
+    try {
+      if (userID != null) {
+        // Reference to the 'archivedTasks' collection
+        CollectionReference tasksCollection = FirebaseFirestore.instance.collection('archivedTasks');
+
+        // Query to get archivedTasks where userID is equal to the input parameter,
+        // sorted by taskPriority in descending order, then by finishDateHour in ascending order
+        QuerySnapshot querySnapshot = await tasksCollection
+          .where('userID', isEqualTo: userID)
+          .orderBy('taskPriority', descending: true)
+          .orderBy('finishDateHour', descending: false)
+          .get();
+
+        // Map query results to ArchivedTask objects
+        List<ArchivedTask> userTasks = querySnapshot.docs.map((doc) {
+          return ArchivedTask.fromMap(doc.id, doc.data() as Map<String, dynamic>);
+        }).toList();
+
+        return userTasks;
+      } else {
+        if (kDebugMode) {
+          print('Error: User ID is null.');
+        }
+        return [];
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error getting owned history: $e');
+      }
+      return [];
+    }
+  }
+
+  static Future<ArchivedTask> getArchivedTaskDetails(String taskID) async {
+    try {
+      // Reference to the 'archivedTasks' collection and the specific document
+      DocumentReference taskReference = FirebaseFirestore.instance.collection('archivedTasks').doc(taskID);
+
+      // Fetch the document snapshot
+      DocumentSnapshot snapshot = await taskReference.get();
+
+      if (snapshot.exists) {
+        // Convert the document data to an Event object
+        return ArchivedTask.fromMap(snapshot.id, snapshot.data() as Map<String, dynamic>);
+      } else {
+        // Handle the case where the event with the given ID does not exist
+        if (kDebugMode) {
+          print('Task not found');
+        }
+        throw Exception("Task not found");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error getting task by ID: $e');
       }
       rethrow;
     }

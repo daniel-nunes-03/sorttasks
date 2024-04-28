@@ -87,11 +87,11 @@ class TaskListState extends State<TaskListScreen> {
                       child: Container (
                         padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
                         child: userTasks.isEmpty
-                          ? const Center(
+                          ? Center(
                               child: Text(
-                                'No events owned.',
+                                'No tasks owned.',
                                 style: TextStyle(
-                                  color: Colors.yellow,
+                                  color: isDarkTheme? Colors.yellow : const Color.fromARGB(255, 210, 14, 0),
                                   fontSize: 20,
                                 ),
                               ),
