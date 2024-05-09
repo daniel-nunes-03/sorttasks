@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/task.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
@@ -171,7 +172,15 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                               ),
                               const SizedBox(width: 20),
                               Text(
-                                currentTask.finishDateHour.toDate().toIso8601String(),
+                                "Finishes at:",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: isDarkTheme? Colors.white : Colors.black,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                DateFormat.yMMMd().add_jms().format(widget.task.finishDateHour.toDate()),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: isDarkTheme? Colors.white : Colors.black,
@@ -192,7 +201,15 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                               ),
                               const SizedBox(width: 20),
                               Text(
-                                currentTask.creationDateHour.toDate().toIso8601String(),
+                                "Created at:",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: isDarkTheme? Colors.white : Colors.black,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Text(
+                                DateFormat.yMMMd().add_jms().format(widget.task.creationDateHour.toDate()),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: isDarkTheme? Colors.white : Colors.black,

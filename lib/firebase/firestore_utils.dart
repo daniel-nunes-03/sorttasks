@@ -28,7 +28,7 @@ class FirestoreUtils {
           Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
           String firstName = userData['firstName'];
           String lastName = userData['lastName'];
-          String creationDate = userData['creationDate'];
+          Timestamp creationDate = userData['creationDate'];
           int createdTasks = userData['createdTasks'];
           int completedTasks = userData['completedTasks'];
 
@@ -183,9 +183,9 @@ class FirestoreUtils {
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
         'firstName': firstName,
         'lastName': lastName,
-        'creationDate': "DD/MM/YYYY PLACEHOLDER",
-        'created_tasks': 0,
-        'completed_tasks': 0
+        'creationDate': DateTime.now(),
+        'createdTasks': 0,
+        'completedTasks': 0
       });
 
       // Send verification email

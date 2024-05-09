@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DateTimePicker extends StatefulWidget {
   final Function(DateTime) onDateSelected;
@@ -27,7 +28,7 @@ class DateTimePickerState extends State<DateTimePicker> {
   @override
   void initState() {
     super.initState();
-    selectedDate = widget.initialDate ?? DateTime.now();
+    selectedDate = widget.initialDate ?? DateTime.now().add(const Duration(days: 1));
     selectedTime = widget.initialTime ?? TimeOfDay.now();
   }
 
@@ -56,11 +57,16 @@ class DateTimePickerState extends State<DateTimePicker> {
     );
 
     if (pickedTime != null) {
-      final DateTime selectedDateTime = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, pickedTime.hour, pickedTime.minute);
+      final DateTime selectedDateTime = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        pickedTime.hour,
+        pickedTime.minute
+      );
       final DateTime currentDateTime = DateTime.now();
 
-      if (selectedDateTime.isAfter(currentDateTime) ||
-          (selectedDateTime.day != currentDateTime.day && selectedDateTime.hour != currentDateTime.hour)) {
+      if (selectedDateTime.isAfter(currentDateTime)) {
         setState(() {
           selectedTime = pickedTime;
         });
@@ -83,7 +89,7 @@ class DateTimePickerState extends State<DateTimePicker> {
         GestureDetector(
           onTap: () => _selectDate(context),
           child: Text(
-            'Selected Date: ${selectedDate.toString()}',
+            'Selected Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
             style: const TextStyle(fontSize: 16),
           ),
         ),

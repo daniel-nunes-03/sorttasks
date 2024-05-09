@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/archived_task.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
@@ -173,7 +174,7 @@ class _TaskListItemState extends State<_TaskListItem> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  widget.task.finishDateHour.toDate().toIso8601String(),
+                  DateFormat.yMMMd().add_jms().format(widget.task.finishDateHour.toDate()),
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,

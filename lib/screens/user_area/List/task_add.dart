@@ -56,8 +56,8 @@ class _TaskAddFormState extends State<_TaskAddForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
  
   String? _title;
-  DateTime? _finalDate;
-  TimeOfDay? _finalTime;
+  DateTime _finalDate = DateTime.now().add(const Duration(days: 1));
+  TimeOfDay _finalTime = TimeOfDay.now();
   int? _taskPriority;
   final bool _taskStatus = false; // not completed
   String? _description;
@@ -283,8 +283,8 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                       await FirestoreUtils.createTask(
                         context,
                         _title!,
-                        _finalDate!,
-                        _finalTime!,
+                        _finalDate,
+                        _finalTime,
                         _taskPriority!,
                         _taskStatus,
                         _description!

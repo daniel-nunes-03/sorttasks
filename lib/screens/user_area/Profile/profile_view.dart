@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
@@ -17,7 +19,7 @@ class ProfileViewScreen extends StatefulWidget {
 class ProfileViewState extends State<ProfileViewScreen> {
   late String? _firstName;
   late String? _lastName;
-  late String? _creationDate;
+  late Timestamp? _creationDate;
   late int? _createdTasks;
   late int? _completedTasks;
   bool _dataIsLoading = true;
@@ -288,7 +290,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
                     : Column(
                         children: [
                           Text(
-                            'Joined in $_creationDate',
+                            'Joined in: ${DateFormat.yMMMd().add_jms().format(_creationDate!.toDate())}',
                             style: TextStyle(
                               fontSize: 15,
                               color: isDarkTheme ? Colors.white : Colors.black,

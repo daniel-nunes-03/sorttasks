@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/task.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
@@ -232,7 +233,7 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                           ),
                           const SizedBox(width: 20),
                           Text(
-                            widget.currentTask.creationDateHour.toDate().toIso8601String(),
+                            DateFormat.yMMMd().add_jms().format(widget.currentTask.creationDateHour.toDate()),
                             style: TextStyle(
                               fontSize: 16,
                               color: isDarkTheme? Colors.white : Colors.black,
