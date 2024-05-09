@@ -171,7 +171,7 @@ class TaskDetailsState extends State<TaskHistoryDetailsScreen> {
                               ),
                               const SizedBox(width: 20),
                               Text(
-                                currentTask.finishDateHour,
+                                currentTask.finishDateHour.toDate().toIso8601String(),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: isDarkTheme? Colors.white : Colors.black,
@@ -192,7 +192,7 @@ class TaskDetailsState extends State<TaskHistoryDetailsScreen> {
                               ),
                               const SizedBox(width: 20),
                               Text(
-                                currentTask.creationDateHour,
+                                currentTask.creationDateHour.toDate().toIso8601String(),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: isDarkTheme? Colors.white : Colors.black,

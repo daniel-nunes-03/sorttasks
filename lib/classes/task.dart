@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Task {
   String id;
   String title;
   String? userID;
-  String finishDateHour;
-  String creationDateHour;
+  Timestamp finishDateHour;
+  Timestamp creationDateHour;
   int taskPriority;
   bool taskStatus;
   String description;
@@ -25,8 +27,8 @@ class Task {
     final String id = docId;
     final String title = map['title'] as String;
     final String? userID = map['userID'] as String?;
-    final String finishDateHour = map['finishDateHour'] as String;
-    final String creationDateHour = map['creationDateHour'] as String;
+    final Timestamp finishDateHour = map['finishDateHour'] as Timestamp;
+    final Timestamp creationDateHour = map['creationDateHour'] as Timestamp;
     final int taskPriority = map['taskPriority'] as int;
     final bool taskStatus = map['taskStatus'] as bool? ?? false;
     final String description = map['description'] as String;

@@ -8,6 +8,7 @@ import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
 import 'package:sorttasks/screens/user_area/List/task_list_details.dart';
 import 'package:sorttasks/widgets/custom_appbar.dart';
+import 'package:sorttasks/widgets/inputs/date_input.dart';
 import 'package:sorttasks/widgets/inputs/number_input.dart';
 import 'package:sorttasks/widgets/inputs/string_input.dart';
 
@@ -107,7 +108,17 @@ class _TaskEditForm extends StatefulWidget {
 class _TaskEditFormState extends State<_TaskEditForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String _title = widget.currentTask.title;
-  late String _finishDateHour = widget.currentTask.finishDateHour;
+
+  late DateTime _finalDate =  DateTime(
+    widget.currentTask.finishDateHour.toDate().year,
+    widget.currentTask.finishDateHour.toDate().month,
+    widget.currentTask.finishDateHour.toDate().day,
+  );
+  late TimeOfDay _finalTime =  TimeOfDay(
+    hour: widget.currentTask.finishDateHour.toDate().hour,
+    minute: widget.currentTask.finishDateHour.toDate().minute,
+  );  
+
   late int _priority = widget.currentTask.taskPriority;
   late String _description = widget.currentTask.description;
 
@@ -117,9 +128,15 @@ class _TaskEditFormState extends State<_TaskEditForm> {
     });
   }
 
-  void updateFinishDateHour(String finishDateHour){
+  void updateFinalDate(DateTime finalDate) {
     setState(() {
-      _finishDateHour = finishDateHour;
+      _finalDate = finalDate;
+    });
+  }
+
+  void updateFinalTime(TimeOfDay finalTime) {
+    setState(() {
+      _finalTime = finalTime;
     });
   }
 
@@ -191,12 +208,11 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                           const SizedBox(width: 20),
                           SizedBox(
                             width: 300,
-                            child: StringInput(
-                              initialValue: _finishDateHour,
-                              onNameChanged: updateFinishDateHour,
-                              hintName: "Finish Date&Hour",
-                              maximumLength: 20,
-                              noRegex: true,
+                            child: DateTimePicker(
+                              onDateSelected: updateFinalDate,
+                              onTimeSelected: (TimeOfDay time) {
+                                updateFinalTime(time);
+                              },
                             ),
                           ),
                         ],
@@ -214,7 +230,7 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                           ),
                           const SizedBox(width: 20),
                           Text(
-                            widget.currentTask.creationDateHour,
+                            widget.currentTask.creationDateHour.toDate().toIso8601String(),
                             style: TextStyle(
                               fontSize: 16,
                               color: isDarkTheme? Colors.white : Colors.black,
@@ -381,7 +397,8 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                           context,
                           widget.currentTask.id,
                           _title,
-                          _finishDateHour,
+                          _finalDate,
+                          _finalTime,
                           _priority,
                           _description
                         );

@@ -319,11 +319,38 @@ class FirestoreUtils {
 
   // 'TASKS' COLLECTION IN FIRESTORE
 
+  Future<void> insertDate(BuildContext context, DateTime selectedDate, TimeOfDay selectedTime) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final CollectionReference tasks = firestore.collection('tasks');
+
+    final DateTime selectedDateTime = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      selectedTime.hour,
+      selectedTime.minute
+    );
+
+    try {
+      await tasks.add({
+        'dateHour': selectedDateTime,
+        // You can add more fields here as needed
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Task added successfully!'),
+      ));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to add task: $e'),
+      ));
+    }
+  }
+
   static Future<void> createTask(
     BuildContext context,
     String title,
-    String finishDateHour,
-    String creationDateHour,
+    DateTime finalDate,
+    TimeOfDay finalTime,
     int taskPriority,
     bool taskStatus,
     String description
@@ -332,6 +359,16 @@ class FirestoreUtils {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser != null) {
+        final DateTime finishDateHour = DateTime(
+          finalDate.year,
+          finalDate.month,
+          finalDate.day,
+          finalTime.hour,
+          finalTime.minute
+        );
+
+        final DateTime creationDateHour = DateTime.now();
+
         // Create a document for the current user with the input data
         await FirebaseFirestore.instance.collection('tasks').doc().set({
           'userID': currentUser.uid,
@@ -366,7 +403,8 @@ class FirestoreUtils {
     BuildContext context,
     String taskID,
     String title,
-    String finishDateHour,
+    DateTime finalDate,
+    TimeOfDay finalTime,
     int taskPriority,
     String description
   ) async {
@@ -374,6 +412,14 @@ class FirestoreUtils {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser != null) {
+        final DateTime finishDateHour = DateTime(
+          finalDate.year,
+          finalDate.month,
+          finalDate.day,
+          finalTime.hour,
+          finalTime.minute
+        );
+        
         DocumentReference taskReference = FirebaseFirestore.instance.collection('tasks').doc(taskID);
 
         await taskReference.update({

@@ -6,6 +6,7 @@ import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
 import 'package:sorttasks/widgets/custom_appbar.dart';
+import 'package:sorttasks/widgets/inputs/date_input.dart';
 import 'package:sorttasks/widgets/inputs/string_input.dart';
 import 'package:sorttasks/widgets/inputs/number_input.dart';
 
@@ -55,8 +56,8 @@ class _TaskAddFormState extends State<_TaskAddForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
  
   String? _title;
-  String? _finishDateHour;
-  final String _creationDateHour = 'INITIAL_DATE_PLACEHOLDER';
+  DateTime? _finalDate;
+  TimeOfDay? _finalTime;
   int? _taskPriority;
   final bool _taskStatus = false; // not completed
   String? _description;
@@ -67,9 +68,15 @@ class _TaskAddFormState extends State<_TaskAddForm> {
     });
   }
 
-  void updateFinishDateHour(String finishDateHour) {
+  void updateFinalDate(DateTime finalDate) {
     setState(() {
-      _finishDateHour = finishDateHour;
+      _finalDate = finalDate;
+    });
+  }
+
+  void updateFinalTime(TimeOfDay finalTime) {
+    setState(() {
+      _finalTime = finalTime;
     });
   }
 
@@ -158,10 +165,11 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: StringInput(
-                                  onNameChanged: updateFinishDateHour,
-                                  hintName: "Finish Date&Hour",
-                                  noRegex: true
+                                child: DateTimePicker(
+                                  onDateSelected: updateFinalDate,
+                                  onTimeSelected: (TimeOfDay time) {
+                                    updateFinalTime(time);
+                                  },
                                 ),
                               ),
                             ],
@@ -275,8 +283,8 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                       await FirestoreUtils.createTask(
                         context,
                         _title!,
-                        _finishDateHour!,
-                        _creationDateHour,
+                        _finalDate!,
+                        _finalTime!,
                         _taskPriority!,
                         _taskStatus,
                         _description!

@@ -173,7 +173,7 @@ class _TaskListItemState extends State<_TaskListItem> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  widget.task.finishDateHour,
+                  widget.task.finishDateHour.toDate().toIso8601String(),
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
