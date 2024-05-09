@@ -5,16 +5,31 @@ import 'package:flutter/material.dart';
 class DateTimePicker extends StatefulWidget {
   final Function(DateTime) onDateSelected;
   final Function(TimeOfDay) onTimeSelected;
+  final DateTime? initialDate;
+  final TimeOfDay? initialTime;
 
-  const DateTimePicker({super.key, required this.onDateSelected, required this.onTimeSelected});
+  const DateTimePicker({
+    super.key,
+    required this.onDateSelected,
+    required this.onTimeSelected,
+    this.initialDate,
+    this.initialTime,
+  });
 
   @override
   DateTimePickerState createState() => DateTimePickerState();
 }
 
 class DateTimePickerState extends State<DateTimePicker> {
-  DateTime selectedDate = DateTime.now();
-  TimeOfDay selectedTime = TimeOfDay.now();
+  late DateTime selectedDate;
+  late TimeOfDay selectedTime;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = widget.initialDate ?? DateTime.now();
+    selectedTime = widget.initialTime ?? TimeOfDay.now();
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(

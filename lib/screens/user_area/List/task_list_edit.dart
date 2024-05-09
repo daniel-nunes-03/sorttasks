@@ -213,6 +213,8 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                               onTimeSelected: (TimeOfDay time) {
                                 updateFinalTime(time);
                               },
+                              initialDate: _finalDate,
+                              initialTime: _finalTime,
                             ),
                           ),
                         ],
