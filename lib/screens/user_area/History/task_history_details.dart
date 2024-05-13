@@ -151,7 +151,7 @@ class TaskDetailsState extends State<TaskHistoryDetailsScreen> {
                               ),
                               const SizedBox(width: 20),
                               Text(
-                                currentTask.archivedDateHour,
+                                DateFormat.yMMMd().add_jms().format(currentTask.archivedDateHour.toDate()),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: isDarkTheme? Colors.white : Colors.black,
@@ -180,7 +180,7 @@ class TaskDetailsState extends State<TaskHistoryDetailsScreen> {
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                DateFormat.yMMMd().add_jms().format(widget.task.finishDateHour.toDate()),
+                                DateFormat.yMMMd().add_jms().format(currentTask.finishDateHour.toDate()),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: isDarkTheme? Colors.white : Colors.black,
@@ -209,7 +209,7 @@ class TaskDetailsState extends State<TaskHistoryDetailsScreen> {
                               ),
                               const SizedBox(width: 17),
                               Text(
-                                DateFormat.yMMMd().add_jms().format(widget.task.creationDateHour.toDate()),
+                                DateFormat.yMMMd().add_jms().format(currentTask.creationDateHour.toDate()),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: isDarkTheme? Colors.white : Colors.black,
@@ -351,7 +351,7 @@ class TaskDetailsState extends State<TaskHistoryDetailsScreen> {
                     : Colors.red,
                   child: TextButton(
                     onPressed: () {
-                      _passwordConfirmationPopup(context, widget.task);
+                      _passwordConfirmationPopup(context, currentTask);
                     },
                     // Important to make it zero inside the button so it gets centered
                     // instead of inheriting the padding from the positioning of the avatar

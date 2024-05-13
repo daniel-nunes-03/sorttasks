@@ -531,7 +531,7 @@ class FirestoreUtils {
 
   // 'ARCHIVEDTASKS' COLLECTION IN FIREBASE
 
-  static Future<void> archiveTask(String taskID) async {
+  static Future<void> archiveTask(String taskID, {required bool isAutomatic}) async {
     try {
       // Reference to the 'tasks' collection and the specific document
       DocumentReference taskReference = FirebaseFirestore.instance.collection('tasks').doc(taskID);
@@ -542,7 +542,13 @@ class FirestoreUtils {
       if (snapshot.exists) {
         // Get data from the snapshot
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-        data['archivedDateHour'] = "";
+
+        if (isAutomatic) {
+          data['archivedDateHour'] = data['finishDateHour'];
+        } else {
+          data['taskStatus'] = true;
+          data['archivedDateHour'] = DateTime.now();
+        }
 
         // Create a new document in the 'archivedTasks' collection with the same data
         await FirebaseFirestore.instance.collection('archivedTasks').doc(taskID).set(data);
@@ -561,6 +567,30 @@ class FirestoreUtils {
         print('Error archiving the task: $e');
       }
       rethrow;
+    }
+  }
+
+  static Future<void> autoArchiveTasks(String? userID) async {
+    try {
+      if (userID != null) {
+        CollectionReference tasksCollection = FirebaseFirestore.instance.collection('tasks');
+
+        // Get user tasks where finishDateHour is in the past
+        QuerySnapshot querySnapshot = await tasksCollection
+          .where('userID', isEqualTo: userID)
+          .where('finishDateHour', isLessThan: DateTime.now())
+          .get();
+
+        // Archive each task
+        for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+          String taskId = doc.id;
+          await archiveTask(taskId, isAutomatic: true);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error auto-archiving tasks: $e');
+      }
     }
   }
 

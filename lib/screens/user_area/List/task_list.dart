@@ -27,10 +27,13 @@ class TaskListState extends State<TaskListScreen> {
   }
 
   Future<List<Task>> fetchData() async {
-    // Step 1: Retrieve the ID of the logged-in user
+    // Retrieve the ID of the logged-in user
     String? loggedInUserId = SorttasksApp.loggedInUser?.uid;
 
-    // Step 2: Get the tasks owned by the logged-in user
+    // Auto-archive outdated tasks
+    await FirestoreUtils.autoArchiveTasks(loggedInUserId);
+
+    // Get the tasks owned by the logged-in user
     List<Task> tasks = await FirestoreUtils.getOwnedTasks(loggedInUserId);
 
     return tasks;

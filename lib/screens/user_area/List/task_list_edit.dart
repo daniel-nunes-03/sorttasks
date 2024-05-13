@@ -464,7 +464,7 @@ void _showArchiveConfirmationDialog(BuildContext context, Task task) {
           ElevatedButton(
             onPressed: () async {
               try {                 
-                await FirestoreUtils.archiveTask(task.id);
+                await FirestoreUtils.archiveTask(task.id, isAutomatic: false);
 
                 // Navigate back to the main screen
                 Navigator.pushNamedAndRemoveUntil(context, '/main_screen', (route) => false);
