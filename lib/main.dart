@@ -40,28 +40,6 @@ class SorttasksApp extends StatelessWidget {
     loggedInUser = user;
   }
 
-  // ignore: unused_element
-  static void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevent dismissing by tapping outside the dialog
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Logged Off'),
-          content: const Text('You have logged off.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Proceed'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     // FlutterNativeSplash.remove();

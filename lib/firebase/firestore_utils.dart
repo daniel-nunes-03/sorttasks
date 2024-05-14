@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -205,7 +204,7 @@ class FirestoreUtils {
       String userId = userCredential.user!.uid;
 
       // Create a new folder with user's ID as name in Firebase Storage
-      firebase_storage.FirebaseStorage.instance.ref().child('users').child(userId);
+      FirebaseStorage.instance.ref().child('users').child(userId);
 
       // Add user details to Firestore
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
@@ -242,6 +241,9 @@ class FirestoreUtils {
       for (QueryDocumentSnapshot eventSnapshot in eventsSnapshot.docs) {
         await eventSnapshot.reference.delete();
       }
+
+      // Delete the user's folder in Firebase Storage
+      await FirebaseStorage.instance.ref().child('users').child(userId).delete();
 
       // Delete the user from authentication
       await FirebaseAuth.instance.currentUser?.delete();
@@ -343,7 +345,7 @@ class FirestoreUtils {
 
   static Future<String?> uploadImage(File imageFile, String userId) async {
     try {
-      final firebase_storage.Reference storageRef = firebase_storage.FirebaseStorage.instance
+      final Reference storageRef = FirebaseStorage.instance
         .ref()
         .child('users')
         .child(userId)
@@ -354,19 +356,16 @@ class FirestoreUtils {
       final String downloadUrl = await storageRef.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      /*
       if (kDebugMode) {
         print('Error uploading image: $e');
-      } 
-      */
-      print('Error uploading image: $e');
+      }
       return null;
     }
   }
 
   static Future<void> removeImage(String userId) async {
     try {
-      final firebase_storage.Reference storageRef = firebase_storage.FirebaseStorage.instance
+      final Reference storageRef = FirebaseStorage.instance
         .ref()
         .child('users')
         .child(userId)
@@ -374,12 +373,9 @@ class FirestoreUtils {
 
       await storageRef.delete();
     } catch (e) {
-      /*
       if (kDebugMode) {
         print('Error removing image: $e');
-      } 
-      */
-      print('Error removing image: $e');
+      }
     }
   }
 

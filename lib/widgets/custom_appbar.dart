@@ -17,24 +17,20 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           backgroundColor: isDarkTheme
             ? const Color.fromARGB(255, 17, 17, 17)
             : const Color.fromARGB(255, 217, 217, 217),
-          leading: Row(
-            children: [
-              TextButton(
-                onPressed: () {
-                  themeNotifier.toggleTheme();
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: isDarkTheme
-                      ? const Color.fromARGB(255, 17, 17, 17)
-                      : const Color.fromARGB(255, 217, 217, 217),
-                ),
-                child: Icon(
-                  isDarkTheme ? Icons.light_mode : Icons.dark_mode,
-                  color: isDarkTheme ? Colors.white : Colors.black,
-                  size: 25,
-                ),
-              ),
-            ],
+          leading: TextButton(
+            onPressed: () {
+              themeNotifier.toggleTheme();
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: isDarkTheme
+                  ? const Color.fromARGB(255, 17, 17, 17)
+                  : const Color.fromARGB(255, 217, 217, 217),
+            ),
+            child: Icon(
+              isDarkTheme ? Icons.light_mode : Icons.dark_mode,
+              color: isDarkTheme ? Colors.white : Colors.black,
+              size: 25,
+            ),  
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -62,26 +58,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ],
           ),
           actions: [
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    // Profile Screen transition logic
-                    Navigator.pushReplacementNamed(context, '/profile_view');
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: isDarkTheme
-                      ? const Color.fromARGB(255, 17, 17, 17)
-                      : const Color.fromARGB(255, 217, 217, 217),
-                  ),
-                  child: Icon(
-                    Icons.person,
-                    color: isDarkTheme ? Colors.white : Colors.black,
-                    size: 25,
-                  ),
-                ),
-              ],
-            )
+            TextButton(
+              onPressed: () {
+                // Profile Screen transition logic
+                Navigator.pushReplacementNamed(context, '/profile_view');
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: isDarkTheme
+                  ? const Color.fromARGB(255, 17, 17, 17)
+                  : const Color.fromARGB(255, 217, 217, 217),
+              ),
+              child: Icon(
+                Icons.person,
+                color: isDarkTheme ? Colors.white : Colors.black,
+                size: 25,
+              ),
+            ),
           ],
         );
       },

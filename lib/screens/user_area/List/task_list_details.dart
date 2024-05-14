@@ -115,50 +115,25 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                         const SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.only(left: 20, right: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: isDarkTheme
-                                      ? const Color.fromARGB(255, 0, 80, 200)
-                                      : const Color.fromARGB(255, 255, 123, 0),
-                                  borderRadius: BorderRadius.circular(90),
-                                ),
-                                width: 310,
-                                height: 80,
-                                child: Center(
-                                  child: Text(
-                                    currentTask.title,
-                                    style: TextStyle(
-                                      fontSize: 23,
-                                      color: isDarkTheme? Colors.white : Colors.black,
-                                    ),
-                                  ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: isDarkTheme
+                                  ? const Color.fromARGB(255, 0, 80, 200)
+                                  : const Color.fromARGB(255, 255, 123, 0),
+                              borderRadius: BorderRadius.circular(90),
+                            ),
+                            width: 310,
+                            height: 80,
+                            child: Center(
+                              child: Text(
+                                currentTask.title,
+                                style: TextStyle(
+                                  fontSize: 23,
+                                  color: isDarkTheme? Colors.white : Colors.black,
                                 ),
                               ),
-                              CircleAvatar(
-                                backgroundColor: isDarkTheme
-                                  ? const Color.fromARGB(255, 230, 170, 0)
-                                  : const Color.fromARGB(255, 255, 210, 0),
-                                child: TextButton(
-                                  onPressed: () {
-                                    _passwordConfirmationPopup(context, widget.task, isActionDelete: false);
-                                  },
-                                  // Important to make it zero inside the button so it gets centered
-                                  // instead of inheriting other paddings
-                                  style: TextButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  child: Icon(
-                                    Icons.edit,
-                                    color: isDarkTheme ? Colors.white : Colors.black,
-                                    size: 30,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 20),
                         Padding(
@@ -168,9 +143,9 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                               Icon(
                                 Icons.calendar_month,
                                 color: isDarkTheme ? Colors.white : Colors.black,
-                                size: 30,
+                                size: 25,
                               ),
-                              const SizedBox(width: 20),
+                              const SizedBox(width: 15),
                               Text(
                                 "Finishes at:",
                                 style: TextStyle(
@@ -197,9 +172,9 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                               Icon(
                                 Icons.calendar_month,
                                 color: isDarkTheme ? Colors.white : Colors.black,
-                                size: 30,
+                                size: 25,
                               ),
-                              const SizedBox(width: 20),
+                              const SizedBox(width: 15),
                               Text(
                                 "Created at:",
                                 style: TextStyle(
@@ -340,6 +315,26 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                     ),
                     child: Icon(
                       Icons.arrow_back,
+                      color: isDarkTheme ? Colors.white : Colors.black,
+                      size: 25,
+                    ),
+                  ),
+                ),
+                CircleAvatar(
+                  backgroundColor: isDarkTheme
+                    ? const Color.fromARGB(255, 230, 170, 0)
+                    : const Color.fromARGB(255, 255, 210, 0),
+                  child: TextButton(
+                    onPressed: () {
+                      _passwordConfirmationPopup(context, widget.task, isActionDelete: false);
+                    },
+                    // Important to make it zero inside the button so it gets centered
+                    // instead of inheriting other paddings
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: Icon(
+                      Icons.edit,
                       color: isDarkTheme ? Colors.white : Colors.black,
                       size: 25,
                     ),
