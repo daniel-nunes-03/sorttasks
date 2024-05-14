@@ -1,4 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
@@ -52,6 +57,7 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String? _firstName;
   late String? _lastName;
+  late String _profileImageUrl = '';
   bool _dataIsLoading = true;
   bool _noData = false;
 
@@ -70,6 +76,7 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
         setState(() {
           _firstName = userData['firstName'];
           _lastName = userData['lastName'];
+          _profileImageUrl = userData['profileImageUrl'];
           _dataIsLoading = false;
         });
       } else {
@@ -96,6 +103,64 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
     });
   }
 
+  void _uploadNewProfileImage(String userId, {required bool isRemove}) async {
+    if (isRemove) {
+      await FirestoreUtils.removeImage(userId);
+      setState(() {
+        _profileImageUrl = '';
+      });
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Image Removed'),
+            content: const Text('Your profile image has been successfully removed.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        File imageFile = File(pickedFile.path);
+        String? imageUrl = await FirestoreUtils.uploadImage(imageFile, userId);
+        if (imageUrl != null) {
+          setState(() {
+            _profileImageUrl = imageUrl;
+          });
+        } else {
+          // Show failure message
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Image Upload Failed'),
+                content: const Text('Failed to upload your profile image.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
@@ -110,15 +175,30 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
             child: Column(
               children: [
                 const SizedBox(height: 50),
-                CircleAvatar(
-                  radius: 85,
-                  backgroundColor: isDarkTheme
-                    ? const Color.fromRGBO(149, 149, 149, 1)
-                    : const Color.fromRGBO(217, 217, 217, 1),
-                  child: Icon(
-                    Icons.person,
-                    color: isDarkTheme ? Colors.white : Colors.black
-                  ),
+                _profileImageUrl != ''
+                  ? CircleAvatar(
+                      radius: 85,
+                      backgroundImage: NetworkImage(_profileImageUrl),
+                    )
+                  : CircleAvatar(
+                      radius: 85,
+                      backgroundColor: isDarkTheme
+                        ? const Color.fromRGBO(149, 149, 149, 1)
+                        : const Color.fromRGBO(217, 217, 217, 1),
+                      child: Icon(
+                        Icons.person,
+                        color: isDarkTheme ? Colors.white : Colors.black
+                      ),
+                    ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => _uploadNewProfileImage(SorttasksApp.loggedInUser!.uid, isRemove: true),
+                  child: const Text('Remove Profile Image'),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => _uploadNewProfileImage(SorttasksApp.loggedInUser!.uid, isRemove: false),
+                  child: const Text('Upload New Profile Image'),
                 ),
                 const SizedBox(height: 50),
                 _dataIsLoading // Conditional rendering based on flags

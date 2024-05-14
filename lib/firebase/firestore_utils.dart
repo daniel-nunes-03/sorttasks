@@ -1,11 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sorttasks/classes/archived_task.dart';
-import 'package:sorttasks/classes/task.dart';
+import 'package:sorttasks/classes/task.dart' as sorttasks_task;
 import 'package:sorttasks/main.dart';
 
 class FirestoreUtils {
@@ -32,12 +35,16 @@ class FirestoreUtils {
           int createdTasks = userData['createdTasks'];
           int completedTasks = userData['completedTasks'];
 
+          // Retrieve profile image URL from Firebase Storage
+          String profileImageUrl = await _retrieveProfileImageUrl(currentUser.uid);
+
           return {
             'firstName': firstName,
             'lastName': lastName,
             'creationDate': creationDate,
             'createdTasks': createdTasks,
-            'completedTasks': completedTasks
+            'completedTasks': completedTasks,
+            'profileImageUrl': profileImageUrl
           };
         }
       }
@@ -48,6 +55,24 @@ class FirestoreUtils {
         print('Error getting authenticated user data: $e');
       }
       return null;
+    }
+  }
+
+  static Future<String> _retrieveProfileImageUrl(String userId) async {
+    try {
+      // Get reference to user's profile image in Firebase Storage
+      Reference imageRef = FirebaseStorage.instance.ref().child('users/$userId/profile_image.jpg');
+
+      // Get the download URL for the image
+      String downloadUrl = await imageRef.getDownloadURL();      
+
+      return downloadUrl;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error retrieving profile image URL: $e');
+      }
+      // Return a default image URL or null if image not found
+      return ''; // You can change this to return a default image URL or null
     }
   }
 
@@ -179,6 +204,9 @@ class FirestoreUtils {
       // Get the ID of the newly created user
       String userId = userCredential.user!.uid;
 
+      // Create a new folder with user's ID as name in Firebase Storage
+      firebase_storage.FirebaseStorage.instance.ref().child('users').child(userId);
+
       // Add user details to Firestore
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
         'firstName': firstName,
@@ -209,15 +237,11 @@ class FirestoreUtils {
         await eventSnapshot.reference.delete();
       }
 
-      /*
-
       // Delete all archivedTasks owned by the user from the 'archivedTasks' collection
       eventsSnapshot = await FirebaseFirestore.instance.collection('archivedTasks').where('userOwner', isEqualTo: userId).get();
       for (QueryDocumentSnapshot eventSnapshot in eventsSnapshot.docs) {
         await eventSnapshot.reference.delete();
       }
-      
-      */
 
       // Delete the user from authentication
       await FirebaseAuth.instance.currentUser?.delete();
@@ -314,6 +338,48 @@ class FirestoreUtils {
       }
       // For all other errors, including email not being registered
       return true;
+    }
+  }
+
+  static Future<String?> uploadImage(File imageFile, String userId) async {
+    try {
+      final firebase_storage.Reference storageRef = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('users')
+        .child(userId)
+        .child('profile_image.jpg');
+
+      await storageRef.putFile(imageFile);
+
+      final String downloadUrl = await storageRef.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      /*
+      if (kDebugMode) {
+        print('Error uploading image: $e');
+      } 
+      */
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
+
+  static Future<void> removeImage(String userId) async {
+    try {
+      final firebase_storage.Reference storageRef = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('users')
+        .child(userId)
+        .child('profile_image.jpg');
+
+      await storageRef.delete();
+    } catch (e) {
+      /*
+      if (kDebugMode) {
+        print('Error removing image: $e');
+      } 
+      */
+      print('Error removing image: $e');
     }
   }
 
@@ -469,7 +535,7 @@ class FirestoreUtils {
     }
   }
 
-  static Future<List<Task>> getOwnedTasks(String? userID) async {
+  static Future<List<sorttasks_task.Task>> getOwnedTasks(String? userID) async {
     try {
       if (userID != null) {
         // Reference to the 'tasks' collection
@@ -484,8 +550,8 @@ class FirestoreUtils {
           .get();
 
         // Map query results to Task objects
-        List<Task> userTasks = querySnapshot.docs.map((doc) {
-          return Task.fromMap(doc.id, doc.data() as Map<String, dynamic>);
+        List<sorttasks_task.Task> userTasks = querySnapshot.docs.map((doc) {
+          return sorttasks_task.Task.fromMap(doc.id, doc.data() as Map<String, dynamic>);
         }).toList();
 
         return userTasks;
@@ -503,7 +569,7 @@ class FirestoreUtils {
     }
   }
 
-  static Future<Task> getTaskDetails(String taskID) async {
+  static Future<sorttasks_task.Task> getTaskDetails(String taskID) async {
     try {
       // Reference to the 'tasks' collection and the specific document
       DocumentReference taskReference = FirebaseFirestore.instance.collection('tasks').doc(taskID);
@@ -513,7 +579,7 @@ class FirestoreUtils {
 
       if (snapshot.exists) {
         // Convert the document data to an Event object
-        return Task.fromMap(snapshot.id, snapshot.data() as Map<String, dynamic>);
+        return sorttasks_task.Task.fromMap(snapshot.id, snapshot.data() as Map<String, dynamic>);
       } else {
         // Handle the case where the event with the given ID does not exist
         if (kDebugMode) {

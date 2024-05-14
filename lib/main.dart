@@ -16,6 +16,7 @@ import 'package:sorttasks/screens/user_area/main_screen.dart';
 import 'package:sorttasks/screens/user_area/List/task_add.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp(

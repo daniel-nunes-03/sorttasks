@@ -22,6 +22,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
   late Timestamp? _creationDate;
   late int? _createdTasks;
   late int? _completedTasks;
+  late String _profileImageUrl = '';
   bool _dataIsLoading = true;
   bool _noData = false;
 
@@ -43,6 +44,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
           _creationDate = userData['creationDate'];
           _createdTasks = userData['createdTasks'];
           _completedTasks = userData['completedTasks'];
+          _profileImageUrl = userData['profileImageUrl'];
           _dataIsLoading = false;
         });
       } else {
@@ -166,16 +168,21 @@ class ProfileViewState extends State<ProfileViewScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 50),
-                  CircleAvatar(
-                    radius: 85,
-                    backgroundColor: isDarkTheme
-                      ? const Color.fromRGBO(149, 149, 149, 1)
-                      : const Color.fromRGBO(217, 217, 217, 1),
-                    child: Icon(
-                      Icons.person,
-                      color: isDarkTheme ? Colors.white : Colors.black
+                  _profileImageUrl != ''
+                  ? CircleAvatar(
+                      radius: 85,
+                      backgroundImage: NetworkImage(_profileImageUrl),
+                    )
+                  : CircleAvatar(
+                      radius: 85,
+                      backgroundColor: isDarkTheme
+                        ? const Color.fromRGBO(149, 149, 149, 1)
+                        : const Color.fromRGBO(217, 217, 217, 1),
+                      child: Icon(
+                        Icons.person,
+                        color: isDarkTheme ? Colors.white : Colors.black
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 40),
                   _dataIsLoading // Conditional rendering based on flags
                     ? _noData
