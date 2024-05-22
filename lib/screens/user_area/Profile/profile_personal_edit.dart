@@ -164,17 +164,17 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
   @override
   Widget build(BuildContext context) {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    final scrollController = ScrollController();
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
+    return Scaffold(
+      body: Center(
+        child: SizedBox(
           width: 400,
           child: Form(
             key: _formKey,
             child: Column(
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 30),
                 _profileImageUrl != ''
                   ? CircleAvatar(
                       radius: 85,
@@ -200,7 +200,7 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
                   onPressed: () => _uploadNewProfileImage(SorttasksApp.loggedInUser!.uid, isRemove: false),
                   child: const Text('Upload New Profile Image'),
                 ),
-                const SizedBox(height: 50),
+                const SizedBox(height: 20),
                 _dataIsLoading // Conditional rendering based on flags
                   ? _noData
                     ? const Text(
@@ -211,151 +211,153 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
                         ),
                       )
                     : const CircularProgressIndicator()
-                  : Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Row(
+                  : Expanded(
+                      child: Scrollbar(
+                        controller: scrollController,
+                        thumbVisibility: true,
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          child: Column(
                             children: [
                               Container(
-                                width: 30,
-                                height: 30,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
+                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
                                 ),
-                                child: Icon(
-                                  Icons.badge,
-                                  color: isDarkTheme ? Colors.white : Colors.black,
-                                  size: 30,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.badge,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                        size: 30,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 20),
+                                    Expanded(
+                                      child: StringInput(onNameChanged: updateFirstName, hintName: "First Name", initialValue: _firstName),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: StringInput(onNameChanged: updateFirstName, hintName: "First Name", initialValue: _firstName),
+                              const SizedBox(height: 30),
+                              Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
+                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.badge,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                        size: 30,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 20),
+                                    Expanded(
+                                      child: StringInput(onNameChanged: updateLastName, hintName: "Last Name", initialValue: _lastName),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 30),
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  Icons.badge,
-                                  color: isDarkTheme ? Colors.white : Colors.black,
-                                  size: 30,
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: StringInput(onNameChanged: updateLastName, hintName: "Last Name", initialValue: _lastName),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ]
-                    ),
-              ],
-            )
-          ),
-        ),
-        Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: CircleAvatar(
-                    backgroundColor: isDarkTheme
-                      ? Colors.black
-                      : const Color.fromRGBO(217, 217, 217, 1),
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/profile_view');
-                      },
-                      // Important to make it zero inside the button so it gets centered
-                      // instead of inheriting the padding from the positioning of the avatar
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: isDarkTheme ? Colors.white : Colors.black,
-                        size: 25,
                       ),
                     ),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: CircleAvatar(
-                    backgroundColor: isDarkTheme
-                      ? const Color.fromRGBO(0, 255, 0, 0.7)
-                      : const Color.fromRGBO(0, 255, 0, 0.5),
-                    child: TextButton(
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          FirestoreUtils.updateUserDetails(context, _firstName!, _lastName!);
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Changes have failed'),
-                                content: const Text('The fields have been incorrectly filled or there has been an error. Please try again.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      // Close the dialog
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Proceed'),
-                                  ),
-                                ],
-                              );
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: CircleAvatar(
+                          backgroundColor: isDarkTheme
+                            ? Colors.black
+                            : const Color.fromRGBO(217, 217, 217, 1),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(context, '/profile_view');
                             },
-                          );
-                        }
-                      },
-                      // Important to make it zero inside the button so it gets centered
-                      // instead of inheriting the padding from the positioning of the avatar
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: Icon(
-                        Icons.check,
-                        color: isDarkTheme ? Colors.white : Colors.black,
-                        size: 25,
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: isDarkTheme ? Colors.white : Colors.black,
+                              size: 25,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: CircleAvatar(
+                          backgroundColor: isDarkTheme
+                            ? const Color.fromRGBO(0, 255, 0, 0.7)
+                            : const Color.fromRGBO(0, 255, 0, 0.5),
+                          child: TextButton(
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                                FirestoreUtils.updateUserDetails(context, _firstName!, _lastName!);
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Changes have failed'),
+                                      content: const Text('The fields have been incorrectly filled or there has been an error. Please try again.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('Proceed'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: Icon(
+                              Icons.check,
+                              color: isDarkTheme ? Colors.white : Colors.black,
+                              size: 25,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
