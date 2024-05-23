@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/task.dart';
@@ -61,6 +63,7 @@ class TaskListState extends State<TaskListScreen> {
     }
 
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    final scrollcontroller = ScrollController();
 
     return Scaffold(
       body: Container(
@@ -70,158 +73,174 @@ class TaskListState extends State<TaskListScreen> {
             SizedBox(
               height: 150,
               child: Padding(
-                padding: const EdgeInsets.only(left: 50),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    Row(
+                padding: const EdgeInsets.only(left: 40, top: 10, right: 20),
+                child: Scrollbar(
+                  controller: scrollcontroller,
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    controller: scrollcontroller,
+                    child: Column(
                       children: [
-                        Container(
-                          width: 175,
-                          height: 30,
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () => _changeSortOrder('title', false),
-                          child: Text(
-                            'A-Z',
-                            style: TextStyle(
-                              color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                        Row(
+                          children: [
+                            Container(
+                              width: 175,
+                              height: 30,
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                              ),
                             ),
-                          )
-                        ),
-                        TextButton(
-                          onPressed: () => _changeSortOrder('title', true),
-                          child: Text(
-                            'Z-A',
-                            style: TextStyle(
-                              color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                            const SizedBox(width: 10),
+                            SizedBox(
+                              width: 50,
+                              child: TextButton(
+                                onPressed: () => _changeSortOrder('title', false),
+                                child: Text(
+                                  'A-Z',
+                                  style: TextStyle(
+                                    color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                                  ),
+                                )
+                              ),
                             ),
-                          )
+                            SizedBox(
+                              width: 50,
+                              child: TextButton(
+                                onPressed: () => _changeSortOrder('title', true),
+                                child: Text(
+                                  'Z-A',
+                                  style: TextStyle(
+                                    color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                                  ),
+                                )
+                              ),
+                            ),
+                            SizedBox(
+                              width: 50,
+                              child: TextButton(
+                                onPressed: () => _changeSortOrder('taskPriority', true),
+                                child: Icon(
+                                  Icons.filter_alt_off,
+                                  color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                                )
+                              ),
+                            ),
+                          ],
                         ),
-                        TextButton(
-                          onPressed: () => _changeSortOrder('taskPriority', true),
-                          child: Icon(
-                            Icons.filter_alt_off,
-                            color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
-                          )
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: Text(
+                                "Creation Date:",
+                                style: TextStyle(
+                                  color: isDarkTheme ? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 120,
+                              child: TextButton(
+                                onPressed: () => _changeSortOrder('creationDateHour', false),
+                                child: Text(
+                                  'Older-Newer',
+                                  style: TextStyle(
+                                    color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                                  ),
+                                )
+                              ),
+                            ),
+                            SizedBox(
+                              width: 120,
+                              child: TextButton(
+                                onPressed: () => _changeSortOrder('creationDateHour', true),
+                                child: Text(
+                                  'Newer-Older',
+                                  style: TextStyle(
+                                    color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                                  ),
+                                )
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: Text(
+                                "Finish Date:",
+                                style: TextStyle(
+                                  color: isDarkTheme ? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 120,
+                              child: TextButton(
+                                onPressed: () => _changeSortOrder('finishDateHour', false),
+                                child: Text(
+                                  'Older-Newer',
+                                  style: TextStyle(
+                                    color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                                  ),
+                                )
+                              ),
+                            ),
+                            SizedBox(
+                              width: 120,
+                              child: TextButton(
+                                onPressed: () => _changeSortOrder('finishDateHour', true),
+                                child: Text(
+                                  'Newer-Older',
+                                  style: TextStyle(
+                                    color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                                  ),
+                                )
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: Text(
+                                "Priority:",
+                                style: TextStyle(
+                                  color: isDarkTheme ? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 120,
+                              child: TextButton(
+                                onPressed: () => _changeSortOrder('taskPriority', false),
+                                child: Text(
+                                  'Lower-Higher',
+                                  style: TextStyle(
+                                    color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                                  ),
+                                )
+                              ),
+                            ),
+                            SizedBox(
+                              width: 120,
+                              child: TextButton(
+                                onPressed: () => _changeSortOrder('taskPriority', true),
+                                child: Text(
+                                  'Higher-Lower',
+                                  style: TextStyle(
+                                    color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                                  ),
+                                )
+                              ),
+                            ),
+                          ],
                         )
                       ],
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: Text(
-                            "Creation Date:",
-                            style: TextStyle(
-                              color: isDarkTheme ? Colors.white : Colors.black,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: TextButton(
-                            onPressed: () => _changeSortOrder('creationDateHour', false),
-                            child: Text(
-                              'Older-Newer',
-                              style: TextStyle(
-                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
-                              ),
-                            )
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: TextButton(
-                          onPressed: () => _changeSortOrder('creationDateHour', true),
-                            child: Text(
-                              'Newer-Older',
-                              style: TextStyle(
-                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
-                              ),
-                            )
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: Text(
-                            "Finish Date:",
-                            style: TextStyle(
-                              color: isDarkTheme ? Colors.white : Colors.black,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: TextButton(
-                            onPressed: () => _changeSortOrder('finishDateHour', false),
-                            child: Text(
-                              'Older-Newer',
-                              style: TextStyle(
-                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
-                              ),
-                            )
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: TextButton(
-                          onPressed: () => _changeSortOrder('finishDateHour', true),
-                            child: Text(
-                              'Newer-Older',
-                              style: TextStyle(
-                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
-                              ),
-                            )
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: Text(
-                            "Priority:",
-                            style: TextStyle(
-                              color: isDarkTheme ? Colors.white : Colors.black,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: TextButton(
-                            onPressed: () => _changeSortOrder('taskPriority', false),
-                            child: Text(
-                              'Lower-Higher',
-                              style: TextStyle(
-                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
-                              ),
-                            )
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: TextButton(
-                          onPressed: () => _changeSortOrder('taskPriority', true),
-                          child: Text(
-                            'Higher-Lower',
-                              style: TextStyle(
-                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
-                              ),
-                          )
-                        ),
-                        ),
-                      ],
-                    )
-                  ],
+                  ),
                 ),
               ),
             ),
