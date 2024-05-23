@@ -303,9 +303,12 @@ class TaskHistoryState extends State<TaskHistoryScreen> {
                         color: isDarkTheme ? const Color.fromRGBO(45, 45, 45, 1) : Colors.white,
                         borderRadius: BorderRadius.circular(90.0),
                       ),
-                      child: Container (
+                      child: Container(
                         padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
-                        child: userTasks.isEmpty
+                        child: Scrollbar(
+                          controller: _scrollController,
+                          thumbVisibility: true,
+                          child: userTasks.isEmpty
                           ? Center(
                               child: Text(
                                 'No archived tasks.',
@@ -332,6 +335,7 @@ class TaskHistoryState extends State<TaskHistoryScreen> {
                                 );
                               },
                             ),
+                        ),
                       ),
                     );
                   }

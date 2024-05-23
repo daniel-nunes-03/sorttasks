@@ -100,149 +100,152 @@ class _TaskAddFormState extends State<_TaskAddForm> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 50),
-                    Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          child: Scrollbar(
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 50),
+                      Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.title,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                    size: 30,
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: StringInput(
+                                    onNameChanged: updateTitle,
+                                    hintName: "Title",
+                                    maximumLength: 14,
+                                    noRegex: true
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
+                          const SizedBox(height: 30),
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.date_range,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                    size: 30,
+                                  ),
                                 ),
-                                child: Icon(
-                                  Icons.title,
-                                  color: isDarkTheme ? Colors.white : Colors.black,
-                                  size: 30,
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: DateTimePicker(
+                                    onDateSelected: updateFinalDate,
+                                    onTimeSelected: (TimeOfDay time) {
+                                      updateFinalTime(time);
+                                    },
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: StringInput(
-                                  onNameChanged: updateTitle,
-                                  hintName: "Title",
-                                  maximumLength: 14,
-                                  noRegex: true
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 30),
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          const SizedBox(height: 30),
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.priority_high,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                    size: 30,
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: NumberInput(
+                                    onNumberChanged: updateTaskPriority,
+                                    hintName: "Task Priority"
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
+                          const SizedBox(height: 30),
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.description,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                    size: 30,
+                                  ),
                                 ),
-                                child: Icon(
-                                  Icons.date_range,
-                                  color: isDarkTheme ? Colors.white : Colors.black,
-                                  size: 30,
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: StringInput(
+                                    onNameChanged: updateDescription,
+                                    hintName: "Description",
+                                    multipleLines: true,
+                                    noRegex: true
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: DateTimePicker(
-                                  onDateSelected: updateFinalDate,
-                                  onTimeSelected: (TimeOfDay time) {
-                                    updateFinalTime(time);
-                                  },
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 30),
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  Icons.priority_high,
-                                  color: isDarkTheme ? Colors.white : Colors.black,
-                                  size: 30,
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: NumberInput(
-                                  onNumberChanged: updateTaskPriority,
-                                  hintName: "Task Priority"
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  Icons.description,
-                                  color: isDarkTheme ? Colors.white : Colors.black,
-                                  size: 30,
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: StringInput(
-                                  onNameChanged: updateDescription,
-                                  hintName: "Description",
-                                  multipleLines: true,
-                                  noRegex: true
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ]
-                    ),
-                  ],
-                )
+                        ]
+                      ),
+                    ],
+                  )
+                ),
               ),
             ),
           ),

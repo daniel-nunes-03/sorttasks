@@ -265,35 +265,39 @@ class TaskListState extends State<TaskListScreen> {
                         color: isDarkTheme ? const Color.fromRGBO(45, 45, 45, 1) : Colors.white,
                         borderRadius: BorderRadius.circular(90.0),
                       ),
-                      child: Container (
+                      child: Container(
                         padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
-                        child: userTasks.isEmpty
-                          ? Center(
-                              child: Text(
-                                'No tasks owned.',
-                                style: TextStyle(
-                                  color: isDarkTheme? Colors.yellow : const Color.fromARGB(255, 210, 14, 0),
-                                  fontSize: 20,
+                        child: Scrollbar(
+                          controller: _scrollController,
+                          thumbVisibility: true,
+                          child: userTasks.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'No tasks owned.',
+                                  style: TextStyle(
+                                    color: isDarkTheme? Colors.yellow : const Color.fromARGB(255, 210, 14, 0),
+                                    fontSize: 20,
+                                  ),
                                 ),
+                              )
+                            : ListView.builder(
+                                controller: _scrollController,
+                                shrinkWrap: true,
+                                itemCount: userTasks.length,
+                                itemBuilder: (context, index) {
+                                  Task task = userTasks[index];
+                                  return _TaskListItem(
+                                    task: task,
+                                    onTaskUpdated: () {
+                                      // Trigger a refresh when a task is updated
+                                      setState(() {
+                                        _fetchDataFuture = fetchData();
+                                      });
+                                    },
+                                  );
+                                },
                               ),
-                            )
-                          : ListView.builder(
-                              controller: _scrollController,
-                              shrinkWrap: true,
-                              itemCount: userTasks.length,
-                              itemBuilder: (context, index) {
-                                Task task = userTasks[index];
-                                return _TaskListItem(
-                                  task: task,
-                                  onTaskUpdated: () {
-                                    // Trigger a refresh when a task is updated
-                                    setState(() {
-                                      _fetchDataFuture = fetchData();
-                                    });
-                                  },
-                                );
-                              },
-                            ),
+                        ),
                       ),
                     );
                   }

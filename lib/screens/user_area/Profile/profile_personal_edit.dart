@@ -164,7 +164,6 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
   @override
   Widget build(BuildContext context) {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
-    final scrollController = ScrollController();
 
     return Scaffold(
       body: Center(
@@ -212,71 +211,64 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
                       )
                     : const CircularProgressIndicator()
                   : Expanded(
-                      child: Scrollbar(
-                        controller: scrollController,
-                        thumbVisibility: true,
-                        child: SingleChildScrollView(
-                          controller: scrollController,
-                          child: Column(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
-                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.badge,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                    size: 30,
+                                  ),
                                 ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        Icons.badge,
-                                        color: isDarkTheme ? Colors.white : Colors.black,
-                                        size: 30,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    Expanded(
-                                      child: StringInput(onNameChanged: updateFirstName, hintName: "First Name", initialValue: _firstName),
-                                    ),
-                                  ],
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: StringInput(onNameChanged: updateFirstName, hintName: "First Name", initialValue: _firstName),
                                 ),
-                              ),
-                              const SizedBox(height: 30),
-                              Container(
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
-                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        Icons.badge,
-                                        color: isDarkTheme ? Colors.white : Colors.black,
-                                        size: 30,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    Expanded(
-                                      child: StringInput(onNameChanged: updateLastName, hintName: "Last Name", initialValue: _lastName),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 30),
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: isDarkTheme ? const Color.fromRGBO(128, 128, 128, 1) : const Color.fromRGBO(200, 200, 200, 1),
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.badge,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                    size: 30,
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: StringInput(onNameChanged: updateLastName, hintName: "Last Name", initialValue: _lastName),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                 Row(
