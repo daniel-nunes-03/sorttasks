@@ -178,21 +178,24 @@ class ProfileViewState extends State<ProfileViewScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 50),
-                    _profileImageUrl != ''
-                    ? CircleAvatar(
-                        radius: 85,
-                        backgroundImage: NetworkImage(_profileImageUrl),
-                      )
-                    : CircleAvatar(
-                        radius: 85,
-                        backgroundColor: isDarkTheme
-                          ? const Color.fromRGBO(149, 149, 149, 1)
-                          : const Color.fromRGBO(217, 217, 217, 1),
-                        child: Icon(
-                          Icons.person,
-                          color: isDarkTheme ? Colors.white : Colors.black
-                        ),
-                      ),
+                    SizedBox(
+                      height: 180,
+                      child: _profileImageUrl != ''
+                        ? CircleAvatar(
+                            radius: 85,
+                            backgroundImage: NetworkImage(_profileImageUrl),
+                          )
+                        : CircleAvatar(
+                            radius: 85,
+                            backgroundColor: isDarkTheme
+                              ? const Color.fromRGBO(149, 149, 149, 1)
+                              : const Color.fromRGBO(217, 217, 217, 1),
+                            child: Icon(
+                              Icons.person,
+                              color: isDarkTheme ? Colors.white : Colors.black
+                            ),
+                          ),
+                    ),
                     const SizedBox(height: 40),
                     _dataIsLoading // Conditional rendering based on flags
                       ? _noData
@@ -209,19 +212,21 @@ class ProfileViewState extends State<ProfileViewScreen> {
                             Text(
                               _firstName!,
                               style: TextStyle(
-                                  fontSize: 22,
-                                  color: isDarkTheme
-                                      ? Colors.white
-                                      : Colors.black),
+                                fontSize: 22,
+                                color: isDarkTheme
+                                  ? Colors.white
+                                  : Colors.black
+                              ),
                             ),
                             const SizedBox(height: 20),
                             Text(
                               _lastName!,
                               style: TextStyle(
-                                  fontSize: 22,
-                                  color: isDarkTheme
-                                      ? Colors.white
-                                      : Colors.black),
+                                fontSize: 22,
+                                color: isDarkTheme
+                                  ? Colors.white
+                                  : Colors.black
+                              ),
                             ),
                           ],
                         ),
