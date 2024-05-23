@@ -48,14 +48,18 @@ class ProfileViewState extends State<ProfileViewScreen> {
           _dataIsLoading = false;
         });
       } else {
+        if (mounted) {
+          setState(() {
+            _noData = true;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
         setState(() {
           _noData = true;
         });
       }
-    } catch (e) {
-      setState(() {
-        _noData = true;
-      });
     }
   }
 
@@ -84,18 +88,19 @@ class ProfileViewState extends State<ProfileViewScreen> {
           actions: [
             ElevatedButton(
               onPressed: () async {
+                NavigatorState navigator = Navigator.of(context);
                 try {
                   // Validate the entered password using Firebase authentication
                   bool isPasswordCorrect = await FirestoreUtils.verifyPassword(enteredPassword);
 
-                  Navigator.pop(context); // Close the password confirmation dialog
+                  navigator.pop(); // Close the password confirmation dialog
 
                   if (isPasswordCorrect) {
                     if (navigateToCredentialChangeScreen) {
                       bool isEmailVerified = await FirestoreUtils.checkEmailVerification();
                       
                       if (isEmailVerified) {
-                        Navigator.pushReplacementNamed(context, '/profile_account_edit');
+                        navigator.pushReplacementNamed('/profile_account_edit');
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -105,7 +110,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
                         );
                       }
                     } else {
-                      Navigator.pushReplacementNamed(context, '/profile_personal_edit');
+                      navigator.pushReplacementNamed('/profile_personal_edit');
                     }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -117,8 +122,8 @@ class ProfileViewState extends State<ProfileViewScreen> {
                   }
                 } catch (error) {
                   // Close dialog and navigate back
-                  Navigator.of(context).pop();
-                  Navigator.pushReplacementNamed(context, '/profile_view');
+                  navigator.pop();
+                  navigator.pushReplacementNamed('/profile_view');
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Error verifying password. Please try again.'),

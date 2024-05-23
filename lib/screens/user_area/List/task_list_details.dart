@@ -118,8 +118,8 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: isDarkTheme
-                                  ? const Color.fromARGB(255, 0, 80, 200)
-                                  : const Color.fromARGB(255, 255, 123, 0),
+                                ? const Color.fromARGB(255, 70, 70, 70)
+                                : const Color.fromARGB(255, 220, 220, 220),
                               borderRadius: BorderRadius.circular(90),
                             ),
                             width: 310,
@@ -263,8 +263,8 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                         Container(
                           decoration: BoxDecoration(
                             color: isDarkTheme
-                              ? const Color.fromARGB(255, 0, 80, 200)
-                              : const Color.fromARGB(255, 255, 175, 100),
+                             ? const Color.fromARGB(255, 70, 70, 70)
+                             : const Color.fromARGB(255, 220, 220, 220),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           width: double.infinity,

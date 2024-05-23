@@ -19,6 +19,10 @@ class TaskListScreen extends StatefulWidget {
 class TaskListState extends State<TaskListScreen> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Task>> _fetchDataFuture;
+  
+  // Sorting options
+  String _sortField = 'taskPriority';
+  bool _isDescending = true;
 
   @override
   void initState() {
@@ -34,21 +38,25 @@ class TaskListState extends State<TaskListScreen> {
     await FirestoreUtils.autoArchiveTasks(loggedInUserId);
 
     // Get the tasks owned by the logged-in user
-    List<Task> tasks = await FirestoreUtils.getOwnedTasks(loggedInUserId);
+    List<Task> tasks = await FirestoreUtils.getOwnedTasks(loggedInUserId, _sortField, _isDescending);
 
     return tasks;
+  }
+
+  void _changeSortOrder(String field, bool descending) {
+    setState(() {
+      _sortField = field;
+      _isDescending = descending;
+      _fetchDataFuture = fetchData();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     if (SorttasksApp.loggedInUser == null) {
-      // Use Future.delayed to schedule the logic after the build phase
-      // This way the page won't crash during a reload (F5 or 'r' in the flutter terminal)
       Future.delayed(Duration.zero, () {
         Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
       });
-
-      // Return an empty container while the navigation happens
       return const SizedBox.shrink();
     }
 
@@ -56,15 +64,165 @@ class TaskListState extends State<TaskListScreen> {
 
     return Scaffold(
       body: Container(
-        color: isDarkTheme
-          ? const Color.fromRGBO(45, 45, 45, 1)
-          : Colors.white,
+        color: isDarkTheme ? const Color.fromRGBO(45, 45, 45, 1) : Colors.white,
         child: Column(
           children: [
-            const SizedBox(
+            SizedBox(
               height: 150,
-              child: Center(
-                child: Text('LIST -> First Container'),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 50),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Container(
+                          width: 175,
+                          height: 30,
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => _changeSortOrder('title', false),
+                          child: Text(
+                            'A-Z',
+                            style: TextStyle(
+                              color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                            ),
+                          )
+                        ),
+                        TextButton(
+                          onPressed: () => _changeSortOrder('title', true),
+                          child: Text(
+                            'Z-A',
+                            style: TextStyle(
+                              color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                            ),
+                          )
+                        ),
+                        TextButton(
+                          onPressed: () => _changeSortOrder('taskPriority', true),
+                          child: Icon(
+                            Icons.filter_alt_off,
+                            color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                          )
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: Text(
+                            "Creation Date:",
+                            style: TextStyle(
+                              color: isDarkTheme ? Colors.white : Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 120,
+                          child: TextButton(
+                            onPressed: () => _changeSortOrder('creationDateHour', false),
+                            child: Text(
+                              'Older-Newer',
+                              style: TextStyle(
+                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                              ),
+                            )
+                          ),
+                        ),
+                        SizedBox(
+                          width: 120,
+                          child: TextButton(
+                          onPressed: () => _changeSortOrder('creationDateHour', true),
+                            child: Text(
+                              'Newer-Older',
+                              style: TextStyle(
+                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                              ),
+                            )
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: Text(
+                            "Finish Date:",
+                            style: TextStyle(
+                              color: isDarkTheme ? Colors.white : Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 120,
+                          child: TextButton(
+                            onPressed: () => _changeSortOrder('finishDateHour', false),
+                            child: Text(
+                              'Older-Newer',
+                              style: TextStyle(
+                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                              ),
+                            )
+                          ),
+                        ),
+                        SizedBox(
+                          width: 120,
+                          child: TextButton(
+                          onPressed: () => _changeSortOrder('finishDateHour', true),
+                            child: Text(
+                              'Newer-Older',
+                              style: TextStyle(
+                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                              ),
+                            )
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: Text(
+                            "Priority:",
+                            style: TextStyle(
+                              color: isDarkTheme ? Colors.white : Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 120,
+                          child: TextButton(
+                            onPressed: () => _changeSortOrder('taskPriority', false),
+                            child: Text(
+                              'Lower-Higher',
+                              style: TextStyle(
+                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                              ),
+                            )
+                          ),
+                        ),
+                        SizedBox(
+                          width: 120,
+                          child: TextButton(
+                          onPressed: () => _changeSortOrder('taskPriority', true),
+                          child: Text(
+                            'Higher-Lower',
+                              style: TextStyle(
+                                color: isDarkTheme ? const Color.fromARGB(255, 218, 150, 255) : null,
+                              ),
+                          )
+                        ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
             // List of tasks or loading indicator/message
@@ -172,8 +330,6 @@ class _TaskListItem extends StatefulWidget {
 class _TaskListItemState extends State<_TaskListItem> {
   @override
   Widget build(BuildContext context) {
-    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
-
     return Card(
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
@@ -182,14 +338,14 @@ class _TaskListItemState extends State<_TaskListItem> {
         decoration: BoxDecoration(
           color: 
             widget.task.taskPriority == 1 
-              ? const Color.fromRGBO(0, 163, 255, 1) 
+              ? const Color.fromRGBO(51, 172, 221, 1)
               : widget.task.taskPriority == 2
-                ? const Color.fromRGBO(51, 205, 0, 1) 
+                ? const Color.fromRGBO(53, 219, 95, 1)
                 : widget.task.taskPriority == 3
-                  ? const Color.fromRGBO(255, 225, 0, 1) 
+                  ? const Color.fromARGB(255, 240, 212, 0)
                   : widget.task.taskPriority == 4
-                    ? const Color.fromRGBO(255, 122, 0, 1) 
-                    : const Color.fromRGBO(255, 0, 0, 1),
+                    ? const Color.fromRGBO(255, 122, 0, 1)
+                    : const Color.fromRGBO(207, 57, 29, 1),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -221,18 +377,18 @@ class _TaskListItemState extends State<_TaskListItem> {
               style: TextButton.styleFrom(
                 backgroundColor: 
                   widget.task.taskPriority == 1 
-                    ? const Color.fromRGBO(0, 163, 255, 1) 
+                    ? const Color.fromARGB(255, 125, 192, 218)
                     : widget.task.taskPriority == 2
-                      ? const Color.fromRGBO(51, 205, 0, 1) 
+                      ? const Color.fromARGB(255, 130, 212, 151)
                       : widget.task.taskPriority == 3
-                        ? const Color.fromRGBO(255, 225, 0, 1) 
+                        ? const Color.fromARGB(255, 232, 219, 115)
                         : widget.task.taskPriority == 4
-                          ? const Color.fromRGBO(255, 122, 0, 1) 
-                          : const Color.fromRGBO(255, 0, 0, 1),
+                          ? const Color.fromARGB(255, 255, 180, 110)
+                          : const Color.fromARGB(255, 207, 115, 100),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.arrow_forward,
-                color: isDarkTheme ? Colors.white : Colors.black,
+                color: Colors.black,
                 size: 25,
               ),
             ),

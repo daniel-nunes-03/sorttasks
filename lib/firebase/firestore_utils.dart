@@ -531,19 +531,23 @@ class FirestoreUtils {
     }
   }
 
-  static Future<List<sorttasks_task.Task>> getOwnedTasks(String? userID) async {
+  static Future<List<sorttasks_task.Task>> getOwnedTasks(String? userID, String sortField, bool isDescending) async {
     try {
       if (userID != null) {
         // Reference to the 'tasks' collection
         CollectionReference tasksCollection = FirebaseFirestore.instance.collection('tasks');
 
         // Query to get tasks where userID is equal to the input parameter,
-        // sorted by taskPriority in descending order, then by finishDateHour in ascending order
-        QuerySnapshot querySnapshot = await tasksCollection
-          .where('userID', isEqualTo: userID)
-          .orderBy('taskPriority', descending: true)
-          .orderBy('finishDateHour', descending: false)
-          .get();
+        // and sorted by the provided field and order
+        Query query = tasksCollection.where('userID', isEqualTo: userID);
+        
+        if (sortField == 'title') {
+          query = query.orderBy(sortField, descending: isDescending);
+        } else {
+          query = query.orderBy(sortField, descending: isDescending);
+        }
+
+        QuerySnapshot querySnapshot = await query.get();
 
         // Map query results to Task objects
         List<sorttasks_task.Task> userTasks = querySnapshot.docs.map((doc) {
@@ -682,26 +686,30 @@ class FirestoreUtils {
     }
   }
 
-  static Future<List<ArchivedTask>> getOwnedHistory(String? userID) async {
+  static Future<List<ArchivedTask>> getOwnedHistory(String? userID, String sortField, bool isDescending) async {
     try {
       if (userID != null) {
         // Reference to the 'archivedTasks' collection
         CollectionReference tasksCollection = FirebaseFirestore.instance.collection('archivedTasks');
 
-        // Query to get archivedTasks where userID is equal to the input parameter,
-        // sorted by taskPriority in descending order, then by finishDateHour in ascending order
-        QuerySnapshot querySnapshot = await tasksCollection
-          .where('userID', isEqualTo: userID)
-          .orderBy('taskPriority', descending: true)
-          .orderBy('finishDateHour', descending: false)
-          .get();
+        // Query to get tasks where userID is equal to the input parameter,
+        // and sorted by the provided field and order
+        Query query = tasksCollection.where('userID', isEqualTo: userID);
+        
+        if (sortField == 'title') {
+          query = query.orderBy(sortField, descending: isDescending);
+        } else {
+          query = query.orderBy(sortField, descending: isDescending);
+        }
 
-        // Map query results to ArchivedTask objects
-        List<ArchivedTask> userTasks = querySnapshot.docs.map((doc) {
+        QuerySnapshot querySnapshot = await query.get();
+
+        // Map query results to Task objects
+        List<ArchivedTask> archivedTasks = querySnapshot.docs.map((doc) {
           return ArchivedTask.fromMap(doc.id, doc.data() as Map<String, dynamic>);
         }).toList();
 
-        return userTasks;
+        return archivedTasks;
       } else {
         if (kDebugMode) {
           print('Error: User ID is null.');
@@ -710,7 +718,7 @@ class FirestoreUtils {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error getting owned history: $e');
+        print('Error getting owned tasks: $e');
       }
       return [];
     }
