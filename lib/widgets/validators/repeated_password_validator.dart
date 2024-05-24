@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sorttasks/classes/theme_notifier.dart';
 
 class RepeatPasswordValidator extends StatefulWidget {
   final void Function(String) onRepeatPasswordChanged;
@@ -39,12 +41,23 @@ class RepeatPasswordValidatorState extends State<RepeatPasswordValidator> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    
     return TextFormField(
       controller: _repeatPasswordController,
       key: ValueKey(widget.password),
-      decoration: const InputDecoration(
-        hintText: 'Repeat Password',
+      decoration: InputDecoration(
+        hintText: 'Password',
+        hintStyle: TextStyle(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
         border: InputBorder.none,
+        counterStyle: TextStyle(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        )
+      ),
+      style: TextStyle(
+        color: isDarkTheme ? Colors.white : Colors.black,
       ),
       obscureText: true,
       validator: (value) {

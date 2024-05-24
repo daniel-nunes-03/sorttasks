@@ -136,6 +136,7 @@ class _AccountEditFormState extends State<_AccountEditForm> {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
 
     return Scaffold(
+      backgroundColor: isDarkTheme ? const Color.fromRGBO(45, 45, 45, 1) : Colors.white,
       body: Center(
         child: SizedBox(
           width: 400,

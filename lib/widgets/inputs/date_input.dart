@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:sorttasks/classes/theme_notifier.dart';
 
 class DateTimePicker extends StatefulWidget {
   final Function(DateTime) onDateSelected;
@@ -83,6 +85,8 @@ class DateTimePickerState extends State<DateTimePicker> {
 
    @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -90,7 +94,10 @@ class DateTimePickerState extends State<DateTimePicker> {
           onTap: () => _selectDate(context),
           child: Text(
             'Selected Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
-            style: const TextStyle(fontSize: 16),
+            style: TextStyle(
+              fontSize: 16,
+              color: isDarkTheme ? Colors.white : Colors.black,
+            ),
           ),
         ),
         const SizedBox(height: 20),
@@ -98,7 +105,10 @@ class DateTimePickerState extends State<DateTimePicker> {
           onTap: () => _selectTime(context),
           child: Text(
             'Selected Time: ${selectedTime.format(context)}',
-            style: const TextStyle(fontSize: 16),
+            style: TextStyle(
+              fontSize: 16,
+              color: isDarkTheme ? Colors.white : Colors.black,
+            ),
           ),
         ),
       ],

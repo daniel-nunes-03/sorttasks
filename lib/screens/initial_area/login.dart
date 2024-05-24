@@ -187,7 +187,8 @@ class LoginScreenState extends State<LoginScreen> {
                   ],
                 )                
               ),
-            )
+            ),
+            const SizedBox(height: 30),
           ],
         ),
       ),
@@ -362,7 +363,6 @@ class _LoginFormState extends State<_LoginForm> {
             ),
           ),
         ),
-        const SizedBox(height: 30),
       ],
     );
   }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sorttasks/classes/theme_notifier.dart';
 
 class EmailInput extends StatefulWidget {
   final void Function(String) onEmailChanged;
@@ -31,11 +33,19 @@ class EmailInputState extends State<EmailInput> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    
     return TextFormField(
       controller: _emailController,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         hintText: 'Email',
+        hintStyle: TextStyle(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
         border: InputBorder.none
+      ),
+      style: TextStyle(
+        color: isDarkTheme ? Colors.white : Colors.black,
       ),
       keyboardType: TextInputType.emailAddress,
       validator: (value) {

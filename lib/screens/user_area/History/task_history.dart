@@ -115,10 +115,30 @@ class TaskHistoryState extends State<TaskHistoryScreen> {
                               height: 45,
                               child: TextField(
                                 controller: _searchController,
-                                decoration: const InputDecoration(
+                                style: TextStyle(
+                                  color: isDarkTheme ? Colors.white : Colors.black,
+                                ),
+                                decoration: InputDecoration(
                                   labelText: 'Search tasks',
-                                  border: OutlineInputBorder(),
-                                  suffixIcon: Icon(Icons.search),
+                                  labelStyle: TextStyle(
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: isDarkTheme ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: isDarkTheme 
+                                        ? const Color.fromARGB(255, 218, 150, 255)
+                                        : const Color.fromARGB(255, 166, 0, 255)
+                                    ),
+                                  ),
+                                  suffixIcon: Icon(
+                                    Icons.search,
+                                    color: isDarkTheme? Colors.white : Colors.black,
+                                  ),
                                 ),
                               ),
                             ),

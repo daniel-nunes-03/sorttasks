@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sorttasks/classes/theme_notifier.dart';
 
 class NumberInput extends StatefulWidget {
   final void Function(int) onNumberChanged;
@@ -26,12 +28,23 @@ class NumberInputState extends State<NumberInput> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    
     return TextFormField(
       initialValue: widget.initialValue == null ? '' : '${widget.initialValue}',
       maxLength: 1,
       decoration: InputDecoration(
         hintText: widget.hintName,
-        border: InputBorder.none
+        hintStyle: TextStyle(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
+        border: InputBorder.none,
+        counterStyle: TextStyle(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        )
+      ),
+      style: TextStyle(
+        color: isDarkTheme ? Colors.white : Colors.black,
       ),
       keyboardType: TextInputType.number,
       validator: (value) {

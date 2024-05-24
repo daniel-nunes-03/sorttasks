@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sorttasks/classes/theme_notifier.dart';
 
 class PasswordInput extends StatefulWidget {
   final void Function(String) onPasswordChanged;
@@ -14,10 +16,21 @@ class PasswordInputState extends State<PasswordInput> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    
     return TextFormField(
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         hintText: 'Password',
+        hintStyle: TextStyle(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
         border: InputBorder.none,
+        counterStyle: TextStyle(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        )
+      ),
+      style: TextStyle(
+        color: isDarkTheme ? Colors.white : Colors.black,
       ),
       obscureText: true,
       validator: (value) {

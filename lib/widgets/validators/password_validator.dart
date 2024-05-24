@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sorttasks/classes/theme_notifier.dart';
 
 class PasswordValidator extends StatefulWidget {
   final void Function(String) onPasswordChanged;
@@ -106,14 +108,25 @@ class PasswordValidatorState extends State<PasswordValidator> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
           controller: _passwordController,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: 'Password',
+            hintStyle: TextStyle(
+              color: isDarkTheme ? Colors.white : Colors.black,
+            ),
             border: InputBorder.none,
+            counterStyle: TextStyle(
+              color: isDarkTheme ? Colors.white : Colors.black,
+            )
+          ),
+          style: TextStyle(
+            color: isDarkTheme ? Colors.white : Colors.black,
           ),
           obscureText: true,
           validator: (value) {
@@ -137,12 +150,18 @@ class PasswordValidatorState extends State<PasswordValidator> {
             'Password Strength: ${_passwordStrength.toString().split('.').last}',
             style: TextStyle(
               color: _passwordStrength == PasswordStrength.invalid
-                  ? Colors.grey
+                  ? isDarkTheme
+                    ? const Color.fromARGB(255, 215, 215, 215)
+                    : Colors.grey
                   : _passwordStrength == PasswordStrength.weak
-                      ? Colors.redAccent
+                      ? isDarkTheme
+                        ? const Color.fromARGB(255, 255, 135, 135)
+                        : Colors.redAccent
                       : _passwordStrength == PasswordStrength.moderate
-                        ?Colors.orangeAccent
-                        :Colors.green,
+                        ? Colors.orangeAccent
+                        : isDarkTheme
+                          ? const Color.fromARGB(255, 70, 255, 76)
+                          : Colors.green,
             ),
           ),
         ),

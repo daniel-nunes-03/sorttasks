@@ -515,6 +515,7 @@ class _RegisterFormState extends State<_RegisterForm> {
             ),
           ),
         ),
+        const SizedBox(height: 30),
       ],
     );
   }

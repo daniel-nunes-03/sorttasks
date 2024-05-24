@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sorttasks/classes/theme_notifier.dart';
 
 class StringInput extends StatefulWidget {
   final void Function(String) onNameChanged;
@@ -39,6 +41,8 @@ class NameInputState extends State<StringInput> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
+    
     return TextFormField(
       controller: _nameController,
       maxLength: widget.multipleLines ? 5000 : widget.maximumLength,
@@ -46,7 +50,16 @@ class NameInputState extends State<StringInput> {
       textInputAction: widget.multipleLines ? TextInputAction.newline : TextInputAction.done,
       decoration: InputDecoration(
         hintText: widget.hintName,
-        border: InputBorder.none
+        hintStyle: TextStyle(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
+        border: InputBorder.none,
+        counterStyle: TextStyle(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        )
+      ),
+      style: TextStyle(
+        color: isDarkTheme ? Colors.white : Colors.black,
       ),
       keyboardType: widget.multipleLines ? TextInputType.multiline : TextInputType.text,
       validator: (value) {
