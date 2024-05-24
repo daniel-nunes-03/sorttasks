@@ -44,10 +44,24 @@ class TaskListState extends State<TaskListScreen> {
   }
 
   void _onSearchChanged() {
-    setState(() {
-      _searchQuery = _searchController.text.toLowerCase();
-      _fetchDataFuture = fetchData();
-    });
+    // Only changes if the input changes
+    if (_searchQuery != _searchController.text.toLowerCase()) {
+      setState(() {
+        _searchQuery = _searchController.text.toLowerCase();
+        _fetchDataFuture = fetchData();
+      });
+    }
+  }
+
+  void _changeSortOrder(String field, bool descending) {
+    // Only changes if the sort or sorting order changes
+    if (_sortField != field || _isDescending != descending) {
+      setState(() {
+        _sortField = field;
+        _isDescending = descending;
+        _fetchDataFuture = fetchData();
+      });
+    }
   }
 
   Future<List<Task>> fetchData() async {
@@ -61,17 +75,6 @@ class TaskListState extends State<TaskListScreen> {
     List<Task> tasks = await FirestoreUtils.getOwnedTasks(loggedInUserId, _sortField, _isDescending, _searchQuery);
 
     return tasks;
-  }
-
-  void _changeSortOrder(String field, bool descending) {
-    // Only changes if the sort or sorting order changes
-    if (_sortField != field || _isDescending != descending) {
-      setState(() {
-        _sortField = field;
-        _isDescending = descending;
-        _fetchDataFuture = fetchData();
-      });
-    }
   }
 
   @override

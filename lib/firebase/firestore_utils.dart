@@ -543,44 +543,7 @@ class FirestoreUtils {
     }
   }
 
-  /*
-  static Future<List<sorttasks_task.Task>> getOwnedTasks(String? userID, String sortField, bool isDescending, String searchQuery) async {
-    try {
-      if (userID != null) {
-        // Query to get tasks where userID is equal to the input parameter,
-        // and sorted by the provided field and order
-        Query query = FirebaseFirestore.instance
-          .collection('tasks')
-          .where('userID', isEqualTo: userID)
-          .orderBy(sortField, descending: isDescending);
-
-        if (searchQuery.isNotEmpty) {
-          String searchQueryLowercase = searchQuery.toLowerCase();
-          List<String> searchSubtrings = generateSubstrings(searchQueryLowercase);
-          // query = query.where('lowercaseTitle', isGreaterThanOrEqualTo: searchQueryLowercase).where('lowercaseTitle', isLessThanOrEqualTo: '$searchQueryLowercase\uf8ff');
-          query = query.where('lowercaseTitle', arrayContainsAny: searchSubtrings);
-        }
-
-        QuerySnapshot querySnapshot = await query.get();
-        print("");
-        return querySnapshot.docs.map((doc) => sorttasks_task.Task.fromMap(doc.id, doc.data() as Map<String, dynamic>)).toList();
-
-      } else {
-        if (kDebugMode) {
-          print('Error: User ID is null.');
-        }
-        return [];
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error getting owned tasks: $e');
-      }
-      return [];
-    }
-  }
-  */
-
-  static Future<List<sorttasks_task.Task>> _taskHistory(String? userID, String sortField, bool isDescending, String searchQuery) async {
+  static Future<List<sorttasks_task.Task>> _taskList(String? userID, String sortField, bool isDescending) async {
     try {
       if (userID != null) {
         // Query to get tasks where userID is equal to the input parameter,
@@ -610,11 +573,12 @@ class FirestoreUtils {
     try {
       if (userID != null) {
         // Retrieve all tasks owned by the user
-        List<sorttasks_task.Task> allTasks = await FirestoreUtils._taskHistory(userID, sortField, isDescending, '');
+        List<sorttasks_task.Task> allTasks = await FirestoreUtils._taskList(userID, sortField, isDescending);
 
         // Filter tasks based on the search query (substring match)
-        List<sorttasks_task.Task> filteredTasks = allTasks.where((task) =>
-            task.lowercaseTitle.contains(searchQuery.toLowerCase())).toList();
+        List<sorttasks_task.Task> filteredTasks = allTasks.where(
+          (task) => task.lowercaseTitle.contains(searchQuery.toLowerCase())
+        ).toList();
 
         return filteredTasks;
       } else {
@@ -748,39 +712,44 @@ class FirestoreUtils {
     }
   }
 
-  static Future<List<ArchivedTask>> getOwnedHistory(String? userID, String sortField, bool isDescending, String searchQuery) async {
+  static Future<List<ArchivedTask>> _taskHistory(String? userID, String sortField, bool isDescending) async {
     try {
       if (userID != null) {
-        // Query to get tasks where userID is equal to the input parameter,
+        // Query to get archived tasks where userID is equal to the input parameter,
         // and sorted by the provided field and order
         Query query = FirebaseFirestore.instance
           .collection('archivedTasks')
           .where('userID', isEqualTo: userID)
           .orderBy(sortField, descending: isDescending);
 
-        print(query);
-
-        print("\n");
-
-        print(searchQuery);
-
-        if (searchQuery.isNotEmpty) {
-          String searchQueryLowercase = searchQuery.toLowerCase();
-          query = query.where('lowercaseTitle', isGreaterThanOrEqualTo: searchQueryLowercase).where('lowercaseTitle', isLessThanOrEqualTo: '$searchQueryLowercase\uf8ff');
-          // query = query.where('lowercaseTitle', arrayContains: searchQueryLowercase);
-        }
-
-        print("\n");
-
-        print(query);
-
-        print("\n");
-
         QuerySnapshot querySnapshot = await query.get();
-
-        print(querySnapshot);
-
         return querySnapshot.docs.map((doc) => ArchivedTask.fromMap(doc.id, doc.data() as Map<String, dynamic>)).toList();
+      } else {
+        if (kDebugMode) {
+          print('Error: User ID is null.');
+        }
+        return [];
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error getting owned tasks: $e');
+      }
+      return [];
+    }
+  }
+
+  static Future<List<ArchivedTask>> getOwnedHistory(String? userID, String sortField, bool isDescending, String searchQuery) async {
+    try {
+      if (userID != null) {
+        // Retrieve all archived tasks owned by the user
+        List<ArchivedTask> allTasks = await FirestoreUtils._taskHistory(userID, sortField, isDescending);
+
+        // Filter tasks based on the search query (substring match)
+        List<ArchivedTask> filteredTasks = allTasks.where(
+          (task) => task.lowercaseTitle.contains(searchQuery.toLowerCase())
+        ).toList();
+
+        return filteredTasks;
       } else {
         if (kDebugMode) {
           print('Error: User ID is null.');

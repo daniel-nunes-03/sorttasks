@@ -44,20 +44,13 @@ class TaskHistoryState extends State<TaskHistoryScreen> {
   }
 
   void _onSearchChanged() {
-    setState(() {
-      _searchQuery = _searchController.text.toLowerCase();
-      _fetchDataFuture = fetchData();
-    });
-  }
-
-  Future<List<ArchivedTask>> fetchData() async {
-    // Step 1: Retrieve the ID of the logged-in user
-    String? loggedInUserId = SorttasksApp.loggedInUser?.uid;
-
-    // Step 2: Get the tasks owned by the logged-in user
-    List<ArchivedTask> tasks = await FirestoreUtils.getOwnedHistory(loggedInUserId, _sortField, _isDescending, _searchQuery);
-
-    return tasks;
+    // Only changes if the input changes
+    if (_searchQuery != _searchController.text.toLowerCase()) {
+      setState(() {
+        _searchQuery = _searchController.text.toLowerCase();
+        _fetchDataFuture = fetchData();
+      });
+    }
   }
 
   void _changeSortOrder(String field, bool descending) {
@@ -69,6 +62,16 @@ class TaskHistoryState extends State<TaskHistoryScreen> {
         _fetchDataFuture = fetchData();
       });
     }
+  }
+
+  Future<List<ArchivedTask>> fetchData() async {
+    // Step 1: Retrieve the ID of the logged-in user
+    String? loggedInUserId = SorttasksApp.loggedInUser?.uid;
+
+    // Step 2: Get the tasks owned by the logged-in user
+    List<ArchivedTask> tasks = await FirestoreUtils.getOwnedHistory(loggedInUserId, _sortField, _isDescending, _searchQuery);
+
+    return tasks;
   }
 
   @override

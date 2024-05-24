@@ -30,7 +30,7 @@ class ArchivedTask {
   factory ArchivedTask.fromMap(String docId, Map<String, dynamic> map) {
     final String id = docId;
     final String title = map['title'] as String;
-    final String lowercaseTitle = map['title'] as String;
+    final String lowercaseTitle = map['lowercaseTitle'] as String;
     final String? userID = map['userID'] as String?;
     final Timestamp archivedDateHour = map['archivedDateHour'] as Timestamp;
     final Timestamp finishDateHour = map['finishDateHour'] as Timestamp;
