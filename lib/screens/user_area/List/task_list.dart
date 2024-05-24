@@ -1,8 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/task.dart';
@@ -19,17 +17,37 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class TaskListState extends State<TaskListScreen> {
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController1 = ScrollController();
+  final ScrollController _scrollController2 = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
   late Future<List<Task>> _fetchDataFuture;
   
   // Sorting options
   String _sortField = 'taskPriority';
   bool _isDescending = true;
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
+    _searchController.addListener(_onSearchChanged);
     _fetchDataFuture = fetchData();
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    _scrollController1.dispose();
+    _scrollController2.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _searchQuery = _searchController.text.toLowerCase();
+      _fetchDataFuture = fetchData();
+    });
   }
 
   Future<List<Task>> fetchData() async {
@@ -40,17 +58,20 @@ class TaskListState extends State<TaskListScreen> {
     await FirestoreUtils.autoArchiveTasks(loggedInUserId);
 
     // Get the tasks owned by the logged-in user
-    List<Task> tasks = await FirestoreUtils.getOwnedTasks(loggedInUserId, _sortField, _isDescending);
+    List<Task> tasks = await FirestoreUtils.getOwnedTasks(loggedInUserId, _sortField, _isDescending, _searchQuery);
 
     return tasks;
   }
 
   void _changeSortOrder(String field, bool descending) {
-    setState(() {
-      _sortField = field;
-      _isDescending = descending;
-      _fetchDataFuture = fetchData();
-    });
+    // Only changes if the sort or sorting order changes
+    if (_sortField != field || _isDescending != descending) {
+      setState(() {
+        _sortField = field;
+        _isDescending = descending;
+        _fetchDataFuture = fetchData();
+      });
+    }
   }
 
   @override
@@ -63,7 +84,6 @@ class TaskListState extends State<TaskListScreen> {
     }
 
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
-    final scrollcontroller = ScrollController();
 
     return Scaffold(
       body: Container(
@@ -75,19 +95,25 @@ class TaskListState extends State<TaskListScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 40, top: 10, right: 20),
                 child: Scrollbar(
-                  controller: scrollcontroller,
+                  controller: _scrollController1,
                   thumbVisibility: true,
                   child: SingleChildScrollView(
-                    controller: scrollcontroller,
+                    controller: _scrollController1,
                     child: Column(
                       children: [
+                        const SizedBox(height: 5),
                         Row(
                           children: [
-                            Container(
+                            SizedBox(
                               width: 175,
-                              height: 30,
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
+                              height: 45,
+                              child: TextField(
+                                controller: _searchController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Search tasks',
+                                  border: OutlineInputBorder(),
+                                  suffixIcon: Icon(Icons.search),
+                                ),
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -127,6 +153,7 @@ class TaskListState extends State<TaskListScreen> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 5),
                         Row(
                           children: [
                             SizedBox(
@@ -268,20 +295,23 @@ class TaskListState extends State<TaskListScreen> {
                       child: Container(
                         padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
                         child: Scrollbar(
-                          controller: _scrollController,
+                          controller: _scrollController2,
                           thumbVisibility: true,
                           child: userTasks.isEmpty
                             ? Center(
-                                child: Text(
-                                  'No tasks owned.',
-                                  style: TextStyle(
-                                    color: isDarkTheme? Colors.yellow : const Color.fromARGB(255, 210, 14, 0),
-                                    fontSize: 20,
+                                child: SingleChildScrollView(
+                                controller: _scrollController2,
+                                  child: Text(
+                                    'No tasks owned.',
+                                    style: TextStyle(
+                                      color: isDarkTheme? Colors.yellow : const Color.fromARGB(255, 210, 14, 0),
+                                      fontSize: 20,
+                                    ),
                                   ),
                                 ),
                               )
                             : ListView.builder(
-                                controller: _scrollController,
+                                controller: _scrollController2,
                                 shrinkWrap: true,
                                 itemCount: userTasks.length,
                                 itemBuilder: (context, index) {

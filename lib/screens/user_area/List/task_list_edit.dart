@@ -109,6 +109,8 @@ class _TaskEditForm extends StatefulWidget {
 class _TaskEditFormState extends State<_TaskEditForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String _title = widget.currentTask.title;
+  final ScrollController _scrollController1 = ScrollController();
+  final ScrollController _scrollController2 = ScrollController();
 
   late DateTime _finalDate =  DateTime(
     widget.currentTask.finishDateHour.toDate().year,
@@ -156,8 +158,6 @@ class _TaskEditFormState extends State<_TaskEditForm> {
   @override
   Widget build(BuildContext context) {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
-    ScrollController scrollController = ScrollController();
-    ScrollController scrollController2 = ScrollController();
 
     return Form(
       key: _formKey,
@@ -166,10 +166,10 @@ class _TaskEditFormState extends State<_TaskEditForm> {
         children: [
           Expanded(
             child: Scrollbar(
-              controller: scrollController,
+              controller: _scrollController1,
               thumbVisibility: true,
               child: SingleChildScrollView(
-                controller: scrollController,
+                controller: _scrollController1,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -316,10 +316,10 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                         child: Padding(
                           padding: const EdgeInsets.all(8),
                           child: Scrollbar(
-                            controller: scrollController2,
+                            controller: _scrollController2,
                             thumbVisibility: true,
                             child: SingleChildScrollView(
-                              controller: scrollController2,
+                              controller: _scrollController2,
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 10, top: 0, right: 12, bottom: 10),

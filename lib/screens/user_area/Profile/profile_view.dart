@@ -25,6 +25,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
   late String _profileImageUrl = '';
   bool _dataIsLoading = true;
   bool _noData = false;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -160,7 +161,6 @@ class ProfileViewState extends State<ProfileViewScreen> {
     }
 
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
-    final scrollController = ScrollController();
     
     return Scaffold(
       backgroundColor: isDarkTheme
@@ -169,9 +169,9 @@ class ProfileViewState extends State<ProfileViewScreen> {
       appBar: const CustomAppBar(),
       body: Scrollbar(
         thumbVisibility: true,
-        controller: scrollController,
+        controller: _scrollController,
         child: SingleChildScrollView(
-          controller: scrollController,
+          controller: _scrollController,
           child: Column(
             children: [
               Center(

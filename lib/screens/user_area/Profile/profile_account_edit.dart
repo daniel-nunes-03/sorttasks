@@ -61,6 +61,7 @@ class _AccountEditFormState extends State<_AccountEditForm> {
   String _password = '';
   // ignore: unused_field
   String _repeatedPassword = '';
+  final ScrollController _scrollController = ScrollController();
 
   void updateEmail(String email) {
     setState(() {
@@ -133,7 +134,6 @@ class _AccountEditFormState extends State<_AccountEditForm> {
   @override
   Widget build(BuildContext context) {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
-    final scrollController = ScrollController();
 
     return Scaffold(
       body: Center(
@@ -147,10 +147,10 @@ class _AccountEditFormState extends State<_AccountEditForm> {
                 const SizedBox(height: 50),
                 Expanded(
                   child: Scrollbar(
-                    controller: scrollController,
+                    controller: _scrollController,
                     thumbVisibility: true,
                     child: SingleChildScrollView(
-                      controller: scrollController,
+                      controller: _scrollController,
                       child: Column(
                         children: [
                           Container(

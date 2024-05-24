@@ -23,21 +23,21 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
   late Task currentTask;
   bool _dataIsLoading = true;
   bool _noData = false;
-  late ScrollController _scrollController;
+  late ScrollController _scrollController1;
   late ScrollController _scrollController2;
 
   @override
   void initState() {
     super.initState();
     currentTask = widget.task;
-    _scrollController = ScrollController();
+    _scrollController1 = ScrollController();
     _scrollController2 = ScrollController();
     fetchData();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollController1.dispose();
     _scrollController2.dispose();
     super.dispose();
   }
@@ -95,10 +95,10 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
         children: [
           Expanded(
             child: Scrollbar(
-              controller: _scrollController,
+              controller: _scrollController1,
               thumbVisibility: true,
               child: SingleChildScrollView(
-                controller: _scrollController,
+                controller: _scrollController1,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: 

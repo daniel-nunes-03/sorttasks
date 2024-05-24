@@ -54,13 +54,13 @@ class _TaskAddForm extends StatefulWidget {
 
 class _TaskAddFormState extends State<_TaskAddForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
- 
   String? _title;
   DateTime _finalDate = DateTime.now().add(const Duration(days: 1));
   TimeOfDay _finalTime = TimeOfDay.now();
   int? _taskPriority;
   final bool _taskStatus = false; // not completed
   String? _description;
+  final ScrollController _scrollController = ScrollController();
 
   void updateTitle(String title) {
     setState(() {
@@ -101,8 +101,10 @@ class _TaskAddFormState extends State<_TaskAddForm> {
       children: [
         Expanded(
           child: Scrollbar(
+            controller: _scrollController,
             thumbVisibility: true,
             child: SingleChildScrollView(
+              controller: _scrollController,
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Form(

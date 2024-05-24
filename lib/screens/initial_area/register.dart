@@ -30,7 +30,7 @@ class RegisterScreenState extends State<RegisterScreen> {
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.only(left: 20, top: 20),
                 child: TextButton(
                   onPressed: () {
                     setState(() {

@@ -53,6 +53,7 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
   late String _profileImageUrl = '';
   bool _dataIsLoading = true;
   bool _noData = false;
+  final ScrollController _scrollcontroller = ScrollController();
 
   @override
   void initState() {
@@ -153,7 +154,6 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
   @override
   Widget build(BuildContext context) {
     final isDarkTheme = Provider.of<ThemeNotifier>(context).isDarkTheme;
-    final scrollcontroller = ScrollController();
 
     return Scaffold(
       body: Center(
@@ -162,10 +162,10 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
           child: Form(
             key: _formKey,
             child: Scrollbar(
-              controller: scrollcontroller,
+              controller: _scrollcontroller,
               thumbVisibility: true,
               child: SingleChildScrollView(
-                controller: scrollcontroller,
+                controller: _scrollcontroller,
                 child: Column(
                   children: [
                     const SizedBox(height: 30),
