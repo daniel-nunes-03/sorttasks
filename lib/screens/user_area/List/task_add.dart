@@ -58,7 +58,6 @@ class _TaskAddFormState extends State<_TaskAddForm> {
   DateTime _finalDate = DateTime.now().add(const Duration(days: 1));
   TimeOfDay _finalTime = TimeOfDay.now();
   int? _taskPriority;
-  final bool _taskStatus = false; // not completed
   String? _description;
   final ScrollController _scrollController = ScrollController();
 
@@ -291,7 +290,6 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                         _finalDate,
                         _finalTime,
                         _taskPriority!,
-                        _taskStatus,
                         _description!
                       );
                       Navigator.pushReplacementNamed(context, '/main_screen');

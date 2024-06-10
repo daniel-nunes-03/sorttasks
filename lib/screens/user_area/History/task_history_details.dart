@@ -31,7 +31,6 @@ class TaskDetailsState extends State<TaskHistoryDetailsScreen> {
     currentTask = widget.task;
     _scrollController1 = ScrollController();
     _scrollController2 = ScrollController();
-    fetchData();
   }
 
   @override

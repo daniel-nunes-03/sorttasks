@@ -225,6 +225,12 @@ class FirestoreUtils {
         'completedTasks': 0
       });
 
+      // Create a new folder with the user's ID as name in taskMain for tasks
+      FirebaseStorage.instance.ref().child('tasksMain').child('tasks').child(userId);
+
+      // Create a new folder with the user's ID as name in taskMain for archived tasks
+      FirebaseStorage.instance.ref().child('tasksMain').child('archivedTasks').child(userId);
+
       // Send verification email
       await userCredential.user!.sendEmailVerification();
     } catch (e) {
@@ -254,6 +260,10 @@ class FirestoreUtils {
 
       // Delete the user's folder in Firebase Storage
       await FirebaseStorage.instance.ref().child('users').child(userId).delete();
+
+      // Delete the user's tasks and archived tasks folders
+      await FirebaseStorage.instance.ref().child('tasksMain').child('tasks').child(userId).delete();
+      await FirebaseStorage.instance.ref().child('tasksMain').child('archivedTasks').child(userId).delete();
 
       // Delete the user from authentication
       await FirebaseAuth.instance.currentUser?.delete();
@@ -390,41 +400,12 @@ class FirestoreUtils {
   }
 
   // 'TASKS' COLLECTION IN FIRESTORE
-
-  Future<void> insertDate(BuildContext context, DateTime selectedDate, TimeOfDay selectedTime) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final CollectionReference tasks = firestore.collection('tasks');
-
-    final DateTime selectedDateTime = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-      selectedTime.hour,
-      selectedTime.minute
-    );
-
-    try {
-      await tasks.add({
-        'dateHour': selectedDateTime,
-        // You can add more fields here as needed
-      });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Task added successfully!'),
-      ));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to add task: $e'),
-      ));
-    }
-  }
-
   static Future<void> createTask(
     BuildContext context,
     String title,
     DateTime finalDate,
     TimeOfDay finalTime,
     int taskPriority,
-    bool taskStatus,
     String description
   ) async {
     try {
@@ -442,14 +423,12 @@ class FirestoreUtils {
         final DateTime creationDateHour = DateTime.now();
 
         // Create a document for the current user with the input data
-        await FirebaseFirestore.instance.collection('tasks').doc().set({
-          'userID': currentUser.uid,
+        await FirebaseFirestore.instance.collection('tasksMain').doc('tasks').collection(currentUser.uid).doc().set({
           'title': title,
           'lowercaseTitle': title.toLowerCase(),
           'finishDateHour': finishDateHour,
           'creationDateHour': creationDateHour,
           'taskPriority': taskPriority,
-          'taskStatus': taskStatus,
           'description': description
         });
 
@@ -493,7 +472,8 @@ class FirestoreUtils {
           finalTime.minute
         );
         
-        DocumentReference taskReference = FirebaseFirestore.instance.collection('tasks').doc(taskID);
+        DocumentReference taskReference = 
+          FirebaseFirestore.instance.collection('tasksMain').doc('tasks').collection(currentUser.uid).doc(taskID);
 
         await taskReference.update({
           'title': title,
@@ -523,7 +503,7 @@ class FirestoreUtils {
 
       if (currentUser != null) {
         // Delete Task
-        await FirebaseFirestore.instance.collection('tasks').doc(taskId).delete();
+        await FirebaseFirestore.instance.collection('tasksMain').doc('tasks').collection(currentUser.uid).doc(taskId).delete();
 
         // Decrement 'createdTasks' field by 1
         await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).update({
@@ -546,11 +526,11 @@ class FirestoreUtils {
   static Future<List<sorttasks_task.Task>> _taskList(String? userID, String sortField, bool isDescending) async {
     try {
       if (userID != null) {
-        // Query to get tasks where userID is equal to the input parameter,
-        // and sorted by the provided field and order
+        // Query to get tasks from the authenticated user
         Query query = FirebaseFirestore.instance
-          .collection('tasks')
-          .where('userID', isEqualTo: userID)
+          .collection('tasksMain')
+          .doc('tasks')
+          .collection(SorttasksApp.loggedInUser!.uid)
           .orderBy(sortField, descending: isDescending);
 
         QuerySnapshot querySnapshot = await query.get();
@@ -597,8 +577,12 @@ class FirestoreUtils {
 
   static Future<sorttasks_task.Task> getTaskDetails(String taskID) async {
     try {
-      // Reference to the 'tasks' collection and the specific document
-      DocumentReference taskReference = FirebaseFirestore.instance.collection('tasks').doc(taskID);
+      // Reference to the specific document
+      DocumentReference taskReference = FirebaseFirestore.instance
+        .collection('tasksMain')
+        .doc('tasks')
+        .collection(SorttasksApp.loggedInUser!.uid)
+        .doc(taskID);
 
       // Fetch the document snapshot
       DocumentSnapshot snapshot = await taskReference.get();
@@ -625,8 +609,9 @@ class FirestoreUtils {
 
   static Future<void> archiveTask(String taskID, {required bool isAutomatic}) async {
     try {
-      // Reference to the 'tasks' collection and the specific document
-      DocumentReference taskReference = FirebaseFirestore.instance.collection('tasks').doc(taskID);
+      // Reference to the specific document
+      DocumentReference taskReference = 
+        FirebaseFirestore.instance.collection('tasksMain').doc('tasks').collection(SorttasksApp.loggedInUser!.uid).doc(taskID);
 
       // Fetch the document snapshot
       DocumentSnapshot snapshot = await taskReference.get();
@@ -636,14 +621,19 @@ class FirestoreUtils {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
         if (isAutomatic) {
+          data['taskStatus'] = false;
           data['archivedDateHour'] = data['finishDateHour'];
         } else {
           data['taskStatus'] = true;
           data['archivedDateHour'] = DateTime.now();
         }
 
-        // Create a new document in the 'archivedTasks' collection with the same data
-        await FirebaseFirestore.instance.collection('archivedTasks').doc(taskID).set(data);
+        // Create a new document in 'archivedTasks' with the same data
+        await FirebaseFirestore.instance
+          .collection('tasksMain')
+          .doc('archivedTasks')
+          .collection(SorttasksApp.loggedInUser!.uid)
+          .doc(taskID).set(data);
 
         // Delete the original task document from the 'tasks' collection
         await taskReference.delete();
@@ -665,11 +655,11 @@ class FirestoreUtils {
   static Future<void> autoArchiveTasks(String? userID) async {
     try {
       if (userID != null) {
-        CollectionReference tasksCollection = FirebaseFirestore.instance.collection('tasks');
+        CollectionReference tasksCollection = 
+          FirebaseFirestore.instance.collection('tasksMain').doc('tasks').collection(SorttasksApp.loggedInUser!.uid);
 
         // Get user tasks where finishDateHour is in the past
         QuerySnapshot querySnapshot = await tasksCollection
-          .where('userID', isEqualTo: userID)
           .where('finishDateHour', isLessThan: DateTime.now())
           .get();
 
@@ -692,7 +682,8 @@ class FirestoreUtils {
 
       if (currentUser != null) {
         // Delete Archived Task
-        await FirebaseFirestore.instance.collection('archivedTasks').doc(taskId).delete();
+        await FirebaseFirestore.instance.collection('tasksMain').doc('archivedTasks')
+          .collection(SorttasksApp.loggedInUser!.uid).doc(taskId).delete();
 
         // Decrement 'createdTasks' field by 1
         await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).update({
@@ -715,11 +706,11 @@ class FirestoreUtils {
   static Future<List<ArchivedTask>> _taskHistory(String? userID, String sortField, bool isDescending) async {
     try {
       if (userID != null) {
-        // Query to get archived tasks where userID is equal to the input parameter,
-        // and sorted by the provided field and order
+        // Query to get archived tasks from the authenticated user
         Query query = FirebaseFirestore.instance
-          .collection('archivedTasks')
-          .where('userID', isEqualTo: userID)
+          .collection('tasksMain')
+          .doc('archivedTasks')
+          .collection(userID)
           .orderBy(sortField, descending: isDescending);
 
         QuerySnapshot querySnapshot = await query.get();
@@ -732,7 +723,7 @@ class FirestoreUtils {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error getting owned tasks: $e');
+        print('Error getting owned archived tasks: $e');
       }
       return [];
     }
@@ -758,7 +749,7 @@ class FirestoreUtils {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error getting owned tasks: $e');
+        print('Error getting owned archived tasks: $e');
       }
       return [];
     }
@@ -766,8 +757,12 @@ class FirestoreUtils {
 
   static Future<ArchivedTask> getArchivedTaskDetails(String taskID) async {
     try {
-      // Reference to the 'archivedTasks' collection and the specific document
-      DocumentReference taskReference = FirebaseFirestore.instance.collection('archivedTasks').doc(taskID);
+      // Reference to the specific document
+      DocumentReference taskReference = FirebaseFirestore.instance
+        .collection('tasksMain')
+        .doc('archivedTasks')
+        .collection(SorttasksApp.loggedInUser!.uid)
+        .doc(taskID);
 
       // Fetch the document snapshot
       DocumentSnapshot snapshot = await taskReference.get();
@@ -778,13 +773,13 @@ class FirestoreUtils {
       } else {
         // Handle the case where the event with the given ID does not exist
         if (kDebugMode) {
-          print('Task not found');
+          print('Archived Task not found');
         }
-        throw Exception("Task not found");
+        throw Exception("Archived Task not found");
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error getting task by ID: $e');
+        print('Error getting archived task by ID: $e');
       }
       rethrow;
     }

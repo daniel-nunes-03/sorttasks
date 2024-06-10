@@ -117,7 +117,12 @@ class _AccountEditFormState extends State<_AccountEditForm> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
-              child: const Text('Yes, Delete'),
+              child: const Text(
+                'Yes, Delete',
+                style: TextStyle(
+                  color: Colors.black
+                ),
+              ),
             ),
             TextButton(
               onPressed: () {

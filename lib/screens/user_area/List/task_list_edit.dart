@@ -259,7 +259,7 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                             ),
                             const SizedBox(width: 25),
                             SizedBox(
-                              width: 240,
+                              width: 210,
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 18),
                                 child: NumberInput(
@@ -285,21 +285,13 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                               ),
                             ),
                             const SizedBox(width: 25),
-                            widget.currentTask.taskStatus
-                              ? Text(
-                                  'Completed',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: isDarkTheme? const Color.fromARGB(255, 0, 202, 8) : const Color.fromARGB(255, 0, 154, 6),
-                                  ),
-                                )
-                              : const Text(
-                                  'Not completed',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.red,
-                                  ),
-                                )
+                            const Text(
+                              'Not completed',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.red,
+                              ),
+                            )
                           ],
                         )
                       ),

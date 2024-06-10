@@ -4,7 +4,6 @@ class ArchivedTask {
   String id;
   String title;
   String lowercaseTitle;
-  String? userID;
   Timestamp archivedDateHour;
   Timestamp finishDateHour;
   Timestamp creationDateHour;
@@ -17,7 +16,6 @@ class ArchivedTask {
     required this.id,
     required this.title,
     required this.lowercaseTitle,
-    required this.userID,
     required this.archivedDateHour,
     required this.finishDateHour,
     required this.creationDateHour,
@@ -31,19 +29,17 @@ class ArchivedTask {
     final String id = docId;
     final String title = map['title'] as String;
     final String lowercaseTitle = map['lowercaseTitle'] as String;
-    final String? userID = map['userID'] as String?;
     final Timestamp archivedDateHour = map['archivedDateHour'] as Timestamp;
     final Timestamp finishDateHour = map['finishDateHour'] as Timestamp;
     final Timestamp creationDateHour = map['creationDateHour'] as Timestamp;
     final int taskPriority = map['taskPriority'] as int;
-    final bool taskStatus = map['taskStatus'] as bool? ?? false;
+    final bool taskStatus = map['taskStatus'] as bool;
     final String description = map['description'] as String;
 
     return ArchivedTask(
       id: id,
       title: title,
       lowercaseTitle: lowercaseTitle,
-      userID: userID,
       archivedDateHour: archivedDateHour,
       finishDateHour: finishDateHour,
       creationDateHour: creationDateHour,
@@ -58,7 +54,6 @@ class ArchivedTask {
     return {
       'title': title,
       'lowercaseTitle': lowercaseTitle,
-      'userID': userID,
       'archivedDateHour': archivedDateHour,
       'finishDateHour': finishDateHour,
       'creationDateHour': creationDateHour,

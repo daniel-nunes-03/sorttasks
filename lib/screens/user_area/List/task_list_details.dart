@@ -244,21 +244,13 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 25),
-                                currentTask.taskStatus
-                                  ? Text(
-                                      'Completed',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: isDarkTheme? const Color.fromARGB(255, 0, 202, 8) : const Color.fromARGB(255, 0, 154, 6),
-                                      ),
-                                    )
-                                  : const Text(
-                                      'Not completed',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.red,
-                                      ),
-                                    )
+                                const Text(
+                                  'Not completed',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.red,
+                                  ),
+                                )
                               ],
                             )
                           ),
@@ -448,7 +440,7 @@ void _passwordConfirmationPopup(BuildContext context, Task task, {required bool 
   );
 }
 
-void _showDeleteConfirmationDialog(BuildContext context, Task task) {
+void _showDeleteConfirmationDialog(BuildContext context, Task task) {  
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -497,7 +489,12 @@ void _showDeleteConfirmationDialog(BuildContext context, Task task) {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
             ),
-            child: const Text('Yes, Delete'),
+            child: const Text(
+              'Yes, Delete',
+              style: TextStyle(
+                color: Colors.black
+              ),
+            ),
           ),
           TextButton(
             onPressed: () {
