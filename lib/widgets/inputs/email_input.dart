@@ -21,7 +21,7 @@ class EmailInputState extends State<EmailInput> {
   late TextEditingController _emailController;
 
   // Characters/underscores/dots + @ + characters/underscores + dot + domain (2 to 4 letters)
-  final RegExp _emailRegex = RegExp(
+  final RegExp emailRegex = RegExp(
     r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
   );
 
@@ -49,7 +49,7 @@ class EmailInputState extends State<EmailInput> {
       ),
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
-        if (value!.isEmpty || !_emailRegex.hasMatch(value)) {
+        if (value!.isEmpty || !emailRegex.hasMatch(value)) {
           return 'Please enter a valid email address.';
         }
         return null;

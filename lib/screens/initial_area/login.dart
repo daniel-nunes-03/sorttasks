@@ -103,7 +103,64 @@ class LoginScreenState extends State<LoginScreen> {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  // Recover password logic
+                  String email = '';
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Recover Password'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              onChanged: (value) {
+                                email = value;
+                              },
+                              decoration: const InputDecoration(
+                                labelText: 'Enter your email',
+                              ),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              if (email.isNotEmpty && EmailInputState().emailRegex.hasMatch(email)) {
+                                // Send password reset email and close the dialog
+                                await FirestoreUtils.sendPasswordResetEmail(context, email);
+                              } else {
+                                // Show an alert if the entered email is invalid
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Invalid Email'),
+                                      content: const Text('Please enter a valid email address.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                            child: const Text('Send'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isDarkTheme ? const Color.fromRGBO(255, 80, 80, 0.8) : const Color.fromRGBO(255, 198, 198, 1.0),
@@ -119,7 +176,7 @@ class LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         fontSize: 14,
                         color: isDarkTheme ? Colors.white : Colors.black,
-                      )
+                      ),
                     ),
                     const SizedBox(width: 5),
                     Container(
@@ -135,7 +192,7 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ],
-                )                
+                ),                
               ),
             ),
             const SizedBox(height: 50),

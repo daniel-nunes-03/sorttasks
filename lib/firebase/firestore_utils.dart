@@ -10,20 +10,9 @@ import 'package:sorttasks/classes/archived_task.dart';
 import 'package:sorttasks/classes/task.dart' as sorttasks_task;
 import 'package:sorttasks/main.dart';
 
-List<String> generateSubstrings(String text) {
-    List<String> substrings = [];
-    for (int i = 0; i < text.length; i++) {
-      for (int j = i + 1; j <= text.length; j++) {
-        substrings.add(text.substring(i, j));
-      }
-    }
-    return substrings;
-}
-
 class FirestoreUtils {
 
   // 'USERS' COLLECTION IN FIRESTORE
-
   static Future<Map<String, dynamic>?> getUserData() async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
@@ -197,6 +186,49 @@ class FirestoreUtils {
         ),
       );
       rethrow;
+    }
+  }
+
+  // Recover password
+  static Future<void> sendPasswordResetEmail(BuildContext context, String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      Navigator.of(context).pop(); // close the previous popup before opening the next one
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Password Reset'),
+            content: const Text('A password reset link has been sent to your email.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text('An error occurred while sending the password reset email. Please try again or contact support.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
