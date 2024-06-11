@@ -95,35 +95,79 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
     });
   }
 
-  void _uploadNewProfileImage(String userId, {required bool isRemove}) async {
-    if (isRemove) {
-      await FirestoreUtils.removeImage(userId);
-      setState(() {
-        _profileImageUrl = '';
-      });
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Image Removed'),
-            content: const Text('Your profile image has been successfully removed.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-                child: const Text('OK'),
+  void _showDeleteConfirmationDialog(BuildContext context, String userID) {  
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Delete'),
+          content: const Text('Are you sure you want to delete your profile picture?'),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                try {                 
+                  await FirestoreUtils.removeImage(userID);
+                  setState(() {
+                    _profileImageUrl = '';
+                  });
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Image Removed'),
+                        content: const Text('Your profile image has been successfully removed.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close this inner dialog
+                              Navigator.of(context).pop(); // Close the outer dialog
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('There was an error deleting your profile image. Please try again or contact support.'),
+                      duration: Duration(seconds: 5),
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
               ),
-            ],
-          );
-        },
-      );
+              child: const Text(
+                'Yes, Delete',
+                style: TextStyle(
+                  color: Colors.black
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the delete confirmation dialog
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _uploadNewProfileImage(String userID, {required bool isRemove}) async {
+    if (isRemove) {
+      _showDeleteConfirmationDialog(context, userID);
     } else {
       final picker = ImagePicker();
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         File imageFile = File(pickedFile.path);
-        String? imageUrl = await FirestoreUtils.uploadImage(imageFile, userId);
+        String? imageUrl = await FirestoreUtils.uploadImage(imageFile, userID);
         if (imageUrl != null) {
           setState(() {
             _profileImageUrl = imageUrl;
