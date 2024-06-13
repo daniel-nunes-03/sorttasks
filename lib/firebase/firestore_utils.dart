@@ -454,6 +454,21 @@ class FirestoreUtils {
 
         final DateTime creationDateHour = DateTime.now();
 
+        bool notification3D = false;
+        bool notification1D = false;
+
+        // If notification in 3 days doesnt apply, "true"
+        DateTime threeDaysFromNow = DateTime.now().add(const Duration(days: 3));
+        if (finishDateHour.isBefore(threeDaysFromNow)) {
+          notification3D = true;
+        }
+
+        // If notification in 1 day doesnt apply, "true"
+        DateTime oneDayFromNow = DateTime.now().add(const Duration(days: 1));
+        if (finishDateHour.isBefore(oneDayFromNow)) {
+          notification1D = true;
+        }
+
         // Create a document for the current user with the input data
         await FirebaseFirestore.instance.collection('tasksMain').doc('tasks').collection(currentUser.uid).doc().set({
           'title': title,
@@ -461,7 +476,9 @@ class FirestoreUtils {
           'finishDateHour': finishDateHour,
           'creationDateHour': creationDateHour,
           'taskPriority': taskPriority,
-          'description': description
+          'description': description,
+          'notification3D': notification3D,
+          'notification1D': notification1D
         });
 
         // Update the 'createdTasks' field in the user's document
@@ -503,6 +520,21 @@ class FirestoreUtils {
           finalTime.hour,
           finalTime.minute
         );
+
+        bool notification3D = false;
+        bool notification1D = false;
+
+        // If notification in 3 days doesnt apply, "true"
+        DateTime threeDaysFromNow = DateTime.now().add(const Duration(days: 3));
+        if (finishDateHour.isBefore(threeDaysFromNow)) {
+          notification3D = true;
+        }
+
+        // If notification in 1 day doesnt apply, "true"
+        DateTime oneDayFromNow = DateTime.now().add(const Duration(days: 1));
+        if (finishDateHour.isBefore(oneDayFromNow)) {
+          notification1D = true;
+        }
         
         DocumentReference taskReference = 
           FirebaseFirestore.instance.collection('tasksMain').doc('tasks').collection(currentUser.uid).doc(taskID);
@@ -512,7 +544,9 @@ class FirestoreUtils {
           'lowercaseTitle': title.toLowerCase(),
           'finishDateHour': finishDateHour,
           'taskPriority': taskPriority,
-          'description': description
+          'description': description,
+          'notification3D': notification3D,
+          'notification1D': notification1D
         });
                 
       }
@@ -814,6 +848,64 @@ class FirestoreUtils {
         print('Error getting archived task by ID: $e');
       }
       rethrow;
+    }
+  }
+
+  // PERIODIC TASK CHECKS
+
+  static Future<void> checkTasksDueWithin3Days() async {
+    try {
+      // Get user's tasks
+      List<sorttasks_task.Task> tasks = await FirestoreUtils.getOwnedTasks(
+        SorttasksApp.loggedInUser!.uid,
+        'finishDateHour',
+        true, // Assuming descending order for finishDateHour
+        '',    // No search query needed
+      );
+
+      DateTime threeDaysFromNow = DateTime.now().add(const Duration(days: 3));
+      DateTime oneDayFromNow = DateTime.now().add(const Duration(days: 1));
+
+      // Check if any task's finishDateHour is within 3 days
+      for (var task in tasks) {
+        // Convert from Timestamp to Date
+        DateTime taskFinishDateTime = task.finishDateHour.toDate();
+
+        // If notification3D is appliable and still was not sent
+        if (!task.notification3D) {
+          if (taskFinishDateTime.isBefore(threeDaysFromNow)) {
+            print('TEST 3D: ${task.title} , ${task.notification3D}');
+
+            // Notification is no longer appliable since it was sent once already
+            
+            await FirebaseFirestore.instance
+              .collection('tasksMain')
+              .doc('tasks')
+              .collection(SorttasksApp.loggedInUser!.uid)
+              .doc(task.id).update({
+                'notification3D': true,
+              });
+          }
+        }
+
+        // If notification1D is appliable and still was not sent
+        if (!task.notification1D) {
+          if (taskFinishDateTime.isBefore(oneDayFromNow)) {
+            print('TEST 1D: ${task.title} , ${task.notification1D}');
+
+            await FirebaseFirestore.instance
+              .collection('tasksMain')
+              .doc('tasks')
+              .collection(SorttasksApp.loggedInUser!.uid)
+              .doc(task.id).update({
+                'notification1D': true,
+              });
+          }
+        }
+
+      }
+    } catch (e) {
+      print('Error checking tasks: $e');
     }
   }
 

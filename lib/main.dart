@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
+import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/firebase_options.dart';
 import 'package:sorttasks/screens/initial_area/login.dart';
 import 'package:sorttasks/screens/initial_area/register.dart';
@@ -22,16 +26,41 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  bool isLoggedIn = false;
+
+  final prefs = await SharedPreferences.getInstance();
+  final String? email = prefs.getString('email');
+  final String? password = prefs.getString('password');
+
+  if (email != null && password != null) {
+    isLoggedIn = await FirestoreUtils.login(email, password);
+  }
+
+  // Check tasks every minute
+  const Duration checkInterval = Duration(minutes: 1);
+  Timer.periodic(checkInterval, (Timer timer) async {
+    // Function to check tasks due within 3 days
+    await FirestoreUtils.checkTasksDueWithin3Days();
+  });
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeNotifier(),
-      child: const SorttasksApp(),
+      child: SorttasksApp(
+        initialRoute: isLoggedIn ? '/main_screen' : '/login',
+      ),
     ),
   );
 }
 
 class SorttasksApp extends StatelessWidget {
-  const SorttasksApp({super.key});
+  const SorttasksApp({
+    super.key,
+    required this.initialRoute,
+  });
+
+  final String initialRoute;
   
   static bool isDarkTheme = false;
   static User? loggedInUser;
@@ -46,6 +75,7 @@ class SorttasksApp extends StatelessWidget {
     
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      initialRoute: initialRoute,
       home: const LoginScreen(),
       routes: {
         '/login': (context) => const LoginScreen(),

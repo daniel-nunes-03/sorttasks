@@ -10,6 +10,8 @@ class ArchivedTask {
   int taskPriority;
   bool taskStatus;
   String description;
+  bool notification3D;
+  bool notification1D;
 
   // Constructor with named parameters and default values
   ArchivedTask({
@@ -21,7 +23,9 @@ class ArchivedTask {
     required this.creationDateHour,
     required this.taskPriority,
     required this.taskStatus,
-    required this.description
+    required this.description,
+    required this.notification3D,
+    required this.notification1D
   });
 
   // Factory constructor to create an Task from a map
@@ -35,6 +39,8 @@ class ArchivedTask {
     final int taskPriority = map['taskPriority'] as int;
     final bool taskStatus = map['taskStatus'] as bool;
     final String description = map['description'] as String;
+    final bool notification3D = map['notification3D'] as bool;
+    final bool notification1D = map['notification1D'] as bool;
 
     return ArchivedTask(
       id: id,
@@ -45,7 +51,9 @@ class ArchivedTask {
       creationDateHour: creationDateHour,
       taskPriority: taskPriority,
       taskStatus: taskStatus,
-      description: description
+      description: description,
+      notification3D: notification3D,
+      notification1D: notification1D
     );
   }
 
@@ -60,6 +68,8 @@ class ArchivedTask {
       'taskPriority': taskPriority,
       'taskStatus': taskStatus,
       'description': description,
+      'notification3D': notification3D,
+      'notification1D': notification1D
     };
   }
 

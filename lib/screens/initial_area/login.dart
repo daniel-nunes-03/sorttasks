@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/widgets/inputs/email_input.dart';
@@ -264,6 +265,7 @@ class _LoginFormState extends State<_LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String _email = '';
   late String _password = '';
+  bool _rememberMe = false;
 
   void updateEmail(String email) {
     setState(() {
@@ -275,6 +277,17 @@ class _LoginFormState extends State<_LoginForm> {
     setState(() {
       _password = password;
     });
+  }
+
+  Future<void> _saveLoginState(bool isRemembered) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (isRemembered) {
+      await prefs.setString('email', _email);
+      await prefs.setString('password', _password);
+    } else {
+      await prefs.remove('email');
+      await prefs.remove('password');
+    }
   }
 
   @override
@@ -347,6 +360,25 @@ class _LoginFormState extends State<_LoginForm> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _rememberMe,
+                      onChanged: (value) {
+                        setState(() {
+                          _rememberMe = value!;
+                        });
+                      },
+                    ),
+                    Text(
+                      'Remember Me',
+                      style: TextStyle(
+                        color: isDarkTheme ? Colors.white : Colors.black
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -364,6 +396,8 @@ class _LoginFormState extends State<_LoginForm> {
                 bool loginSuccessful = await FirestoreUtils.login(_email, _password);
 
                 if (loginSuccessful) {
+                  // Save login state
+                  await _saveLoginState(_rememberMe);
                   Navigator.pushReplacementNamed(context, '/main_screen');
                 } else {
                   showDialog(

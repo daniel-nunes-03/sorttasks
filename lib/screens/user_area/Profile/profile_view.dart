@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
@@ -26,6 +27,16 @@ class ProfileViewState extends State<ProfileViewScreen> {
   bool _dataIsLoading = true;
   bool _noData = false;
   final ScrollController _scrollController = ScrollController();
+
+  Future<void> _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.remove('email');
+    await prefs.remove('password');
+
+    SorttasksApp.loggedInUser = null;
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  }
 
   @override
   void initState() {
@@ -382,11 +393,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
                   ? const Color.fromRGBO(255, 0, 0, 0.7)
                   : Colors.red,
                 child: TextButton(
-                  onPressed: () {
-                    SorttasksApp.loggedInUser = null;
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/login', (route) => false);
-                  },
+                  onPressed: () async => await _logout(context),
                   // Important to make it zero inside the button so it gets centered
                   // instead of inheriting the padding from the positioning of the avatar
                   style: TextButton.styleFrom(

@@ -8,6 +8,8 @@ class Task {
   Timestamp creationDateHour;
   int taskPriority;
   String description;
+  bool notification3D;
+  bool notification1D;
 
   // Constructor with named parameters and default values
   Task({
@@ -17,7 +19,9 @@ class Task {
     required this.finishDateHour,
     required this.creationDateHour,
     required this.taskPriority,
-    required this.description
+    required this.description,
+    required this.notification3D,
+    required this.notification1D
   });
 
   // Factory constructor to create an Task from a map
@@ -29,6 +33,8 @@ class Task {
     final Timestamp creationDateHour = map['creationDateHour'] as Timestamp;
     final int taskPriority = map['taskPriority'] as int;
     final String description = map['description'] as String;
+    final bool notification3D = map['notification3D'] as bool;
+    final bool notification1D = map['notification1D'] as bool;
 
     return Task(
       id: id,
@@ -37,7 +43,9 @@ class Task {
       finishDateHour: finishDateHour,
       creationDateHour: creationDateHour,
       taskPriority: taskPriority,
-      description: description
+      description: description,
+      notification3D: notification3D,
+      notification1D: notification1D
     );
   }
 
@@ -50,6 +58,8 @@ class Task {
       'creationDateHour': creationDateHour,
       'taskPriority': taskPriority,
       'description': description,
+      'notification3D': notification3D,
+      'notification1D': notification1D
     };
   }
 
