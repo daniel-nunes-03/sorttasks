@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,6 +18,7 @@ import 'package:sorttasks/screens/user_area/Profile/profile_personal_edit.dart';
 import 'package:sorttasks/screens/user_area/Profile/profile_view.dart';
 import 'package:sorttasks/screens/user_area/main_screen.dart';
 import 'package:sorttasks/screens/user_area/List/task_add.dart';
+import 'package:sorttasks/services/background_service.dart' as background_service;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +27,14 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  background_service.initializeService();
+
+  bool isAllowedToSendNotification = await AwesomeNotifications().isNotificationAllowed();
+
+  if (!isAllowedToSendNotification) {
+    AwesomeNotifications().requestPermissionToSendNotifications();
+  }
 
   bool isLoggedIn = false;
 
@@ -38,38 +45,6 @@ void main() async {
   if (email != null && password != null) {
     isLoggedIn = await FirestoreUtils.login(email, password);
   }
-
-  // Initialize the notification group and channel
-  await AwesomeNotifications().initialize(
-    null,
-    [
-      NotificationChannel(
-        channelGroupKey: "task_channel_group",
-        channelKey: "task_channel",
-        channelName: "Task Notification",
-        channelDescription: "Task Notification Channel"
-      )
-    ],
-    channelGroups: [
-      NotificationChannelGroup(
-        channelGroupKey: "task_channel_group",
-        channelGroupName: "Task Group"
-      )
-    ]
-  );
-
-  bool isAllowedToSendNotification = await AwesomeNotifications().isNotificationAllowed();
-
-  if (!isAllowedToSendNotification) {
-    AwesomeNotifications().requestPermissionToSendNotifications();
-  }
-
-  // Check tasks every minute
-  const Duration checkInterval = Duration(minutes: 1);
-  Timer.periodic(checkInterval, (Timer timer) async {
-    // Function to check tasks due within 3 days
-    await FirestoreUtils.checkTasksDueWithin3Days();
-  });
 
   runApp(
     ChangeNotifierProvider(

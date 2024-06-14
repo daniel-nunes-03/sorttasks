@@ -855,6 +855,11 @@ class FirestoreUtils {
   // PERIODIC TASK CHECKS
 
   static Future<void> checkTasksDueWithin3Days() async {
+    // If no user is logged in
+    if (SorttasksApp.loggedInUser == null) {
+      return;
+    }
+
     try {
       // Get user's tasks
       List<sorttasks_task.Task> tasks = await FirestoreUtils.getOwnedTasks(
