@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -876,6 +877,15 @@ class FirestoreUtils {
           if (taskFinishDateTime.isBefore(threeDaysFromNow)) {
             print('TEST 3D: ${task.title} , ${task.notification3D}');
 
+            AwesomeNotifications().createNotification(
+              content: NotificationContent(
+                id: task.id.hashCode,
+                channelKey: "task_channel",
+                title: task.title,
+                body: "${task.title} is due in 3 days."
+              ),
+            );
+
             // Notification is no longer appliable since it was sent once already
             
             await FirebaseFirestore.instance
@@ -892,6 +902,15 @@ class FirestoreUtils {
         if (!task.notification1D) {
           if (taskFinishDateTime.isBefore(oneDayFromNow)) {
             print('TEST 1D: ${task.title} , ${task.notification1D}');
+
+            AwesomeNotifications().createNotification(
+              content: NotificationContent(
+                id: task.id.hashCode,
+                channelKey: "task_channel",
+                title: task.title,
+                body: "${task.title} is due in 1 day."
+              ),
+            );
 
             await FirebaseFirestore.instance
               .collection('tasksMain')
