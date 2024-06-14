@@ -880,8 +880,6 @@ class FirestoreUtils {
         // If notification3D is appliable and still was not sent
         if (!task.notification3D) {
           if (taskFinishDateTime.isBefore(threeDaysFromNow)) {
-            print('TEST 3D: ${task.title} , ${task.notification3D}');
-
             AwesomeNotifications().createNotification(
               content: NotificationContent(
                 id: task.id.hashCode,
@@ -906,8 +904,6 @@ class FirestoreUtils {
         // If notification1D is appliable and still was not sent
         if (!task.notification1D) {
           if (taskFinishDateTime.isBefore(oneDayFromNow)) {
-            print('TEST 1D: ${task.title} , ${task.notification1D}');
-
             AwesomeNotifications().createNotification(
               content: NotificationContent(
                 id: task.id.hashCode,

@@ -30,12 +30,6 @@ void main() async {
 
   background_service.initializeService();
 
-  bool isAllowedToSendNotification = await AwesomeNotifications().isNotificationAllowed();
-
-  if (!isAllowedToSendNotification) {
-    AwesomeNotifications().requestPermissionToSendNotifications();
-  }
-
   bool isLoggedIn = false;
 
   final prefs = await SharedPreferences.getInstance();
