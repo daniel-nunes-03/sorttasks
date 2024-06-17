@@ -140,119 +140,114 @@ class TaskDetailsState extends State<TaskDetailsScreen> {
                           ),
                           const SizedBox(height: 20),
                           Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: Row(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Column(
                               children: [
-                                Icon(
-                                  Icons.calendar_month,
-                                  color: isDarkTheme ? Colors.white : Colors.black,
-                                  size: 25,
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_month,
+                                      color: isDarkTheme ? Colors.white : Colors.black,
+                                      size: 25,
+                                    ),
+                                    const SizedBox(width: 15),
+                                    Text(
+                                      "Finishes at:",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      DateFormat.yMMMd().add_jms().format(widget.task.finishDateHour.toDate()),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 15),
-                                Text(
-                                  "Finishes at:",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: isDarkTheme? Colors.white : Colors.black,
-                                  ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_month,
+                                      color: isDarkTheme ? Colors.white : Colors.black,
+                                      size: 25,
+                                    ),
+                                    const SizedBox(width: 15),
+                                    Text(
+                                      "Created at:",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 14),
+                                    Text(
+                                      DateFormat.yMMMd().add_jms().format(widget.task.creationDateHour.toDate()),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  DateFormat.yMMMd().add_jms().format(widget.task.finishDateHour.toDate()),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: isDarkTheme? Colors.white : Colors.black,
-                                  ),
+                                const SizedBox(height: 25),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Task Priority:',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 20),
+                                    Text(
+                                      '${currentTask.taskPriority} / 5',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 20),
+                                    CircleAvatar(
+                                      backgroundColor: currentTask.taskPriority == 1 
+                                        ? const Color.fromRGBO(51, 172, 221, 1)
+                                        : widget.task.taskPriority == 2
+                                          ? const Color.fromRGBO(53, 219, 95, 1)
+                                          : widget.task.taskPriority == 3
+                                            ? const Color.fromARGB(255, 240, 212, 0)
+                                            : widget.task.taskPriority == 4
+                                              ? const Color.fromRGBO(255, 122, 0, 1)
+                                              : const Color.fromRGBO(207, 57, 29, 1),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(height: 25),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Task Status:',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 25),
+                                    const Text(
+                                      'Not completed',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ],
-                            )
-                          ),
-                          const SizedBox(height: 20),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.calendar_month,
-                                  color: isDarkTheme ? Colors.white : Colors.black,
-                                  size: 25,
-                                ),
-                                const SizedBox(width: 15),
-                                Text(
-                                  "Created at:",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: isDarkTheme? Colors.white : Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(width: 14),
-                                Text(
-                                  DateFormat.yMMMd().add_jms().format(widget.task.creationDateHour.toDate()),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: isDarkTheme? Colors.white : Colors.black,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ),
-                          const SizedBox(height: 25),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Task Priority:',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: isDarkTheme? Colors.white : Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                Text(
-                                  '${currentTask.taskPriority} / 5',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: isDarkTheme? Colors.white : Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                CircleAvatar(
-                                  backgroundColor: currentTask.taskPriority == 1 
-                                    ? const Color.fromRGBO(51, 172, 221, 1)
-                                    : widget.task.taskPriority == 2
-                                      ? const Color.fromRGBO(53, 219, 95, 1)
-                                      : widget.task.taskPriority == 3
-                                        ? const Color.fromARGB(255, 240, 212, 0)
-                                        : widget.task.taskPriority == 4
-                                          ? const Color.fromRGBO(255, 122, 0, 1)
-                                          : const Color.fromRGBO(207, 57, 29, 1),
-                                )
-                              ],
-                            )
-                          ),
-                          const SizedBox(height: 25),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Task Status:',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: isDarkTheme? Colors.white : Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(width: 25),
-                                const Text(
-                                  'Not completed',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.red,
-                                  ),
-                                )
-                              ],
-                            )
+                            ),
                           ),
                           const SizedBox(height: 28),
                           Container(

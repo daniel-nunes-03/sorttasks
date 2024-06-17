@@ -209,7 +209,7 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 30),
+                const SizedBox(height: 15),
                 Expanded(
                   child: Scrollbar(
                     controller: _scrollcontroller,
@@ -218,36 +218,6 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
                       controller: _scrollcontroller,
                       child: Column(
                         children: [
-                          const SizedBox(height: 30),
-                          SizedBox(
-                            height: 180,
-                            child: _profileImageUrl != ''
-                              ? CircleAvatar(
-                                  radius: 85,
-                                  backgroundImage: NetworkImage(_profileImageUrl),
-                                )
-                              : CircleAvatar(
-                                  radius: 85,
-                                  backgroundColor: isDarkTheme
-                                    ? const Color.fromRGBO(149, 149, 149, 1)
-                                    : const Color.fromRGBO(217, 217, 217, 1),
-                                  child: Icon(
-                                    Icons.person,
-                                    color: isDarkTheme ? Colors.white : Colors.black
-                                  ),
-                                ),
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () => _uploadNewProfileImage(SorttasksApp.loggedInUser!.uid, isRemove: true),
-                            child: const Text('Remove Profile Image'),
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () => _uploadNewProfileImage(SorttasksApp.loggedInUser!.uid, isRemove: false),
-                            child: const Text('Upload New Profile Image'),
-                          ),
-                          const SizedBox(height: 20),
                           _dataIsLoading
                             ? _noData
                               ? const Text(
@@ -260,6 +230,35 @@ class _PersonalEditFormState extends State<_PersonalEditForm> {
                               : const CircularProgressIndicator()
                             : Column(
                                 children: [
+                                  SizedBox(
+                                    height: 180,
+                                    child: _profileImageUrl != ''
+                                      ? CircleAvatar(
+                                          radius: 85,
+                                          backgroundImage: NetworkImage(_profileImageUrl),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 85,
+                                          backgroundColor: isDarkTheme
+                                            ? const Color.fromRGBO(149, 149, 149, 1)
+                                            : const Color.fromRGBO(217, 217, 217, 1),
+                                          child: Icon(
+                                            Icons.person,
+                                            color: isDarkTheme ? Colors.white : Colors.black
+                                          ),
+                                        ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  ElevatedButton(
+                                    onPressed: () => _uploadNewProfileImage(SorttasksApp.loggedInUser!.uid, isRemove: true),
+                                    child: const Text('Remove Profile Image'),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  ElevatedButton(
+                                    onPressed: () => _uploadNewProfileImage(SorttasksApp.loggedInUser!.uid, isRemove: false),
+                                    child: const Text('Upload New Profile Image'),
+                                  ),
+                                  const SizedBox(height: 20),
                                   Container(
                                     padding: const EdgeInsets.all(20),
                                     decoration: BoxDecoration(

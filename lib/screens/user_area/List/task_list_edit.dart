@@ -202,98 +202,93 @@ class _TaskEditFormState extends State<_TaskEditForm> {
                       const SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.only(left: 20),
-                        child: Row(
+                        child: Column(
                           children: [
-                            Icon(
-                              Icons.calendar_month,
-                              color: isDarkTheme ? Colors.white : Colors.black,
-                              size: 30,
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.calendar_month,
+                                  color: isDarkTheme ? Colors.white : Colors.black,
+                                  size: 30,
+                                ),
+                                const SizedBox(width: 20),
+                                SizedBox(
+                                  width: 300,
+                                  child: DateTimePicker(
+                                    onDateSelected: updateFinalDate,
+                                    onTimeSelected: (TimeOfDay time) {
+                                      updateFinalTime(time);
+                                    },
+                                    initialDate: _finalDate,
+                                    initialTime: _finalTime,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 20),
-                            SizedBox(
-                              width: 300,
-                              child: DateTimePicker(
-                                onDateSelected: updateFinalDate,
-                                onTimeSelected: (TimeOfDay time) {
-                                  updateFinalTime(time);
-                                },
-                                initialDate: _finalDate,
-                                initialTime: _finalTime,
-                              ),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.calendar_month,
+                                  color: isDarkTheme ? Colors.white : Colors.black,
+                                  size: 30,
+                                ),
+                                const SizedBox(width: 20),
+                                Text(
+                                  DateFormat.yMMMd().add_jms().format(widget.currentTask.creationDateHour.toDate()),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        )
-                      ),
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_month,
-                              color: isDarkTheme ? Colors.white : Colors.black,
-                              size: 30,
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Text(
+                                  'Task Priority:',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(width: 25),
+                                SizedBox(
+                                  width: 210,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 18),
+                                    child: NumberInput(
+                                      initialValue: _priority,
+                                      onNumberChanged: updatePriority,
+                                      hintName: "1 to 5 (1, 2, 3, 4 or 5)",
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 20),
-                            Text(
-                              DateFormat.yMMMd().add_jms().format(widget.currentTask.creationDateHour.toDate()),
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: isDarkTheme? Colors.white : Colors.black,
-                              ),
-                            ),
-                          ],
-                        )
-                      ),
-                      const SizedBox(height: 25),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Task Priority:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: isDarkTheme? Colors.white : Colors.black,
-                              ),
-                            ),
-                            const SizedBox(width: 25),
-                            SizedBox(
-                              width: 210,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 18),
-                                child: NumberInput(
-                                  initialValue: _priority,
-                                  onNumberChanged: updatePriority,
-                                  hintName: "1 to 5 (1, 2, 3, 4 or 5)",
+                            const SizedBox(height: 25),
+                            Row(
+                              children: [
+                                Text(
+                                  'Task Status:',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(width: 25),
+                                const Text(
+                                  'Not completed',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.red,
+                                  ),
                                 )
-                              ),
+                              ],
                             ),
                           ],
-                        )
-                      ),
-                      const SizedBox(height: 25),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Task Status:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: isDarkTheme? Colors.white : Colors.black,
-                              ),
-                            ),
-                            const SizedBox(width: 25),
-                            const Text(
-                              'Not completed',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.red,
-                              ),
-                            )
-                          ],
-                        )
+                        ),
                       ),
                       const SizedBox(height: 40),
                       Container(

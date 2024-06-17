@@ -188,25 +188,6 @@ class ProfileViewState extends State<ProfileViewScreen> {
               Center(
                 child: Column(
                   children: [
-                    const SizedBox(height: 50),
-                    SizedBox(
-                      height: 180,
-                      child: _profileImageUrl != ''
-                        ? CircleAvatar(
-                            radius: 85,
-                            backgroundImage: NetworkImage(_profileImageUrl),
-                          )
-                        : CircleAvatar(
-                            radius: 85,
-                            backgroundColor: isDarkTheme
-                              ? const Color.fromRGBO(149, 149, 149, 1)
-                              : const Color.fromRGBO(217, 217, 217, 1),
-                            child: Icon(
-                              Icons.person,
-                              color: isDarkTheme ? Colors.white : Colors.black
-                            ),
-                          ),
-                    ),
                     const SizedBox(height: 40),
                     _dataIsLoading // Conditional rendering based on flags
                       ? _noData
@@ -220,6 +201,25 @@ class ProfileViewState extends State<ProfileViewScreen> {
                         : const CircularProgressIndicator()
                       : Column(
                           children: [
+                            SizedBox(
+                              height: 180,
+                              child: _profileImageUrl != ''
+                                ? CircleAvatar(
+                                    radius: 85,
+                                    backgroundImage: NetworkImage(_profileImageUrl),
+                                  )
+                                : CircleAvatar(
+                                    radius: 85,
+                                    backgroundColor: isDarkTheme
+                                      ? const Color.fromRGBO(149, 149, 149, 1)
+                                      : const Color.fromRGBO(217, 217, 217, 1),
+                                    child: Icon(
+                                      Icons.person,
+                                      color: isDarkTheme ? Colors.white : Colors.black
+                                    ),
+                                  ),
+                            ),
+                            const SizedBox(height: 30),
                             Text(
                               _firstName!,
                               style: TextStyle(
@@ -229,7 +229,7 @@ class ProfileViewState extends State<ProfileViewScreen> {
                                   : Colors.black
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 15),
                             Text(
                               _lastName!,
                               style: TextStyle(
@@ -239,118 +239,108 @@ class ProfileViewState extends State<ProfileViewScreen> {
                                   : Colors.black
                               ),
                             ),
-                          ],
-                        ),
-                    const SizedBox(height: 75),
-                    SizedBox(
-                      width: 280,
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _showPasswordConfirmationDialog(context, navigateToCredentialChangeScreen: false);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isDarkTheme ? const Color.fromRGBO(0, 102, 255, 0.4) : const Color.fromRGBO(255, 168, 0, 0.7),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(90),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.edit,
-                              color: isDarkTheme ? Colors.white : Colors.black,
-                              size: 24
-                            ),
-                            const SizedBox(width: 15),
-                            Text(
-                              'Edit personal data',
-                              style: TextStyle(
-                                fontSize: 22,
-                                color: isDarkTheme ? Colors.white : Colors.black,
-                              )
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    SizedBox(
-                      width: 330,
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _showPasswordConfirmationDialog(context, navigateToCredentialChangeScreen: true);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isDarkTheme ? const Color.fromRGBO(0, 102, 255, 0.4) : const Color.fromRGBO(255, 168, 0, 0.7),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(90),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.edit,
-                              color: isDarkTheme ? Colors.white : Colors.black,
-                              size: 24
-                            ),
-                            const SizedBox(width: 15),
-                            Text(
-                              'Edit account credentials',
-                              style: TextStyle(
-                                fontSize: 22,
-                                color: isDarkTheme ? Colors.white : Colors.black,
-                              )
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 75),
-                    _dataIsLoading // Conditional rendering based on flags
-                      ? _noData
-                        ? const Text(
-                            'Error: An error occurred while retrieving your data.',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.red,
-                            ),
-                          )
-                        : const CircularProgressIndicator()
-                      : Column(
-                          children: [
-                            Text(
-                              'Joined in: ${DateFormat.yMMMd().add_jms().format(_creationDate!.toDate())}',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: isDarkTheme ? Colors.white : Colors.black,
-                                fontStyle: FontStyle.italic,
+                            const SizedBox(height: 60),
+                            SizedBox(
+                              width: 280,
+                              height: 60,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _showPasswordConfirmationDialog(context, navigateToCredentialChangeScreen: false);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: isDarkTheme ? const Color.fromRGBO(0, 102, 255, 0.4) : const Color.fromRGBO(255, 168, 0, 0.7),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(90),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.edit,
+                                      color: isDarkTheme ? Colors.white : Colors.black,
+                                      size: 24
+                                    ),
+                                    const SizedBox(width: 15),
+                                    Text(
+                                      'Edit personal data',
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                      )
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             const SizedBox(height: 30),
-                            Text(
-                              'Tasks created: $_createdTasks',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: isDarkTheme ? Colors.white : Colors.black,
-                                fontStyle: FontStyle.italic,
+                            SizedBox(
+                              width: 330,
+                              height: 60,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _showPasswordConfirmationDialog(context, navigateToCredentialChangeScreen: true);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: isDarkTheme ? const Color.fromRGBO(0, 102, 255, 0.4) : const Color.fromRGBO(255, 168, 0, 0.7),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(90),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.edit,
+                                      color: isDarkTheme ? Colors.white : Colors.black,
+                                      size: 24
+                                    ),
+                                    const SizedBox(width: 15),
+                                    Text(
+                                      'Edit account credentials',
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        color: isDarkTheme ? Colors.white : Colors.black,
+                                      )
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            const SizedBox(height: 30),
-                            Text(
-                              'Tasks completed: $_completedTasks',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: isDarkTheme ? Colors.white : Colors.black,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                            const SizedBox(height: 50),
+                            const SizedBox(height: 75),
+                            Column(
+                              children: [
+                                Text(
+                                  'Joined in: ${DateFormat.yMMMd().add_jms().format(_creationDate!.toDate())}',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                const SizedBox(height: 30),
+                                Text(
+                                  'Tasks created: $_createdTasks',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                const SizedBox(height: 30),
+                                Text(
+                                  'Tasks completed: $_completedTasks',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: isDarkTheme ? Colors.white : Colors.black,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                const SizedBox(height: 50),
+                              ],
+                            )
                           ],
-                        )
+                        ),
                   ],
                 ),
               ),
