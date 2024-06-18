@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sorttasks/classes/archived_task.dart';
 import 'package:sorttasks/classes/task.dart' as sorttasks_task;
 import 'package:sorttasks/main.dart';
@@ -76,26 +77,6 @@ class FirestoreUtils {
   }
 
   // USER UPDATE
-
-  static Future<void> updateUserPassword(BuildContext context, String newPassword) async {
-    try {
-      User? currentUser = FirebaseAuth.instance.currentUser;
-
-      if (currentUser != null) {
-        await currentUser.updatePassword(newPassword);
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error updating user password: $e');
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error updating password. Please try again.'),
-        ),
-      );
-      rethrow;
-    }
-  }
 
   static Future<void> updateUser(BuildContext context, String newEmail, String newPassword, String currentEmail) async {
     try {
@@ -274,32 +255,78 @@ class FirestoreUtils {
     }
   }
 
+  static Future<void> _deleteUserImage(String userId) async {
+    // Reference to the folder in Firebase Storage
+    final folderRef = FirebaseStorage.instance.ref().child('users').child(userId);
+
+    // Check if the folder exists by listing items within it
+    bool folderExists = false;
+    try {
+      final result = await folderRef.listAll();
+      // If the list is not empty, folder exists
+      if (result.items.isNotEmpty) {
+        folderExists = true;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error checking folder existence: $e');
+      }
+    }
+
+    // If folder exists, delete it
+    if (folderExists) {
+      try {
+        await folderRef.delete();
+      } catch (e) {
+        if (kDebugMode) {
+          print('Error deleting folder: $e');
+        }
+      }
+    } else {
+      if (kDebugMode) {
+        print('Folder does not exist or is empty.');
+      }
+    }
+  }
+
   static Future<void> deleteUser(String userId) async {
     try {
-      // Delete the user's document from the 'users' collection
+      // Delete the user's document from the 'users' collection      
       await FirebaseFirestore.instance.collection('users').doc(userId).delete();
 
-      // Delete all tasks owned by the user from the 'tasks' collection
-      QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance.collection('tasks').where('userID', isEqualTo: userId).get();
+      // Delete all tasks owned by the user from 'tasksMain/tasks'
+      QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance
+        .collection('tasksMain')
+        .doc('tasks')
+        .collection(userId)
+        .get();
+
       for (QueryDocumentSnapshot eventSnapshot in eventsSnapshot.docs) {
         await eventSnapshot.reference.delete();
       }
 
-      // Delete all archivedTasks owned by the user from the 'archivedTasks' collection
-      eventsSnapshot = await FirebaseFirestore.instance.collection('archivedTasks').where('userID', isEqualTo: userId).get();
+      // Delete all archivedTasks owned by the user from 'tasksMain/archivedTasks'
+      eventsSnapshot = await FirebaseFirestore.instance
+        .collection('tasksMain')
+        .doc('archivedTasks')
+        .collection(userId)
+        .get();
+
       for (QueryDocumentSnapshot eventSnapshot in eventsSnapshot.docs) {
         await eventSnapshot.reference.delete();
       }
 
-      // Delete the user's folder in Firebase Storage
-      await FirebaseStorage.instance.ref().child('users').child(userId).delete();
-
-      // Delete the user's tasks and archived tasks folders
-      await FirebaseStorage.instance.ref().child('tasksMain').child('tasks').child(userId).delete();
-      await FirebaseStorage.instance.ref().child('tasksMain').child('archivedTasks').child(userId).delete();
+      // Delete the user image folder in Firebase Storage
+      await _deleteUserImage(userId);
 
       // Delete the user from authentication
       await FirebaseAuth.instance.currentUser?.delete();
+
+      // Delete the user local settings
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('sorttasks_email');
+      await prefs.remove('sorttasks_password');
+
     } catch (e) {
       if (kDebugMode) {
         print('Error deleting user: $e');
@@ -925,7 +952,9 @@ class FirestoreUtils {
 
       }
     } catch (e) {
-      print('Error checking tasks: $e');
+      if (kDebugMode) {
+        print('Error checking tasks: $e');
+      }
     }
   }
 

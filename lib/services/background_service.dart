@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
-import 'package:sorttasks/main.dart';
 
 bool isLoggedIn = false;
 
@@ -56,16 +55,12 @@ Future<void> onStart(ServiceInstance service) async {
 
   // Check tasks every minute if user is logged in
   Timer.periodic(const Duration(minutes: 1), (timer) async {
-    if (SorttasksApp.loggedInUser == null) {
-      final prefs = await SharedPreferences.getInstance();
-      final String? email = prefs.getString('email');
-      final String? password = prefs.getString('password');
+    final prefs = await SharedPreferences.getInstance();
+    final String? email = prefs.getString('sorttasks_email');
+    final String? password = prefs.getString('sorttasks_password');
 
-      if (email != null && password != null) {
-        isLoggedIn = await FirestoreUtils.login(email, password);
-      }
-    } else {
-      isLoggedIn = true;
+    if (email != null && password != null) {
+      isLoggedIn = await FirestoreUtils.login(email, password);
     }
 
     if (isLoggedIn) {

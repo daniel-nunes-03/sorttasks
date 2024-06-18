@@ -31,8 +31,8 @@ class ProfileViewState extends State<ProfileViewScreen> {
   Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
 
-    await prefs.remove('email');
-    await prefs.remove('password');
+    await prefs.remove('sorttasks_email');
+    await prefs.remove('sorttasks_password');
 
     SorttasksApp.loggedInUser = null;
     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);

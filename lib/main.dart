@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -24,17 +25,26 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  final connectivityResult = await (Connectivity().checkConnectivity());
+
+  if (connectivityResult[0] == ConnectivityResult.none) {
+    runApp(const NoInternetApp());
+    return;
+  }
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Notifications are only sent if the user has checked the "Remember Me" checkbox
   background_service.initializeService();
 
   bool isLoggedIn = false;
 
   final prefs = await SharedPreferences.getInstance();
-  final String? email = prefs.getString('email');
-  final String? password = prefs.getString('password');
+  final String? email = prefs.getString('sorttasks_email');
+  final String? password = prefs.getString('sorttasks_password');
 
   if (email != null && password != null) {
     isLoggedIn = await FirestoreUtils.login(email, password);
@@ -100,6 +110,25 @@ class SorttasksApp extends State<Sorttasks> {
         '/profile_personal_edit': (context) => const ProfileUserEditScreen(),
         '/profile_account_edit': (context) => const ProfileAccountEditScreen(),
       },
+    );
+  }
+}
+
+class NoInternetApp extends StatelessWidget {
+  const NoInternetApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('No Internet Connection'),
+        ),
+        body: const Center(
+          child: Text('Please check your internet connection and try again.'),
+        ),
+      ),
     );
   }
 }
