@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
+import 'package:sorttasks/main.dart';
 
 bool isLoggedIn = false;
 
@@ -27,14 +28,6 @@ void initializeService() {
 Future<void> onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
   await Firebase.initializeApp();
-
-  final prefs = await SharedPreferences.getInstance();
-  final String? email = prefs.getString('email');
-  final String? password = prefs.getString('password');
-
-  if (email != null && password != null) {
-    isLoggedIn = await FirestoreUtils.login(email, password);
-  }
 
   // Initialize the notification group and channel
   await AwesomeNotifications().initialize(
@@ -62,12 +55,24 @@ Future<void> onStart(ServiceInstance service) async {
   }
 
   // Check tasks every minute if user is logged in
-  if (isLoggedIn) {
-    Timer.periodic(const Duration(minutes: 1), (timer) async {
+  Timer.periodic(const Duration(minutes: 1), (timer) async {
+    if (SorttasksApp.loggedInUser == null) {
+      final prefs = await SharedPreferences.getInstance();
+      final String? email = prefs.getString('email');
+      final String? password = prefs.getString('password');
+
+      if (email != null && password != null) {
+        isLoggedIn = await FirestoreUtils.login(email, password);
+      }
+    } else {
+      isLoggedIn = true;
+    }
+
+    if (isLoggedIn) {
       // Check tasks due within 3 days
       await FirestoreUtils.checkTasksDueWithin3Days();
-    });
-  }
+    }
+  });
 }
 
 // Missing XCode to configure notifications for iOS, so no implementation here
