@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
-import 'package:sorttasks/widgets/custom_appbar.dart';
-import 'package:sorttasks/widgets/inputs/string_input.dart';
+import 'package:sorttasks/widgets/Misc/custom_appbar.dart';
+import 'package:sorttasks/widgets/Input/string_input.dart';
 
 class ProfileUserEditScreen extends StatefulWidget {
   const ProfileUserEditScreen({super.key});

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
-import 'package:sorttasks/widgets/inputs/email_input.dart';
-import 'package:sorttasks/widgets/inputs/string_input.dart';
+import 'package:sorttasks/widgets/Input/email_input.dart';
+import 'package:sorttasks/widgets/Input/string_input.dart';
 import 'package:sorttasks/widgets/validators/password_validator.dart';
 import 'package:sorttasks/widgets/validators/repeated_password_validator.dart';
 

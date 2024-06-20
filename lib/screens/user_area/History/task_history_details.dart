@@ -7,7 +7,7 @@ import 'package:sorttasks/classes/archived_task.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
-import 'package:sorttasks/widgets/custom_appbar.dart';
+import 'package:sorttasks/widgets/Misc/custom_appbar.dart';
 
 class TaskHistoryDetailsScreen extends StatefulWidget {
   final ArchivedTask task;

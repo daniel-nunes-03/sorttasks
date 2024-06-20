@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
-import 'package:sorttasks/widgets/inputs/email_input.dart';
-import 'package:sorttasks/widgets/inputs/password_input.dart';
+import 'package:sorttasks/widgets/Input/email_input.dart';
+import 'package:sorttasks/widgets/Input/password_input.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

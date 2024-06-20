@@ -20,35 +20,17 @@ class FirestoreUtils {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser != null) {
-        // Reference to the 'users' collection and the specific document
         DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(currentUser.uid);
-
-        // Fetch the document snapshot
         DocumentSnapshot snapshot = await userRef.get();
 
         if (snapshot.exists) {
-          // Access the user data from the snapshot
           Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
-          String firstName = userData['firstName'];
-          String lastName = userData['lastName'];
-          Timestamp creationDate = userData['creationDate'];
-          int createdTasks = userData['createdTasks'];
-          int completedTasks = userData['completedTasks'];
-
-          // Retrieve profile image URL from Firebase Storage
           String profileImageUrl = await _retrieveProfileImageUrl(currentUser.uid);
 
-          return {
-            'firstName': firstName,
-            'lastName': lastName,
-            'creationDate': creationDate,
-            'createdTasks': createdTasks,
-            'completedTasks': completedTasks,
-            'profileImageUrl': profileImageUrl
-          };
+          userData['profileImageUrl'] = profileImageUrl;
+          return userData;
         }
       }
-
       return null;
     } catch (e) {
       if (kDebugMode) {
@@ -60,55 +42,46 @@ class FirestoreUtils {
 
   static Future<String> _retrieveProfileImageUrl(String userId) async {
     try {
-      // Get reference to user's profile image in Firebase Storage
       Reference imageRef = FirebaseStorage.instance.ref().child('users/$userId/profile_image.jpg');
-
-      // Get the download URL for the image
-      String downloadUrl = await imageRef.getDownloadURL();      
-
+      String downloadUrl = await imageRef.getDownloadURL();
       return downloadUrl;
     } catch (e) {
       if (kDebugMode) {
         print('Error retrieving profile image URL: $e');
       }
-      // Return a default image URL or null if image not found
-      return ''; // You can change this to return a default image URL or null
+      return '';  // Return null if image not found
     }
   }
 
   // USER UPDATE
-
   static Future<void> updateUser(BuildContext context, String newEmail, String newPassword, String currentEmail) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser != null) {
-        // Check if there are changes in email
         bool isEmailChanged = newEmail != currentEmail;
 
-        // Update authenticated user's password
         await currentUser.updatePassword(newPassword);
 
-        // Send verification email if email is changed
         if (isEmailChanged) {
           // Update authenticated user's email
           await currentUser.verifyBeforeUpdateEmail(newEmail);
           await currentUser.sendEmailVerification();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Email updated successfully. Please verify your new email address when possible. While you dont, you will need to use your old email. You will need to login again.'),
+              content: Text('Email updated successfully. Please verify your new email address. You will need to login again.'),
               duration: Duration(seconds: 15),
             ),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Passsword updated successfully. You will need to login again.'),
+              content: Text('Password updated successfully. You will need to login again.'),
               duration: Duration(seconds: 8),
             ),
           );
         }
-        
+
         // Log out the user after email update to force reauthentication
         await FirebaseAuth.instance.signOut();
         SorttasksApp.setLoggedInUser(null);
@@ -133,23 +106,18 @@ class FirestoreUtils {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser != null) {
-        // Fetch the current user data from Firestore
         DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).get();
         Map<String, dynamic> currentUserData = snapshot.data() as Map<String, dynamic>;
 
-        // Check if there are changes in first name or last name
         bool changed = (currentUserData['firstName'] != newFirstName) || (currentUserData['lastName'] != newLastName);
 
-        // Update Firestore document with the new data
         await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).update({
           'firstName': newFirstName,
           'lastName': newLastName,
         });
 
-        // Show a Snackbar if username changed
         if (changed) {
           Navigator.pushReplacementNamed(context, '/profile_view');
-
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('User details updated successfully.'),
@@ -175,7 +143,7 @@ class FirestoreUtils {
   static Future<void> sendPasswordResetEmail(BuildContext context, String email) async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      Navigator.of(context).pop(); // close the previous popup before opening the next one
+      Navigator.of(context).pop();  // close the previous popup before opening the next one
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -215,7 +183,6 @@ class FirestoreUtils {
   }
 
   // USER CREATE AND DELETE
-
   static Future<void> addUser(String email, String firstName, String lastName, String password) async {
     try {
       // Create a new user in Firebase Authentication
@@ -224,12 +191,11 @@ class FirestoreUtils {
         password: password,
       );
 
-      // Get the ID of the newly created user
       String userId = userCredential.user!.uid;
 
       // Create a new folder with user's ID as name in Firebase Storage
       FirebaseStorage.instance.ref().child('users').child(userId);
-
+      
       // Add user details to Firestore
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
         'firstName': firstName,
@@ -239,13 +205,10 @@ class FirestoreUtils {
         'completedTasks': 0
       });
 
-      // Create a new folder with the user's ID as name in taskMain for tasks
+      // Create folder for tasks and archived tasks
       FirebaseStorage.instance.ref().child('tasksMain').child('tasks').child(userId);
-
-      // Create a new folder with the user's ID as name in taskMain for archived tasks
       FirebaseStorage.instance.ref().child('tasksMain').child('archivedTasks').child(userId);
 
-      // Send verification email
       await userCredential.user!.sendEmailVerification();
     } catch (e) {
       if (kDebugMode) {
@@ -256,45 +219,26 @@ class FirestoreUtils {
   }
 
   static Future<void> _deleteUserImage(String userId) async {
-    // Reference to the folder in Firebase Storage
     final folderRef = FirebaseStorage.instance.ref().child('users').child(userId);
 
-    // Check if the folder exists by listing items within it
-    bool folderExists = false;
     try {
+      // Check if the folder exists by listing items within it
       final result = await folderRef.listAll();
-      // If the list is not empty, folder exists
       if (result.items.isNotEmpty) {
-        folderExists = true;
+        await folderRef.delete();  // If the list is not empty, folder exists, therefore delete it
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error checking folder existence: $e');
-      }
-    }
-
-    // If folder exists, delete it
-    if (folderExists) {
-      try {
-        await folderRef.delete();
-      } catch (e) {
-        if (kDebugMode) {
-          print('Error deleting folder: $e');
-        }
-      }
-    } else {
-      if (kDebugMode) {
-        print('Folder does not exist or is empty.');
+        print('Error deleting folder: $e');
       }
     }
   }
 
   static Future<void> deleteUser(String userId) async {
     try {
-      // Delete the user's document from the 'users' collection      
+      // Delete the user server folders/documents
       await FirebaseFirestore.instance.collection('users').doc(userId).delete();
 
-      // Delete all tasks owned by the user from 'tasksMain/tasks'
       QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance
         .collection('tasksMain')
         .doc('tasks')
@@ -305,7 +249,6 @@ class FirestoreUtils {
         await eventSnapshot.reference.delete();
       }
 
-      // Delete all archivedTasks owned by the user from 'tasksMain/archivedTasks'
       eventsSnapshot = await FirebaseFirestore.instance
         .collection('tasksMain')
         .doc('archivedTasks')
@@ -316,17 +259,14 @@ class FirestoreUtils {
         await eventSnapshot.reference.delete();
       }
 
-      // Delete the user image folder in Firebase Storage
       await _deleteUserImage(userId);
 
-      // Delete the user from authentication
       await FirebaseAuth.instance.currentUser?.delete();
 
       // Delete the user local settings
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('sorttasks_email');
       await prefs.remove('sorttasks_password');
-
     } catch (e) {
       if (kDebugMode) {
         print('Error deleting user: $e');
@@ -336,7 +276,6 @@ class FirestoreUtils {
   }
 
   // USER AUTHENTICATION AND VERIFICATION
-
   static Future<bool> login(String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -346,10 +285,8 @@ class FirestoreUtils {
 
       SorttasksApp.setLoggedInUser(userCredential.user);
 
-      // Login was a success
       return true;
     } catch (e) {
-      // Authentication failure
       if (kDebugMode) {
         print('Authentication failed: $e');
       }
@@ -362,7 +299,6 @@ class FirestoreUtils {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser != null) {
-        // Use reauthentication to verify the password
         AuthCredential credential = EmailAuthProvider.credential(email: currentUser.email!, password: password);
         await currentUser.reauthenticateWithCredential(credential);
         return true;
@@ -382,17 +318,11 @@ class FirestoreUtils {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser != null) {
-        await currentUser.reload(); // Refresh user data
-
-        // Check if the email is verified
-        if (currentUser.emailVerified) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
+        await currentUser.reload();
+        return currentUser.emailVerified;
       }
+
+      return false;
     } catch (e) {
       if (kDebugMode) {
         print('Error checking email verification: $e');

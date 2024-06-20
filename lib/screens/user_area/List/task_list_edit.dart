@@ -8,10 +8,10 @@ import 'package:sorttasks/classes/theme_notifier.dart';
 import 'package:sorttasks/firebase/firestore_utils.dart';
 import 'package:sorttasks/main.dart';
 import 'package:sorttasks/screens/user_area/List/task_list_details.dart';
-import 'package:sorttasks/widgets/custom_appbar.dart';
-import 'package:sorttasks/widgets/inputs/date_input.dart';
-import 'package:sorttasks/widgets/inputs/number_input.dart';
-import 'package:sorttasks/widgets/inputs/string_input.dart';
+import 'package:sorttasks/widgets/Misc/custom_appbar.dart';
+import 'package:sorttasks/widgets/Input/date_input.dart';
+import 'package:sorttasks/widgets/Input/number_input.dart';
+import 'package:sorttasks/widgets/Input/string_input.dart';
 
 class TaskEditScreen extends StatefulWidget {
   final Task task;
