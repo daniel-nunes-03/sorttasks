@@ -60,6 +60,7 @@ class _TaskAddFormState extends State<_TaskAddForm> {
   int? _taskPriority;
   String? _description;
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController2 = ScrollController();
 
   void updateTitle(String title) {
     setState(() {
@@ -232,11 +233,22 @@ class _TaskAddFormState extends State<_TaskAddForm> {
                                 ),
                                 const SizedBox(width: 20),
                                 Expanded(
-                                  child: StringInput(
-                                    onNameChanged: updateDescription,
-                                    hintName: "Description",
-                                    multipleLines: true,
-                                    noRegex: true
+                                  child: SizedBox(
+                                    height: 300,
+                                    child: Scrollbar(
+                                      controller: _scrollController2,
+                                      thumbVisibility: true,
+                                      child: SingleChildScrollView(
+                                        controller: _scrollController2,
+                                        padding: const EdgeInsets.all(8),
+                                        child: StringInput(
+                                          onNameChanged: updateDescription,
+                                          hintName: "Description",
+                                          multipleLines: true,
+                                          noRegex: true,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
