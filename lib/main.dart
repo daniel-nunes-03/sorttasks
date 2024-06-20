@@ -3,7 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sorttasks/classes/notification_controller.dart';
@@ -23,8 +23,8 @@ import 'package:sorttasks/services/background_service.dart' as background_servic
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   final connectivityResult = await (Connectivity().checkConnectivity());
 
@@ -93,7 +93,7 @@ class SorttasksApp extends State<Sorttasks> {
 
   @override
   Widget build(BuildContext context) {
-    // FlutterNativeSplash.remove();
+    FlutterNativeSplash.remove();
     
     return MaterialApp(
       debugShowCheckedModeBanner: false,
