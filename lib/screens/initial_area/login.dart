@@ -282,11 +282,11 @@ class _LoginFormState extends State<_LoginForm> {
   Future<void> _saveLoginState(bool isRemembered) async {
     final prefs = await SharedPreferences.getInstance();
     if (isRemembered) {
-      await prefs.setString('email', _email);
-      await prefs.setString('password', _password);
+      await prefs.setString('sorttasks_email', _email);
+      await prefs.setString('sorttasks_password', _password);
     } else {
-      await prefs.remove('email');
-      await prefs.remove('password');
+      await prefs.remove('sorttasks_email');
+      await prefs.remove('sorttasks_password');
     }
   }
 
