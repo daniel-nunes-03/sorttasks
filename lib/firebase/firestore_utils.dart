@@ -54,7 +54,7 @@ class FirestoreUtils {
   }
 
   // USER UPDATE
-  static Future<void> updateUser(BuildContext context, String newEmail, String newPassword, String currentEmail) async {
+  static Future<bool> updateUser(BuildContext context, String newEmail, String newPassword, String currentEmail) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -86,6 +86,9 @@ class FirestoreUtils {
         await FirebaseAuth.instance.signOut();
         SorttasksApp.setLoggedInUser(null);
         Navigator.pushReplacementNamed(context, '/login');
+        
+        // This value is used for testing only
+        return true;
       }
     } catch (e) {
       if (kDebugMode) {
@@ -99,9 +102,12 @@ class FirestoreUtils {
       );
       rethrow;
     }
+
+    // This value is used for testing only
+    return false;
   }
 
-  static Future<void> updateUserDetails(BuildContext context, String newFirstName, String newLastName) async {
+  static Future<bool> updateUserDetails(BuildContext context, String newFirstName, String newLastName) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -125,6 +131,9 @@ class FirestoreUtils {
             ),
           );
         }
+
+        // This value is used for testing only
+        return true;
       }
     } catch (e) {
       if (kDebugMode) {
@@ -137,10 +146,13 @@ class FirestoreUtils {
       );
       rethrow;
     }
+
+    // This value is used for testing only
+    return false;
   }
 
   // Recover password
-  static Future<void> sendPasswordResetEmail(BuildContext context, String email) async {
+  static Future<bool> sendPasswordResetEmail(BuildContext context, String email) async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       Navigator.of(context).pop();  // close the previous popup before opening the next one
@@ -161,6 +173,9 @@ class FirestoreUtils {
           );
         },
       );
+
+      // This value is used for testing only
+      return true;
     } catch (e) {
       showDialog(
         context: context,
@@ -180,10 +195,13 @@ class FirestoreUtils {
         },
       );
     }
+
+    // This value is used for testing only
+    return false;
   }
 
   // USER CREATE AND DELETE
-  static Future<void> addUser(String email, String firstName, String lastName, String password) async {
+  static Future<bool> addUser(String email, String firstName, String lastName, String password) async {
     try {
       // Create a new user in Firebase Authentication
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -210,6 +228,9 @@ class FirestoreUtils {
       FirebaseStorage.instance.ref().child('tasksMain').child('archivedTasks').child(userId);
 
       await userCredential.user!.sendEmailVerification();
+
+      // This value is used for testing only
+      return true;
     } catch (e) {
       if (kDebugMode) {
         print('Error adding user to Firestore: $e');
@@ -218,7 +239,7 @@ class FirestoreUtils {
     }
   }
 
-  static Future<void> _deleteUserImage(String userId) async {
+  static Future<bool> _deleteUserImage(String userId) async {
     final folderRef = FirebaseStorage.instance.ref().child('users').child(userId);
 
     try {
@@ -227,14 +248,20 @@ class FirestoreUtils {
       if (result.items.isNotEmpty) {
         await folderRef.delete();  // If the list is not empty, folder exists, therefore delete it
       }
+
+      // This value is used for testing only
+      return true;
     } catch (e) {
       if (kDebugMode) {
         print('Error deleting folder: $e');
       }
     }
+
+    // This value is used for testing only
+    return false;
   }
 
-  static Future<void> deleteUser(String userId) async {
+  static Future<bool> deleteUser(String userId) async {
     try {
       // Delete the user server folders/documents
       await FirebaseFirestore.instance.collection('users').doc(userId).delete();
@@ -267,6 +294,9 @@ class FirestoreUtils {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('sorttasks_email');
       await prefs.remove('sorttasks_password');
+
+      // This value is used for testing only
+      return true;
     } catch (e) {
       if (kDebugMode) {
         print('Error deleting user: $e');
@@ -373,7 +403,7 @@ class FirestoreUtils {
     }
   }
 
-  static Future<void> removeImage(String userId) async {
+  static Future<bool> removeImage(String userId) async {
     try {
       final Reference storageRef = FirebaseStorage.instance
         .ref()
@@ -382,15 +412,21 @@ class FirestoreUtils {
         .child('profile_image.jpg');
 
       await storageRef.delete();
+
+      // This value is used for testing only
+      return true;
     } catch (e) {
       if (kDebugMode) {
         print('Error removing image: $e');
       }
     }
+
+    // This value is used for testing only
+    return false;
   }
 
   // 'TASKS' COLLECTION IN FIRESTORE
-  static Future<void> createTask(
+  static Future<bool> createTask(
     BuildContext context,
     String title,
     DateTime finalDate,
@@ -443,7 +479,9 @@ class FirestoreUtils {
         await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).update({
           'createdTasks': FieldValue.increment(1),
         });
-        
+
+        // This value is used for testing only
+        return true;
       }
     } catch (e) {
       if (kDebugMode) {
@@ -456,9 +494,12 @@ class FirestoreUtils {
       );
       rethrow;
     }
+
+    // This value is used for testing only
+    return false;
   }
 
-  static Future<void> editTask(
+  static Future<bool> editTask(
     BuildContext context,
     String taskID,
     String title,
@@ -506,7 +547,9 @@ class FirestoreUtils {
           'notification3D': notification3D,
           'notification1D': notification1D
         });
-                
+
+        // This value is used for testing only
+        return true;                
       }
     } catch (e) {
       if (kDebugMode) {
@@ -519,9 +562,12 @@ class FirestoreUtils {
       );
       rethrow;
     }
+
+    // This value is used for testing only
+    return false;
   }
 
-  static Future<void> deleteTask(BuildContext context, String taskId) async {
+  static Future<bool> deleteTask(BuildContext context, String taskId) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -533,6 +579,9 @@ class FirestoreUtils {
         await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).update({
           'createdTasks': FieldValue.increment(-1),
         });
+
+        // This value is used for testing only
+        return true;
       }
     } catch (e) {
       if (kDebugMode) {
@@ -545,6 +594,9 @@ class FirestoreUtils {
       );
       rethrow;
     }
+
+    // This value is used for testing only
+    return false;
   }
 
   static Future<List<sorttasks_task.Task>> _taskList(String? userID, String sortField, bool isDescending) async {
@@ -631,7 +683,7 @@ class FirestoreUtils {
 
   // 'ARCHIVEDTASKS' COLLECTION IN FIREBASE
 
-  static Future<void> archiveTask(String taskID, {required bool isAutomatic}) async {
+  static Future<bool> archiveTask(String taskID, {required bool isAutomatic}) async {
     try {
       // Reference to the specific document
       DocumentReference taskReference = 
@@ -661,6 +713,9 @@ class FirestoreUtils {
 
         // Delete the original task document from the 'tasks' collection
         await taskReference.delete();
+
+        // This value is used for testing only
+        return true;
       } else {
         // Handle the case where the event with the given ID does not exist
         if (kDebugMode) {
@@ -676,7 +731,7 @@ class FirestoreUtils {
     }
   }
 
-  static Future<void> autoArchiveTasks(String? userID) async {
+  static Future<bool> autoArchiveTasks(String? userID) async {
     try {
       if (userID != null) {
         CollectionReference tasksCollection = 
@@ -692,15 +747,21 @@ class FirestoreUtils {
           String taskId = doc.id;
           await archiveTask(taskId, isAutomatic: true);
         }
+
+        // This value is used for testing only
+        return true;
       }
     } catch (e) {
       if (kDebugMode) {
         print('Error auto-archiving tasks: $e');
       }
     }
+
+    // This value is used for testing only
+    return false;
   }
 
-  static Future<void> deleteArchivedTask(BuildContext context, String taskId) async {
+  static Future<bool> deleteArchivedTask(BuildContext context, String taskId) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -713,6 +774,9 @@ class FirestoreUtils {
         await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).update({
           'createdTasks': FieldValue.increment(-1),
         });
+
+        // This value is used for testing only
+        return true;
       }
     } catch (e) {
       if (kDebugMode) {
@@ -725,6 +789,9 @@ class FirestoreUtils {
       );
       rethrow;
     }
+
+    // This value is used for testing only
+    return false;
   }
 
   static Future<List<ArchivedTask>> _taskHistory(String? userID, String sortField, bool isDescending) async {
@@ -811,10 +878,10 @@ class FirestoreUtils {
 
   // PERIODIC TASK CHECKS
 
-  static Future<void> checkTasksDueWithin3Days() async {
+  static Future<bool> checkTasksDueWithin3Days() async {
     // If no user is logged in
     if (SorttasksApp.loggedInUser == null) {
-      return;
+      return false;
     }
 
     try {
@@ -880,12 +947,17 @@ class FirestoreUtils {
           }
         }
 
+        // This value is used for testing only
+        return true;
       }
     } catch (e) {
       if (kDebugMode) {
         print('Error checking tasks: $e');
       }
     }
+
+    // This value is used for testing only
+    return false;
   }
 
 }
