@@ -43,7 +43,7 @@ The project's architecture consists of several classes and services organized to
 * Swift (0.9%) and HTML (0.6%): For additional features and user interface.
 
 ## Installation and Running
-1. Install Flutter SDK, as this will cover all pre-requirements. You can do that by following the instructions of the [official Flutter website](https://docs.flutter.dev/get-started/install).
+1. Install Flutter SDK, as this will cover all pre-requirements. You can do that by following the instructions on the [official Flutter website](https://docs.flutter.dev/get-started/install).
 2. Clone the repository:
 ```
 git clone https://github.com/daniel-nunes-03/sorttasks.git
