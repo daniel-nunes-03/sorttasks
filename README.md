@@ -43,17 +43,23 @@ The project's architecture consists of several classes and services organized to
 * Swift (0.9%) and HTML (0.6%): For additional features and user interface.
 
 ## Installation and Running
-1. Install Flutter SDK, as this will cover all pre-requirements. You can do that by following the instructions on the [official Flutter website](https://docs.flutter.dev/get-started/install).
-2. Clone the repository:
+1. Set Up an Android Virtual Device:
+* Download and install Android Studio.
+* Open Android Studio, go to Configure > AVD Manager.
+* **[RECOMMENDED]** Click Create Virtual Device and select Pixel XL as the device
+* **[RECOMMENDED]** Choose API Level 33 as the system image, then follow the prompts to finish the setup.
+* Once set up, you can start the virtual device from the AVD Manager.
+2. Install Flutter SDK, as this will cover all pre-requirements. You can do that by following the instructions on the [official Flutter website](https://docs.flutter.dev/get-started/install).
+3. Clone the repository:
 ```
 git clone https://github.com/daniel-nunes-03/sorttasks.git
 cd sorttasks
 ```
-3. Install Dependencies: Run the following command to install all necessary dependencies as specified in `pubspec.yaml`:
+4. Install Dependencies: Run the following command to install all necessary dependencies as specified in `pubspec.yaml`:
 ```
 dart pub upgrade
 ```
-4. Run the project with:
+5. Run the project with:
 ```
 flutter run
 ```
